@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Python 还是 R？ – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./git-basic.html" rel="next">
+<link href="./python-basic.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./literate-programming.html">基础知识</a></li><li class="breadcrumb-item"><a href="./python-vs-r.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#核心功能对比" id="toc-核心功能对比" class="nav-link active" data-scroll-target="#核心功能对比"><span class="header-section-number">9.1</span> 核心功能对比</a>
+  <ul class="collapse">
+  <li><a href="#数据处理" id="toc-数据处理" class="nav-link" data-scroll-target="#数据处理"><span class="header-section-number">9.1.1</span> 数据处理</a></li>
+  <li><a href="#数据可视化" id="toc-数据可视化" class="nav-link" data-scroll-target="#数据可视化"><span class="header-section-number">9.1.2</span> 数据可视化</a></li>
+  <li><a href="#机器学习" id="toc-机器学习" class="nav-link" data-scroll-target="#机器学习"><span class="header-section-number">9.1.3</span> 机器学习</a></li>
+  </ul></li>
+  <li><a href="#应用场景建议" id="toc-应用场景建议" class="nav-link" data-scroll-target="#应用场景建议"><span class="header-section-number">9.2</span> 应用场景建议</a>
+  <ul class="collapse">
+  <li><a href="#推荐python的场景" id="toc-推荐python的场景" class="nav-link" data-scroll-target="#推荐python的场景"><span class="header-section-number">9.2.1</span> 推荐Python的场景</a></li>
+  <li><a href="#推荐r的场景" id="toc-推荐r的场景" class="nav-link" data-scroll-target="#推荐r的场景"><span class="header-section-number">9.2.2</span> 推荐R的场景</a></li>
+  </ul></li>
+  <li><a href="#工具生态全景图" id="toc-工具生态全景图" class="nav-link" data-scroll-target="#工具生态全景图"><span class="header-section-number">9.3</span> 工具生态全景图</a>
+  <ul class="collapse">
+  <li><a href="#python数据科学生态" id="toc-python数据科学生态" class="nav-link" data-scroll-target="#python数据科学生态"><span class="header-section-number">9.3.1</span> Python数据科学生态</a></li>
+  <li><a href="#r数据科学生态" id="toc-r数据科学生态" class="nav-link" data-scroll-target="#r数据科学生态"><span class="header-section-number">9.3.2</span> R数据科学生态</a></li>
+  <li><a href="#选型指南" id="toc-选型指南" class="nav-link" data-scroll-target="#选型指南"><span class="header-section-number">9.3.3</span> 选型指南</a></li>
+  </ul></li>
+  <li><a href="#r-在统计分析和数据可视化领域的优势" id="toc-r-在统计分析和数据可视化领域的优势" class="nav-link" data-scroll-target="#r-在统计分析和数据可视化领域的优势"><span class="header-section-number">9.4</span> R 在统计分析和数据可视化领域的优势</a>
+  <ul class="collapse">
+  <li><a href="#丰富的生态系统与开源包" id="toc-丰富的生态系统与开源包" class="nav-link" data-scroll-target="#丰富的生态系统与开源包"><span class="header-section-number">9.4.1</span> 丰富的生态系统与开源包</a></li>
+  <li><a href="#强大的统计分析功能" id="toc-强大的统计分析功能" class="nav-link" data-scroll-target="#强大的统计分析功能"><span class="header-section-number">9.4.2</span> 强大的统计分析功能</a></li>
+  <li><a href="#出色的数据可视化能力" id="toc-出色的数据可视化能力" class="nav-link" data-scroll-target="#出色的数据可视化能力"><span class="header-section-number">9.4.3</span> 出色的数据可视化能力</a></li>
+  <li><a href="#简洁易读的语法与交互式开发" id="toc-简洁易读的语法与交互式开发" class="nav-link" data-scroll-target="#简洁易读的语法与交互式开发"><span class="header-section-number">9.4.4</span> 简洁易读的语法与交互式开发</a></li>
+  <li><a href="#强大的社区支持与丰富的教育资源" id="toc-强大的社区支持与丰富的教育资源" class="nav-link" data-scroll-target="#强大的社区支持与丰富的教育资源"><span class="header-section-number">9.4.5</span> 强大的社区支持与丰富的教育资源</a></li>
+  <li><a href="#与其他语言和平台的无缝集成" id="toc-与其他语言和平台的无缝集成" class="nav-link" data-scroll-target="#与其他语言和平台的无缝集成"><span class="header-section-number">9.4.6</span> 与其他语言和平台的无缝集成</a></li>
+  <li><a href="#大数据与分布式计算支持" id="toc-大数据与分布式计算支持" class="nav-link" data-scroll-target="#大数据与分布式计算支持"><span class="header-section-number">9.4.7</span> 大数据与分布式计算支持</a></li>
+  <li><a href="#学术界与工业界的广泛应用" id="toc-学术界与工业界的广泛应用" class="nav-link" data-scroll-target="#学术界与工业界的广泛应用"><span class="header-section-number">9.4.8</span> 学术界与工业界的广泛应用</a></li>
+  <li><a href="#持续创新与扩展生态" id="toc-持续创新与扩展生态" class="nav-link" data-scroll-target="#持续创新与扩展生态"><span class="header-section-number">9.4.9</span> 持续创新与扩展生态</a></li>
+  <li><a href="#潜在不足与优化策略" id="toc-潜在不足与优化策略" class="nav-link" data-scroll-target="#潜在不足与优化策略"><span class="header-section-number">9.4.10</span> 潜在不足与优化策略</a></li>
+  <li><a href="#总结" id="toc-总结" class="nav-link" data-scroll-target="#总结"><span class="header-section-number">9.4.11</span> 总结</a></li>
+  </ul></li>
+  <li><a href="#python-在人工智能及深度学习领域的优势" id="toc-python-在人工智能及深度学习领域的优势" class="nav-link" data-scroll-target="#python-在人工智能及深度学习领域的优势"><span class="header-section-number">9.5</span> Python 在人工智能及深度学习领域的优势</a>
+  <ul class="collapse">
+  <li><a href="#丰富的生态系统与开源库" id="toc-丰富的生态系统与开源库" class="nav-link" data-scroll-target="#丰富的生态系统与开源库"><span class="header-section-number">9.5.1</span> 丰富的生态系统与开源库</a></li>
+  <li><a href="#简洁易读的语法与快速原型开发" id="toc-简洁易读的语法与快速原型开发" class="nav-link" data-scroll-target="#简洁易读的语法与快速原型开发"><span class="header-section-number">9.5.2</span> 简洁易读的语法与快速原型开发</a></li>
+  <li><a href="#强大的社区支持与持续创新" id="toc-强大的社区支持与持续创新" class="nav-link" data-scroll-target="#强大的社区支持与持续创新"><span class="header-section-number">9.5.3</span> 强大的社区支持与持续创新</a></li>
+  <li><a href="#与其他语言和平台的高效集成" id="toc-与其他语言和平台的高效集成" class="nav-link" data-scroll-target="#与其他语言和平台的高效集成"><span class="header-section-number">9.5.4</span> 与其他语言和平台的高效集成</a></li>
+  <li><a href="#大数据与分布式计算支持-1" id="toc-大数据与分布式计算支持-1" class="nav-link" data-scroll-target="#大数据与分布式计算支持-1"><span class="header-section-number">9.5.5</span> 大数据与分布式计算支持</a></li>
+  <li><a href="#学术界与工业界的无缝衔接" id="toc-学术界与工业界的无缝衔接" class="nav-link" data-scroll-target="#学术界与工业界的无缝衔接"><span class="header-section-number">9.5.6</span> 学术界与工业界的无缝衔接</a></li>
+  <li><a href="#企业级支持与工业化应用" id="toc-企业级支持与工业化应用" class="nav-link" data-scroll-target="#企业级支持与工业化应用"><span class="header-section-number">9.5.7</span> 企业级支持与工业化应用</a></li>
+  <li><a href="#潜在不足与优化策略-1" id="toc-潜在不足与优化策略-1" class="nav-link" data-scroll-target="#潜在不足与优化策略-1"><span class="header-section-number">9.5.8</span> 潜在不足与优化策略</a></li>
+  <li><a href="#总结-1" id="toc-总结-1" class="nav-link" data-scroll-target="#总结-1"><span class="header-section-number">9.5.9</span> 总结</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/python-vs-r.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/python-vs-r.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./literate-programming.html">基础知识</a></li><li class="breadcrumb-item"><a href="./python-vs-r.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Python 和 R 在数据科学方面的应用都非常广泛。</p>
+<section id="核心功能对比" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="核心功能对比"><span class="header-section-number">9.1</span> 核心功能对比</h2>
+<section id="数据处理" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="数据处理"><span class="header-section-number">9.1.1</span> 数据处理</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 43%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>功能</th>
+<th>Python</th>
+<th>R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>基础操作</strong></td>
+<td>Pandas（易用性高）</td>
+<td>data.table（内存效率优化）</td>
+</tr>
+<tr class="even">
+<td><strong>并行计算</strong></td>
+<td>Dask（分布式DataFrame）</td>
+<td>future（异步计算框架）</td>
+</tr>
+<tr class="odd">
+<td><strong>数据接口</strong></td>
+<td>SQLAlchemy（多数据库支持）</td>
+<td>DBI（统一数据库接口）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="数据可视化" class="level3" data-number="9.1.2">
+<h3 data-number="9.1.2" class="anchored" data-anchor-id="数据可视化"><span class="header-section-number">9.1.2</span> 数据可视化</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 43%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>功能</th>
+<th>Python</th>
+<th>R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>静态图表</strong></td>
+<td>Matplotlib（高度定制化）</td>
+<td>ggplot2（图形语法，出版级输出）✅</td>
+</tr>
+<tr class="even">
+<td><strong>交互可视化</strong></td>
+<td>Plotly/Dash（Web整合）</td>
+<td>plotly/shiny（动态仪表盘）</td>
+</tr>
+<tr class="odd">
+<td><strong>统计图表</strong></td>
+<td>Seaborn（简化统计绘图）</td>
+<td>ggpubr（科研论文专用）🔬</td>
+</tr>
+</tbody>
+</table>
+<p><strong>场景案例</strong>：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot2 绘制密度图</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(<span class="at">x=</span>carat, <span class="at">fill=</span>cut)) <span class="sc">+</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="python-vs-r_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matplotlib 等效实现</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载 diamonds 数据集</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>diamonds <span class="op">=</span> sns.load_dataset(<span class="st">"diamonds"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">6</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cut_type <span class="kw">in</span> diamonds[<span class="st">'cut'</span>].unique():</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    subset <span class="op">=</span> diamonds[diamonds[<span class="st">'cut'</span>] <span class="op">==</span> cut_type]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    plt.hist(subset[<span class="st">'carat'</span>], density<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span>cut_type)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="python-vs-r_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="机器学习" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="机器学习"><span class="header-section-number">9.1.3</span> 机器学习</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 43%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>功能</th>
+<th>Python</th>
+<th>R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>传统模型</strong></td>
+<td>Scikit-learn（统一API设计）</td>
+<td>caret（一站式建模工具）</td>
+</tr>
+<tr class="even">
+<td><strong>深度学习</strong></td>
+<td>PyTorch/TensorFlow（工业级框架）🏭</td>
+<td>keras（前端接口）/torch（扩展包）</td>
+</tr>
+<tr class="odd">
+<td><strong>自动化</strong></td>
+<td>AutoKeras（神经架构搜索）</td>
+<td>autoML（基础自动化）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>性能基准</strong>：<br>
+- 随机森林训练（10万样本）：Python比R快2.3倍（<a href="https://github.com/rhiever/random-forest-benchmarks">源码测试</a>）<br>
+- XGBoost GPU加速：Python支持CUDA直接调用，R需额外配置🔧</p>
+</section>
+</section>
+<section id="应用场景建议" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="应用场景建议"><span class="header-section-number">9.2</span> 应用场景建议</h2>
+<section id="推荐python的场景" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="推荐python的场景"><span class="header-section-number">9.2.1</span> 推荐Python的场景</h3>
+<ol type="1">
+<li><strong>端到端AI流水线</strong>
+<ul>
+<li>使用PyTorch训练模型 → ONNX格式转换 → FastAPI部署 → Kubernetes扩展</li>
+</ul></li>
+<li><strong>大规模数据工程</strong>
+<ul>
+<li>PySpark处理TB级数据 → MLflow跟踪实验 → Airflow调度任务</li>
+</ul></li>
+<li><strong>计算机视觉应用</strong>
+<ul>
+<li>OpenCV实时视频分析 → TensorRT模型优化 → 边缘设备部署</li>
+</ul></li>
+</ol>
+</section>
+<section id="推荐r的场景" class="level3" data-number="9.2.2">
+<h3 data-number="9.2.2" class="anchored" data-anchor-id="推荐r的场景"><span class="header-section-number">9.2.2</span> 推荐R的场景</h3>
+<ol type="1">
+<li><strong>临床试验分析</strong>
+<ul>
+<li>survival包处理生存数据 → forestplot生成森林图 → rticles撰写论文</li>
+</ul></li>
+<li><strong>计量经济学研究</strong>
+<ul>
+<li>plm包面板数据分析 → stargazer输出格式化表格 → dygraphs绘制时间序列</li>
+</ul></li>
+<li><strong>交互式统计报告</strong>
+<ul>
+<li>R Markdown动态文档 → flexdashboard创建仪表盘 → shiny构建数据应用</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="工具生态全景图" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="工具生态全景图"><span class="header-section-number">9.3</span> 工具生态全景图</h2>
+<section id="python数据科学生态" class="level3" data-number="9.3.1">
+<h3 data-number="9.3.1" class="anchored" data-anchor-id="python数据科学生态"><span class="header-section-number">9.3.1</span> Python数据科学生态</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A[Python核心] --&gt; B[科学计算]
+    A --&gt; C[机器学习]
+    A --&gt; D[可视化]
+    B --&gt; B1(NumPy/SciPy)
+    C --&gt; C1(Scikit-learn)
+    C --&gt; C2(TensorFlow)
+    D --&gt; D1(Matplotlib)
+    D --&gt; D2(Plotly)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="r数据科学生态" class="level3" data-number="9.3.2">
+<h3 data-number="9.3.2" class="anchored" data-anchor-id="r数据科学生态"><span class="header-section-number">9.3.2</span> R数据科学生态</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">graph TD
+    A[R核心] --&gt; B[统计分析]
+    A --&gt; C[数据操作]
+    A --&gt; D[可视化]
+    B --&gt; B1(lme4)
+    C --&gt; C1(dplyr)
+    D --&gt; D1(ggplot2)
+    D --&gt; D2(lattice)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="选型指南" class="level3" data-number="9.3.3">
+<h3 data-number="9.3.3" class="anchored" data-anchor-id="选型指南"><span class="header-section-number">9.3.3</span> 选型指南</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 44%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>维度</th>
+<th>Python优势领域</th>
+<th>R优势领域</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>开发速度</strong></td>
+<td>深度学习原型开发</td>
+<td>统计建模快速迭代</td>
+</tr>
+<tr class="even">
+<td><strong>部署能力</strong></td>
+<td>生产环境微服务架构</td>
+<td>学术报告动态生成</td>
+</tr>
+<tr class="odd">
+<td><strong>硬件支持</strong></td>
+<td>多GPU分布式训练</td>
+<td>单机内存计算优化</td>
+</tr>
+<tr class="even">
+<td><strong>学习曲线</strong></td>
+<td>通用编程思维易过渡</td>
+<td>统计学家零门槛上手</td>
+</tr>
+</tbody>
+</table>
+<p><strong>决策树建议</strong>：<br>
+- 如果您的需求涉及：生产部署、深度学习、跨团队协作 → 选择Python 🐍<br>
+- 如果您的需求涉及：统计推断、学术出版、生物信息 → 选择R 📊</p>
+<p>▶️ 混合架构方案：通过reticulate包在R中调用Python代码，或使用Plumber将R模型部署为API。</p>
+</section>
+</section>
+<section id="r-在统计分析和数据可视化领域的优势" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="r-在统计分析和数据可视化领域的优势"><span class="header-section-number">9.4</span> R 在统计分析和数据可视化领域的优势</h2>
+<p>R 语言以其强大的统计分析能力和卓越的数据可视化功能而著称，已成为数据科学家、统计学家以及各领域研究者的首选工具。其独特的生态系统、丰富的开源包以及便捷的交互式开发环境，使得 R 能够高效地完成从数据探索到模型构建，再到结果呈现的全流程工作。下面将全面解析 R 在统计分析和数据可视化领域的核心优势及其实际应用场景。</p>
+<section id="丰富的生态系统与开源包" class="level3" data-number="9.4.1">
+<h3 data-number="9.4.1" class="anchored" data-anchor-id="丰富的生态系统与开源包"><span class="header-section-number">9.4.1</span> 丰富的生态系统与开源包</h3>
+<ul>
+<li><p><strong>全面的数据分析包</strong>：<br>
+R 拥有庞大的 CRAN 仓库和 Bioconductor 平台，涵盖了数以万计的包，专门用于统计建模、数据处理和可视化。例如，<strong>dplyr</strong>、<strong>tidyr</strong> 和 <strong>data.table</strong> 等包大大简化了数据清洗与变换工作。</p></li>
+<li><p><strong>专用的统计分析工具</strong>：<br>
+R 内置了大量统计方法和检验工具，诸如回归分析、方差分析、时间序列分析、贝叶斯统计等，使得复杂的统计建模变得简单直观。同时，诸如 <strong>lme4</strong>、<strong>survival</strong> 和 <strong>forecast</strong> 等包支持更高级的统计分析需求。</p></li>
+<li><p><strong>强大的数据可视化生态</strong>：<br>
+R 以 <strong>ggplot2</strong> 为代表，提出了“语法图形”（Grammar of Graphics）的理念，使得构建复杂图表变得模块化、灵活且易于理解。此外，<strong>lattice</strong>、<strong>plotly</strong> 和 <strong>highcharter</strong> 等包进一步扩展了静态与交互式图形的表现力。</p></li>
+</ul>
+</section>
+<section id="强大的统计分析功能" class="level3" data-number="9.4.2">
+<h3 data-number="9.4.2" class="anchored" data-anchor-id="强大的统计分析功能"><span class="header-section-number">9.4.2</span> 强大的统计分析功能</h3>
+<ul>
+<li><p><strong>内置统计函数</strong>：<br>
+R 自身集成了大量经典统计分析函数，支持各类数据分布、假设检验、回归模型、聚类分析等，满足从基础到高级的统计需求。</p></li>
+<li><p><strong>扩展性与专业化</strong>：<br>
+通过专门开发的包，R 能够快速响应各领域的统计建模需求，如生物统计、经济计量、金融风险分析等，为研究者提供定制化的解决方案。</p></li>
+</ul>
+</section>
+<section id="出色的数据可视化能力" class="level3" data-number="9.4.3">
+<h3 data-number="9.4.3" class="anchored" data-anchor-id="出色的数据可视化能力"><span class="header-section-number">9.4.3</span> 出色的数据可视化能力</h3>
+<ul>
+<li><p><strong>灵活的图形系统</strong>：<br>
+<strong>ggplot2</strong> 以分层构建图形的方式，使用户可以在同一框架下构建散点图、直方图、箱线图等各种统计图形。图形的高度可定制性和美观性，使得数据解读与呈现更为直观。</p></li>
+<li><p><strong>交互式与动态可视化</strong>：<br>
+通过 <strong>Shiny</strong> 和 <strong>plotly</strong> 等工具，R 支持开发交互式网页应用与动态图表，使得数据分析过程和结果能够以更直观、生动的方式展示给最终用户或决策者。</p></li>
+</ul>
+<p><strong>示例</strong>：构建一个简单的散点图并拟合线性回归模型</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载 ggplot2 包并使用内置数据集绘图</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mtcars)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mtcars, <span class="fu">aes</span>(<span class="at">x =</span> wt, <span class="at">y =</span> mpg)) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"darkred"</span>) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"汽车重量与油耗的关系"</span>, <span class="at">x =</span> <span class="st">"重量 (1000 lbs)"</span>, <span class="at">y =</span> <span class="st">"油耗 (mpg)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="python-vs-r_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="简洁易读的语法与交互式开发" class="level3" data-number="9.4.4">
+<h3 data-number="9.4.4" class="anchored" data-anchor-id="简洁易读的语法与交互式开发"><span class="header-section-number">9.4.4</span> 简洁易读的语法与交互式开发</h3>
+<ul>
+<li><p><strong>直观的语法结构</strong>：<br>
+R 的语法贴近数学表达和统计思维，代码简洁易懂，有助于快速构建统计模型和分析流程。</p></li>
+<li><p><strong>交互式编程环境</strong>：<br>
+借助 RStudio、R GUI 以及 R Markdown 等工具，研究者可以边写代码边实时查看输出和图形，实现数据探索、模型验证和结果汇报的一体化工作流程。</p></li>
+<li><p><strong>再现性研究</strong>：<br>
+R Markdown 和 Sweave 等工具支持文档与代码混排，确保数据分析过程的透明、可重现，极大地促进了学术交流和合作研究。</p></li>
+</ul>
+</section>
+<section id="强大的社区支持与丰富的教育资源" class="level3" data-number="9.4.5">
+<h3 data-number="9.4.5" class="anchored" data-anchor-id="强大的社区支持与丰富的教育资源"><span class="header-section-number">9.4.5</span> 强大的社区支持与丰富的教育资源</h3>
+<ul>
+<li><p><strong>全球活跃社区</strong>：<br>
+R 拥有一个庞大且充满活力的社区，无论是 Stack Overflow、R-bloggers 还是各类邮件列表，开发者和研究者都能迅速获得技术支持与最佳实践分享。</p></li>
+<li><p><strong>海量学习资源</strong>：<br>
+从初学者教程、在线课程（如 Coursera、edX 上的 R 编程课程）到高级统计书籍和案例分享，R 为各层次用户提供了丰富的学习材料，助力技能提升。</p></li>
+</ul>
+</section>
+<section id="与其他语言和平台的无缝集成" class="level3" data-number="9.4.6">
+<h3 data-number="9.4.6" class="anchored" data-anchor-id="与其他语言和平台的无缝集成"><span class="header-section-number">9.4.6</span> 与其他语言和平台的无缝集成</h3>
+<ul>
+<li><p><strong>跨语言互操作</strong>：<br>
+R 可以通过 <strong>Rcpp</strong> 与 C/C++ 高效整合，实现关键计算部分的加速；同时，<strong>reticulate</strong> 包使 R 与 Python 之间的数据共享和函数调用变得简单，打破语言壁垒。</p></li>
+<li><p><strong>多平台支持与部署</strong>：<br>
+R 不仅可以在 Windows、Linux 和 macOS 等平台上稳定运行，还能借助 <strong>RStudio Connect</strong>、<strong>Shiny Server</strong> 等工具，将数据分析结果和交互式应用快速部署到生产环境中。</p></li>
+</ul>
+</section>
+<section id="大数据与分布式计算支持" class="level3" data-number="9.4.7">
+<h3 data-number="9.4.7" class="anchored" data-anchor-id="大数据与分布式计算支持"><span class="header-section-number">9.4.7</span> 大数据与分布式计算支持</h3>
+<ul>
+<li><p><strong>内存优化与高效数据处理</strong>：<br>
+尽管 R 在内存中操作数据，但包如 <strong>data.table</strong>、<strong>dplyr</strong> 和 <strong>bigmemory</strong> 能够显著提升数据处理效率，支持大规模数据集的快速计算。</p></li>
+<li><p><strong>分布式计算与集成大数据平台</strong>：<br>
+利用 <strong>sparklyr</strong> 包，R 可以与 Apache Spark 集成，实现大数据环境下的分布式计算，为数据密集型的统计分析任务提供强有力的技术支持。</p></li>
+</ul>
+</section>
+<section id="学术界与工业界的广泛应用" class="level3" data-number="9.4.8">
+<h3 data-number="9.4.8" class="anchored" data-anchor-id="学术界与工业界的广泛应用"><span class="header-section-number">9.4.8</span> 学术界与工业界的广泛应用</h3>
+<ul>
+<li><p><strong>学术研究的首选工具</strong>：<br>
+R 在统计建模和数据可视化领域的专业优势，使其在社会科学、生物统计、经济学、环境科学等众多学科中广泛应用，并成为发表高质量学术论文的标准工具之一。</p></li>
+<li><p><strong>企业数据分析实践</strong>：<br>
+许多企业借助 R 进行市场分析、风险评估、客户细分和预测分析，其灵活高效的数据处理与可视化能力，帮助企业做出数据驱动的决策。</p></li>
+</ul>
+</section>
+<section id="持续创新与扩展生态" class="level3" data-number="9.4.9">
+<h3 data-number="9.4.9" class="anchored" data-anchor-id="持续创新与扩展生态"><span class="header-section-number">9.4.9</span> 持续创新与扩展生态</h3>
+<ul>
+<li><p><strong>前沿技术的迅速跟进</strong>：<br>
+随着新统计方法和数据科学技术的不断涌现，R 社区和 CRAN 包始终保持更新，确保用户可以及时使用最新的分析工具和方法。</p></li>
+<li><p><strong>生态系统的不断扩展</strong>：<br>
+从传统统计分析到机器学习、深度学习以及大数据处理，R 的生态系统正不断拓展和融合，满足不断变化的数据分析需求。</p></li>
+</ul>
+</section>
+<section id="潜在不足与优化策略" class="level3" data-number="9.4.10">
+<h3 data-number="9.4.10" class="anchored" data-anchor-id="潜在不足与优化策略"><span class="header-section-number">9.4.10</span> 潜在不足与优化策略</h3>
+<ul>
+<li><p><strong>内存处理限制</strong>：<br>
+R 的数据处理通常基于内存，这在处理极大数据集时可能成为瓶颈。为此，可以借助数据库接口、内存优化包（如 data.table）或与大数据平台（如 Spark）的集成来解决这一问题。</p></li>
+<li><p><strong>性能优化</strong>：<br>
+对于计算密集型任务，可以使用 <strong>Rcpp</strong>、<strong>parallel</strong> 和 <strong>future</strong> 等包实现多核并行和 C/C++ 加速，从而提升整体性能。</p></li>
+</ul>
+</section>
+<section id="总结" class="level3" data-number="9.4.11">
+<h3 data-number="9.4.11" class="anchored" data-anchor-id="总结"><span class="header-section-number">9.4.11</span> 总结</h3>
+<p>R 语言以其丰富的统计分析功能、灵活高效的数据处理能力以及出色的数据可视化效果，构建了一个完善而专业的生态系统。无论是在学术研究、企业数据分析，还是在数据科学领域的创新探索中，R 都提供了从数据预处理、模型构建到结果展示的全流程解决方案。借助强大的社区支持与不断扩展的工具链，R 不仅满足了复杂统计分析的需求，更为数据可视化和交互式展示提供了无限可能。未来，随着技术的不断演进，R 在统计分析和数据可视化领域的优势将持续助力各行业实现数据驱动决策与创新发展。</p>
+</section>
+</section>
+<section id="python-在人工智能及深度学习领域的优势" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="python-在人工智能及深度学习领域的优势"><span class="header-section-number">9.5</span> Python 在人工智能及深度学习领域的优势</h2>
+<p>Python 已经成为人工智能（AI）和深度学习（DL）领域中最流行、最具影响力的编程语言。这不仅归功于其简洁易用的语法，更得益于其庞大而完善的生态系统、活跃的社区支持以及与多种平台和技术的无缝集成。下面将全面解析 Python 在 AI/DL 开发中的核心优势及其实际应用场景。</p>
+<section id="丰富的生态系统与开源库" class="level3" data-number="9.5.1">
+<h3 data-number="9.5.1" class="anchored" data-anchor-id="丰富的生态系统与开源库"><span class="header-section-number">9.5.1</span> 丰富的生态系统与开源库</h3>
+<section id="核心框架与工具支持" class="level4" data-number="9.5.1.1">
+<h4 data-number="9.5.1.1" class="anchored" data-anchor-id="核心框架与工具支持"><span class="header-section-number">9.5.1.1</span> 核心框架与工具支持</h4>
+<ul>
+<li><p><strong>深度学习框架</strong>：<br>
+Python 拥有一系列高效的开源框架，如 <strong>TensorFlow</strong>、<strong>PyTorch</strong>、<strong>Keras</strong>、<strong>MXNet</strong> 等，这些框架封装了底层的数学运算和硬件加速，支持自动微分、动态图/静态图计算以及分布式训练，大幅降低了模型开发和训练的复杂度。</p></li>
+<li><p><strong>传统机器学习库</strong>：<br>
+库如 <strong>Scikit-learn</strong> 提供了丰富的经典机器学习算法，便于数据预处理、特征工程和模型评估，并且能够与深度学习框架无缝衔接。</p></li>
+<li><p><strong>数据处理与科学计算工具</strong>：<br>
+<strong>NumPy</strong>、<strong>Pandas</strong> 和 <strong>SciPy</strong> 是数据处理与数值计算的基础工具，支持高效的数组运算、数据清洗和科学计算，确保在大规模数据处理过程中依然保持高效稳定。</p></li>
+<li><p><strong>可视化与调试工具</strong>：<br>
+使用 <strong>Matplotlib</strong>、<strong>Seaborn</strong>、<strong>Plotly</strong> 以及 <strong>TensorBoard</strong> 等工具，开发者可以直观地展示数据分布、模型训练过程和结果，帮助快速定位问题和改进模型。</p></li>
+</ul>
+<p><strong>示例</strong>：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用 PyTorch 构建一个简单的神经网络</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> nn.Sequential(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">784</span>, <span class="dv">256</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    nn.ReLU(),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">256</span>, <span class="dv">10</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sequential(
+  (0): Linear(in_features=784, out_features=256, bias=True)
+  (1): ReLU()
+  (2): Linear(in_features=256, out_features=10, bias=True)
+)</code></pre>
+</div>
+</div>
+<p>绘制神经网络结构：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchsummary <span class="im">import</span> summary</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>summary(model, (<span class="dv">784</span>,))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Linear-1                  [-1, 256]         200,960
+              ReLU-2                  [-1, 256]               0
+            Linear-3                   [-1, 10]           2,570
+================================================================
+Total params: 203,530
+Trainable params: 203,530
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.00
+Params size (MB): 0.78
+Estimated Total Size (MB): 0.78
+----------------------------------------------------------------</code></pre>
+</div>
+</div>
+</section>
+<section id="自动化与模型管理" class="level4" data-number="9.5.1.2">
+<h4 data-number="9.5.1.2" class="anchored" data-anchor-id="自动化与模型管理"><span class="header-section-number">9.5.1.2</span> 自动化与模型管理</h4>
+<ul>
+<li><p><strong>自动机器学习（AutoML）</strong>：<br>
+工具如 <strong>AutoKeras</strong>、<strong>TPOT</strong> 和 <strong>H2O.ai</strong> 提供自动特征工程、模型选择与超参数优化，进一步降低了 AI 应用的技术门槛。</p></li>
+<li><p><strong>模型格式转换与部署</strong>：<br>
+<strong>ONNX</strong> 实现了不同框架之间的模型互操作性，而 <strong>FastAPI</strong>、<strong>Flask</strong> 等轻量级框架则使得模型的部署和服务化变得简单高效。</p></li>
+</ul>
+</section>
+</section>
+<section id="简洁易读的语法与快速原型开发" class="level3" data-number="9.5.2">
+<h3 data-number="9.5.2" class="anchored" data-anchor-id="简洁易读的语法与快速原型开发"><span class="header-section-number">9.5.2</span> 简洁易读的语法与快速原型开发</h3>
+<ul>
+<li><p><strong>易于学习与使用</strong>：<br>
+Python 的语法简洁明了，接近自然语言，适合初学者快速上手，也使得开发者能够将更多精力集中在算法设计与优化上，而非语言细节。</p></li>
+<li><p><strong>交互式开发环境</strong>：<br>
+工具如 Jupyter Notebook、Google Colab 支持交互式编程和即时调试，极大地促进了实验验证、数据探索和模型迭代，缩短了从原型设计到验证的周期。</p></li>
+<li><p><strong>灵活的编程范式</strong>：<br>
+支持面向对象、函数式和过程式编程，使得开发者可以根据具体需求选择最适合的编程风格，提升了项目开发的灵活性与可维护性。</p></li>
+</ul>
+</section>
+<section id="强大的社区支持与持续创新" class="level3" data-number="9.5.3">
+<h3 data-number="9.5.3" class="anchored" data-anchor-id="强大的社区支持与持续创新"><span class="header-section-number">9.5.3</span> 强大的社区支持与持续创新</h3>
+<ul>
+<li><p><strong>全球活跃社区</strong>：<br>
+Python 拥有庞大且活跃的开发者社区，无论是在 Stack Overflow、GitHub 还是各类技术论坛上，几乎总能找到丰富的资源和解决方案，助力问题快速解决。</p></li>
+<li><p><strong>丰富的教育资源</strong>：<br>
+从入门教程（如 Fast.ai、Codecademy）到高端课程（Coursera、Udacity）及大量的开源项目和论文实现，Python 为各层次开发者提供了全方位的学习和成长平台。</p></li>
+<li><p><strong>前沿技术的快速适配</strong>：<br>
+最新研究成果，如 Transformer、Diffusion Models、量子机器学习（PennyLane）和自动微分工具（JAX），通常会率先在 Python 中实现，使开发者能够始终站在技术前沿。</p></li>
+</ul>
+</section>
+<section id="与其他语言和平台的高效集成" class="level3" data-number="9.5.4">
+<h3 data-number="9.5.4" class="anchored" data-anchor-id="与其他语言和平台的高效集成"><span class="header-section-number">9.5.4</span> 与其他语言和平台的高效集成</h3>
+<ul>
+<li><p><strong>底层性能优化</strong>：<br>
+尽管 Python 本身是解释型语言，但其关键计算部分通常借助 C/C++ 编写，并通过 <strong>Cython</strong>、<strong>Numba</strong> 等技术实现加速。同时，主流框架（如 TensorFlow、PyTorch）利用 GPU/TPU 加速和底层高性能库，使得整体运算速度大幅提升。</p></li>
+<li><p><strong>跨平台与多设备部署</strong>：<br>
+Python 支持在各种操作系统和硬件平台上运行，能够将训练好的模型无缝部署到云端（AWS SageMaker、Google AI Platform、Azure ML）、移动设备（TensorFlow Lite）以及浏览器（TensorFlow.js）上，满足多样化的应用场景需求。</p></li>
+</ul>
+</section>
+<section id="大数据与分布式计算支持-1" class="level3" data-number="9.5.5">
+<h3 data-number="9.5.5" class="anchored" data-anchor-id="大数据与分布式计算支持-1"><span class="header-section-number">9.5.5</span> 大数据与分布式计算支持</h3>
+<ul>
+<li><p><strong>大规模数据处理能力</strong>：<br>
+利用 <strong>Dask</strong>、<strong>PySpark</strong> 等工具，Python 可以高效处理和分析海量数据，为大数据环境下的机器学习和深度学习任务提供了坚实支持。</p></li>
+<li><p><strong>分布式训练与并行计算</strong>：<br>
+结合 <strong>Horovod</strong>、<strong>Ray</strong> 等分布式计算框架，Python 能够实现跨多 GPU 或计算集群的训练，加速模型迭代与优化过程，显著提升资源利用率。</p></li>
+</ul>
+</section>
+<section id="学术界与工业界的无缝衔接" class="level3" data-number="9.5.6">
+<h3 data-number="9.5.6" class="anchored" data-anchor-id="学术界与工业界的无缝衔接"><span class="header-section-number">9.5.6</span> 学术界与工业界的无缝衔接</h3>
+<ul>
+<li><p><strong>从研究到生产的快速迁移</strong>：<br>
+许多前沿研究算法（如 Transformer、BERT、GPT 系列）首先以 Python 实现，并迅速在工业界推广，极大地缩短了从理论研究到实际应用的时间差。</p></li>
+<li><p><strong>预训练模型与开源生态</strong>：<br>
+平台如 Hugging Face、PyTorch Hub 提供了大量经过预训练的模型，使得开发者可以直接调用或微调模型，快速构建高质量应用，推动了学术与工业界的紧密合作。</p></li>
+</ul>
+</section>
+<section id="企业级支持与工业化应用" class="level3" data-number="9.5.7">
+<h3 data-number="9.5.7" class="anchored" data-anchor-id="企业级支持与工业化应用"><span class="header-section-number">9.5.7</span> 企业级支持与工业化应用</h3>
+<ul>
+<li><p><strong>主流科技公司的青睐</strong>：<br>
+Google、Meta、OpenAI 等科技巨头均采用 Python 作为 AI/DL 开发的主要语言，推动了行业标准和生态系统的不断完善。</p></li>
+<li><p><strong>完善的生产化工具链</strong>：<br>
+从数据处理、模型训练、版本管理到部署监控，Python 生态系统提供了一整套成熟的工具链（如 MLflow、Kubeflow），支持 AI 项目的全生命周期管理，确保从原型到大规模应用的平稳过渡。</p></li>
+</ul>
+</section>
+<section id="潜在不足与优化策略-1" class="level3" data-number="9.5.8">
+<h3 data-number="9.5.8" class="anchored" data-anchor-id="潜在不足与优化策略-1"><span class="header-section-number">9.5.8</span> 潜在不足与优化策略</h3>
+<p>尽管 Python 在执行速度上可能不及编译型语言，但可以通过以下策略有效弥补：</p>
+<ul>
+<li><p><strong>关键代码加速</strong>：<br>
+使用 <strong>Numba</strong> 或 <strong>Cython</strong> 对关键部分进行即时编译优化，提升运行效率。</p></li>
+<li><p><strong>依赖高性能底层库</strong>：<br>
+利用 TensorFlow、PyTorch 等框架的 C++ 后端及 GPU/TPU 加速，确保大规模数据运算的高效执行。</p></li>
+<li><p><strong>混合编程模式</strong>：<br>
+在性能敏感部分采用 C/C++ 编写扩展模块，再与 Python 无缝集成，既保持开发效率，又兼顾运行性能。</p></li>
+</ul>
+</section>
+<section id="总结-1" class="level3" data-number="9.5.9">
+<h3 data-number="9.5.9" class="anchored" data-anchor-id="总结-1"><span class="header-section-number">9.5.9</span> 总结</h3>
+<p>凭借其简洁的语法、丰富的工具链、强大的社区支持和卓越的跨平台能力，Python 成为了 AI 与深度学习领域的首选语言。从快速原型开发到大规模工业部署，从学术研究到前沿创新，Python 提供了一条从理论到实践的高效路径。未来，随着技术的不断演进和生态系统的持续完善，Python 在人工智能领域的影响力将进一步扩大，为技术创新和商业应用注入源源不断的活力。</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./python-basic.html" class="pagination-link" aria-label="Python 语言入门">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./git-basic.html" class="pagination-link" aria-label="Git 与 GitHub 入门">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/python-vs-r.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/python-vs-r.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>
