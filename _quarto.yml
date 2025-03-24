@@ -53,6 +53,7 @@ book:
         - huggingface.qmd
         - chatanywhere.qmd
         - deepseek.qmd
+        - Doc2X.qmd
     - part: 从零开始神经网络
       chapters:
         - neural-network-from-scratch.qmd
