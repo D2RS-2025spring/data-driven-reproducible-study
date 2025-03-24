@@ -7645,6 +7645,33 @@
       "Maintainer": "Lionel Henry <lionel@rstudio.com>",
       "Repository": "CRAN"
     },
+    "maps": {
+      "Package": "maps",
+      "Version": "3.4.2.1",
+      "Source": "Repository",
+      "Title": "Draw Geographical Maps",
+      "Date": "2023-12-14",
+      "Author": "Original S code by Richard A. Becker and Allan R. Wilks. R version by Ray Brownrigg. Enhancements by Thomas P Minka and Alex Deckmyn.",
+      "Description": "Display of maps.  Projection code and larger maps are in separate packages ('mapproj' and 'mapdata').",
+      "Depends": [
+        "R (>= 3.5.0)"
+      ],
+      "Imports": [
+        "graphics",
+        "utils"
+      ],
+      "LazyData": "yes",
+      "Suggests": [
+        "mapproj (>= 1.2-0)",
+        "mapdata (>= 2.3.0)",
+        "sp",
+        "rnaturalearth"
+      ],
+      "License": "GPL-2",
+      "Maintainer": "Alex Deckmyn <alex.deckmyn@meteo.be>",
+      "NeedsCompilation": "yes",
+      "Repository": "CRAN"
+    },
     "markdown": {
       "Package": "markdown",
       "Version": "1.13",

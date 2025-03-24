@@ -38,13 +38,15 @@ Doc2X 是武汉智识无垠推出的AI文档识别、转换与翻译工具。它
 
 使用 pip 安装：
 
-```{python}
+```{bash}
+#| eval: false
 pip install --upgrade pdfdeal
 ```
 
 ### 将 PDF 文件转换为 docx
 
 ```{python}
+#| eval: false
 from pdfdeal import Doc2X
 
 # 从环境变量 DOC2X_APIKEY 获取 API Key, 或者可以将其作为字符串传递给 apikey 参数
@@ -65,6 +67,7 @@ print(flag)
 ### 将文件夹中的所有文件转换为 docx 和 Markdown
 
 ```{python}
+#| eval: false
 from pdfdeal import Doc2X
 
 # client = Doc2X(apikey="Your API key",debug=True)
@@ -83,6 +86,7 @@ print(flag)
 ### 将文本中 HTML 格式表格转换为 Markdown 格式
 
 ```{python}
+#| eval: false
 from pdfdeal.file_tools import html_table_to_md
 
 with open("old.md", "r") as f:
