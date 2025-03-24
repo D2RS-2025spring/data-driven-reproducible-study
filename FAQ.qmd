@@ -1,5 +1,41 @@
 # FAQ
 
+## 用 R 画地图
+
+下面是一个使用 `ggplot2` 绘制世界地图的 R 代码示例。  
+
+```{r}
+library(ggplot2)
+library(maps)
+
+# 获取世界地图数据
+world_map = map_data("world")
+
+# 绘制地图
+p = ggplot(world_map, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "lightblue", color = "black") +
+  theme_minimal() +
+  labs(title = "World Map")
+
+# 显示地图
+print(p)
+```
+
+如果需要绘制特定国家或区域的地图，例如中国，可以这样做：  
+
+```{r}
+china_map = map_data("world", region = "Russia")
+
+p_china = ggplot(china_map, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "lightblue", color = "black") +
+  theme_minimal() +
+  labs(title = "Russia Map")
+
+print(p_china)
+```
+
+这个示例使用 `maps` 包的 `map_data("world")` 获取世界地图数据，并用 `ggplot2` 绘制。你可以更改 `fill` 和 `color` 参数来自定义颜色。
+
 ## 找不到包，找不到函数，找不到文件
 
 > 这是每个人都常常会掉进去的坑。
