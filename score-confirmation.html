@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Appendix F — 成绩公示 – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./dplyr-cheatsheet.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.html">Appendices</a></li><li class="breadcrumb-item"><a href="./score-confirmation.html"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">成绩公示</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-confirmation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">成绩公示</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#评分标准" id="toc-评分标准" class="nav-link active" data-scroll-target="#评分标准"><span class="header-section-number">F.1</span> 评分标准</a>
+  <ul class="collapse">
+  <li><a href="#test-1" id="toc-test-1" class="nav-link" data-scroll-target="#test-1"><span class="header-section-number">F.1.1</span> Test 1</a></li>
+  <li><a href="#test-2" id="toc-test-2" class="nav-link" data-scroll-target="#test-2"><span class="header-section-number">F.1.2</span> Test 2</a></li>
+  <li><a href="#test-3" id="toc-test-3" class="nav-link" data-scroll-target="#test-3"><span class="header-section-number">F.1.3</span> Test 3</a></li>
+  <li><a href="#test-4" id="toc-test-4" class="nav-link" data-scroll-target="#test-4"><span class="header-section-number">F.1.4</span> Test 4</a></li>
+  </ul></li>
+  <li><a href="#异议方式" id="toc-异议方式" class="nav-link" data-scroll-target="#异议方式"><span class="header-section-number">F.2</span> 异议方式</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/score-confirmation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/score-confirmation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.html">Appendices</a></li><li class="breadcrumb-item"><a href="./score-confirmation.html"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">成绩公示</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Appendix F — 成绩公示</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>因人数众多，为避免因为老师失误遗漏某位同学的成绩，这里公示所有同学的成绩，如果有问题请在下方留言。公示期为 3 天，过期后将会录入平时成绩，不可更改。</p>
+<p><strong>说明</strong>：</p>
+<ul>
+<li>表格中为空的，表示该次作业没有提交，或者没有按要求提交（包括学号写错，过期等）。</li>
+<li>表格中成绩为 0 的，表示作业检测为雷同（仅 Test 2 有此情况）。</li>
+<li>您可以在输出框中输入自己的分组、学号或姓氏筛选成绩，快速找到自己的成绩。</li>
+</ul>
+<p><strong>更新时间</strong>：2025-03-26 18:36:51.642615。</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="datatables html-widget html-fill-item" id="htmlwidget-d08675b44958c3c4a61f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-d08675b44958c3c4a61f">{"x":{"filter":"none","vertical":false,"data":[["group01","group01","group01","group01","group01","group01","group01","group01","group01","group02","group02","group02","group02","group02","group02","group02","group02","group03","group03","group03","group03","group03","group03","group03","group03","group03","group04","group04","group04","group04","group04","group04","group04","group04","group04","group05","group05","group05","group05","group05","group05","group05","group05","group05","group05","group06","group06","group06","group06","group06","group07","group07","group07","group07","group07","group07","group07","group07","group07","group08","group08","group08","group08","group08","group08","group08","group08","group08","group08","group09","group09","group09","group09","group09","group09","group09","group09","group09","group09","group10","group10","group10","group10","group10","group10","group10","group10","group10","group11","group11","group11","group11","group11","group11","group11","group11","group11","group12","group12","group12","group12","group12","group12","group12","group13","group13","group13","group13","group13","group13","group13","group13","group14","group14","group14","group14","group14","group14","group14","group14","group15","group15","group15","group15","group15","group15","group15","group15","group15","group16","group16","group16","group16","group16","group16","group16","group16","group16","group16","group17","group17","group17","group17","group17","group17","group18","group18","group18","group18","group18","group18","group18","group19","group19","group19","group19","group19","group19","group19","group19","group19","group20","group20","group20","group20","group20","group20","group20","group20","group20","group21","group21","group21","group21","group21","group21","group21","group21","group21","group21","group22","group22","group22","group22","group22","group22","group22","group23","group23","group23","group23","group23","group23","group23","group23","group23","group24","group24","group24","group24","group24","group24","group24","group24","group24","group24","group25","group25","group25","group25","group25","group25","group25","group25","group25","group26","group26","group26","group26","group26","group26","group26","group26","group26","group26","group27","group27","group27","group27","group27","group27","group27","group27","group28","group28","group28","group28","group28","group28","group28","group28","group28","group28","group29","group29","group29","group29","group29","group29","group29","group29","group29","group29","group30","group30","group30","group30","group30","group30","group30","group30","group30","group30","group31","group31","group31","group31","group31","group31","group31","group31","group31","group32","group32","group32","group32","group32","group32","group32","group33","group33","group33","group33","group33","group33","group33","group34","group34","group34","group34","group34","group34","group34","group34","group35","group35","group35","group35","group35","group35","group35","group35"],["leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","leader","leader","leader","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","leader","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","leader","member","member","member","member","member","member","leader","member","member","member","member","member","member","member","leader","member","member","member","member","member","member","member"],["2024303120111","2024303110084","2024303110092","2024303110103","2024303120059","2024303120081","2024303120106","2024303120118","2024303120130","2024303120089","2024303110074","2024303110098","2024303120064","2024303120113","2024303120117","2024303120138","2024303120145","2024303110068","2024303110001","2024303110014","2024303110016","2024303110054","2024303120090","2024303120112","2024303120121","2024303120126","2024303110137","2024303110110","2024303110112","2024303110117","2024303110121","2024303120076","2024303120105","2024303120110","2024303120149","2024303110046","2024303110043","2024303110051","2024303120005","2024303120009","2024303120018","2024303120036","2024303120040","2024303120042","2024303120050","2024303110087","2024303110091","2024303110099","2024303110129","2024303120140","2024303120122","2024303110023","2024303110048","2024303110065","2024303110066","2024303110078","2024303120029","2024303120062","2024303120072","2024303110038","2024303120006","2024303110015","2024303110032","2024303110053","2024303110089","2024303120016","2024303120019","2024303120039","2024303120043","2024303120033","2024303110022","2024303110025","2024303110034","2024303110044","2024303120017","2024303120028","2024303120037","2024303120046","2024303120047","2024303120168","2024303110027","2024303110115","2024303120004","2024303120041","2024303120071","2024303120088","2024303120151","2024303120160","2024303110108","2024303110107","2024303110109","2024303110111","2024303110116","2024303110119","2024303110124","2024303110125","2024303120159","2024303120152","2024303120150","2024303120153","2024303120155","2024303120156","2024303120163","2024303120166","2024303110072","2024303110021","2024303110058","2024303110079","2024303110096","2024303110097","2024303120094","2024303120098","2024303120115","2024303110055","2024303110060","2024303120077","2024303120080","2024303120085","2024303120087","2024303120135","2024303110101","2024303120164","2024303120165","2024303110128","2024303110136","2024303120010","2024303120091","2024303120147","2024303120162","2024303110083","2024303110057","2024303110076","2024303110105","2024303120063","2024303120066","2024303120132","2024303120134","2024303120141","2024303120143","2024303120116","2024303110090","2024303110102","2024303120053","2024303120097","2024303120142","2024303110093","2024303110077","2024303110081","2024303110082","2024303110094","2024303120054","2024303120120","2024303120074","2024303110037","2024303110075","2024303120055","2024303120065","2024303120067","2024303120068","2024303120069","2024303120073","2024303110010","2024303110104","2024303110106","2024303120007","2024303120020","2024303120057","2024303120100","2024305110001","2024305110002","2024303110131","2024303110028","2024303110100","2024303110133","2024303120002","2024303120035","2024303120086","2024303120109","2024303120148","2024303120167","2024303110126","2024303110006","2024303110012","2024303110017","2024303110132","2024303120125","2024303120157","2024303110036","2024303110024","2024303110040","2024303110045","2024303110049","2024303120023","2024303120030","2024303120032","2024303120048","2024303120003","2024303110029","2024303110039","2024303110041","2024303110042","2024303110056","2024303110062","2024303110070","2024303120012","2024303120026","2024303120079","2024303110061","2024303110127","2024303110135","2024303120049","2024303120061","2024303120114","2024303120119","2024303120144","2024303110018","2024303110002","2024303110003","2024303110069","2024303120082","2024303120083","2024303120123","2024303120127","2024303120137","2024303120158","2024303120038","2024303110030","2024303110031","2024303110033","2024303110050","2024303120014","2024303120021","2024303120044","2024303110080","2024303110059","2024303110067","2024303110085","2024303110095","2024303120060","2024303120070","2024303120084","2024303120092","2024303120129","2024303120133","2024303110063","2024303110064","2024303110073","2024303110088","2024303120008","2024303120027","2024303120034","2024303120051","2024303120139","2024303110004","2024303110005","2024303110008","2024303110009","2024303110020","2024303110052","2024303120024","2024303120025","2024303120045","2024303121001","2024303110086","2024303120056","2024303120078","2024303120093","2024303120099","2024303120104","2024303120107","2024303120131","2024303120136","2024303110122","2024303110113","2024303110134","2024303120075","2024303120101","2024303120102","2024303120128","2024303120031","2024303110007","2024303110011","2024303110013","2024303110019","2024303120013","2024303120015","2024303120011","2024303110026","2024303110035","2024303110047","2024303110071","2024303120001","2024303120022","2024303120052","2024303110123","2024303110130","2024303120058","2024303120096","2024303120103","2024303120124","2024303120146","2024303120161"],["王**","刘**","张*","钟**","刘*","张*","王*","胡**","赵*","朱**","胡*","牛**","吕**","程**","翟**","陈**","麦**","王**","周**","申**","路**","万**","李**","秦**","董*","谭**","吴**","吴**","宋***","毛**","苏**","庞**","熊**","王**","剡**","郑*","虞*","黄**","刘**","孟**","李**","祝**","赵**","辛*","马**","唐**","张**","王**","张**","陈**","董**","刘**","陈**","李*","欧***","陈*","王**","刘*","孙*","汪**","刘**","许**","张**","韩**","席**","施**","李*","贺**","邹*","王**","王**","喻*","张*","赵**","李*","牛**","胡**","陆*","陈**","魏**","姜**","李**","刘**","赵*","孙**","朱**","孔*","范**","刘*","候**","初**","孙**","李*","石**","郝**","郭**","税**","宓**","周**","张**","张*","杨*","谢**","高**","罗**","马*","宁**","高**","杨**","樊**","李**","杨*","章**","何**","张*","张*","张**","曹**","朱**","闫**","胡*","贾**","陈**","吴**","裴**","安*","李**","余**","蔡**","刘**","周**","谢**","陈*","刘**","吴**","邹**","郑**","陈**","马*","罗**","庄**","许*","何**","李*","陈**","易**","郭**","任**","余**","李*","兰*","茹**","岳**","杜**","薛**","凌**","吴**","周**","周**","姚*","孙**","汪**","闫**","高**","吉**","李*","刘*","梁**","索**","许**","欧***","尚**","程**","程**","余**","田**","曹**","王**","冯**","魏**","严**","杨**","王**","邓*","汤**","谭**","王**","晁**","刘**","白*","邓**","靳**","殷*","王**","王**","雷**","刘**","庞**","潘**","舒**","苏**","刘**","朱**","申**","张**","潘*","张*","彭**","刘**","胡**","韩**","刘**","程**","范**","马*","郑*","师**","慕**","王**","张**","徐**","褚**","贺**","陈*","石**","袁*","张**","张**","张**","高*","张**","李*","郭**","黄**","宋**","沈**","卢**","杨**","刘**","姜**","明*","李*","赵**","邹*","李**","李**","肖**","姜**","吴**","熊**","王*","魏*","陈**","李**","李*","杨*","欧**","顾**","翟**","江*","洪**","钱**","艾*****","吴**","刘**","张**","李*","林**","潘**","王**","赵**","陈**","许**","张**","米**","巩**","梁*","樊*","贾**","王*","杨**","熊**","王*","陈**","张**","徐**","席*","姚*","文*","钟**","程**","付*","杨**","黄**","赵*","李**","刘**","李*","毛*","许**","龚**","董**"],[79,95,79,85,null,81,81,86,91,76,86,83,84,77,81,82,80,85,68,98,92,76,80,82,85,85,90,88,86,86,76,72,82,85,80,81,89,84,73,79,87,70,88,87,74,88,70,81,65,90,91,79,83,85,83,90,71,74,90,78,81,70,79,79,82,81,81,86,85,89,85,85,89,91,88,88,100,84,89,84,73,67,90,90,64,70,79,69,84,79,84,73,84,78,74,75,85,72,null,68,88,72,83,88,90,87,82,46,78,73,90,83,87,69,74,81,84,77,83,72,84,77,90,89,83,74,85,78,83,86,82,90,81,78,83,84,87,86,78,82,71,80,79,86,76,87,65,88,91,86,74,83,80,79,77,70,83,88,65,86,79,93,78,71,78,88,73,74,79,79,77,83,77,73,86,92,61,86,78,71,81,83,85,86,76,76,79,79,94,91,84,66,91,83,90,72,83,85,85,86,87,91,72,78,81,85,89,92,94,74,92,85,80,80,81,93,90,98,79,97,83,86,78,84,77,77,92,86,88,81,77,93,82,76,80,80,70,81,84,85,89,84,85,81,80,67,75,78,86,86,79,87,81,70,90,80,89,81,78,84,57,88,62,82,88,79,82,88,80,74,97,78,86,76,81,86,86,85,null,82,84,83,80,81,89,73,85,87,87,75,72,77,81,77,66,88,74,82,76,58,74,80],[79,83,72,35,35,79,66,60,66,66,0,47,35,66,47,0,66,75,35,47,72,75,62,72,35,60,70,72,72,72,72,66,70,72,66,79,66,80,80,80,72,79,35,72,83,71,71,71,66,71,59,24,65,71,60,71,59,71,71,66,71,66,66,66,71,66,66,66,66,null,95,48,52,59,71,52,55,52,55,83,59,59,52,55,95,24,59,95,72,72,80,0,55,55,55,55,89,55,null,80,38,72,89,72,55,80,80,55,38,55,55,30,72,55,55,72,55,89,80,72,72,80,55,55,72,55,55,55,72,58,62,60,60,62,43,71,63,62,62,62,45,45,45,67,58,56,65,82,80,56,67,69,0,93,67,88,58,23,49,54,62,88,65,67,95,88,67,0,65,88,54,60,65,54,54,79,54,54,54,54,95,95,95,92,87,87,54,79,54,54,54,79,90,70,54,54,0,90,87,70,0,54,54,0,54,54,0,54,70,70,70,0,54,0,60,79,70,70,49,18,33,0,49,null,88,82,94,79,60,82,67,79,76,79,64,73,64,64,70,88,70,64,49,49,58,61,65,64,67,49,58,58,64,79,49,79,49,58,64,58,null,64,85,74,74,69,0,0,0,74,0,46,46,46,46,78,0,0,74,84,84,46,74,69,84,79,46,84,55,65,46,65,74,46,94,54,0,92,71,60,88,76],[92,94,89,85,88,97,90,89,89,98,90,93,94,89,94,89,96,89,88,89,89,88,91,87,90,88,91,88,90,90,89,89,89,89,88,89,91,91,90,91,91,89,93,89,88,88,88,89,86,89,87,88,90,91,90,91,90,91,89,89,89,89,90,90,88,91,90,88,87,86,89,90,89,89,89,88,89,86,90,91,88,null,90,89,90,89,89,90,91,89,85,89,91,89,90,91,87,88,90,93,90,92,98,89,89,88,89,90,91,90,89,88,89,89,89,88,88,88,88,87,90,89,87,89,88,89,89,96,91,92,88,88,90,89,89,86,88,89,91,90,89,90,90,88,null,88,89,88,90,88,87,85,88,89,87,89,86,92,94,89,87,89,90,89,89,89,88,89,89,89,96,87,85,88,91,87,87,89,91,90,91,89,94,91,94,93,92,90,91,88,90,92,90,90,86,91,96,98,70,91,97,98,88,88,89,89,89,89,89,87,88,90,90,89,89,85,92,96,97,89,87,88,88,85,90,88,89,89,88,89,89,88,90,93,88,92,91,88,89,89,88,90,91,87,88,null,91,89,89,88,89,88,89,88,89,90,90,87,90,89,90,88,89,90,89,89,88,90,90,89,86,87,91,89,88,88,89,89,null,91,91,88,88,91,93,92,89,91,89,87,87,70,85,89,null,91,86,89,89,87,88,87],[91,90,93,90,88,93,88,88,88,98,87,90,89,90,88,89,89,89,89,91,89,91,92,93,91,90,99,91,98,92,90,93,91,89,92,94,94,94,94,94,94,94,94,94,94,89,93,90,89,93,60,90,91,96,97,93,88,89,90,89,87,90,89,89,89,89,88,90,90,92,90,90,90,90,91,89,90,90,96,89,89,91,90,97,91,89,97,90,97,96,92,91,91,91,88,91,88,96,92,98,91,96,93,60,88,89,90,88,88,91,88,90,91,91,89,89,86,88,89,90,90,88,90,89,60,null,89,90,90,89,89,88,91,88,87,88,88,90,88,91,89,88,89,89,null,89,89,96,92,89,91,88,89,88,89,90,90,89,90,90,88,90,89,89,90,null,89,90,91,91,89,88,89,90,90,89,98,60,89,88,90,89,88,88,87,88,90,null,89,90,92,87,88,89,87,88,87,91,60,87,88,89,90,92,88,90,89,90,60,88,89,89,89,89,89,93,90,89,89,null,60,88,87,60,89,88,89,87,88,87,89,86,70,89,60,88,87,89,null,90,88,60,88,91,89,87,86,88,88,87,98,88,89,89,88,88,89,89,88,87,87,null,86,60,89,87,88,87,90,88,88,88,93,91,90,88,89,90,null,88,87,87,90,89,90,88,96,88,88,87,87,88,88,88,null,89,91,90,null,89,89,89]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>group<\/th>\n      <th>role<\/th>\n      <th>id<\/th>\n      <th>name<\/th>\n      <th>test1<\/th>\n      <th>test2<\/th>\n      <th>test3<\/th>\n      <th>test4<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"columnDefs":[{"className":"dt-right","targets":[4,5,6,7]},{"name":"group","targets":0},{"name":"role","targets":1},{"name":"id","targets":2},{"name":"name","targets":3},{"name":"test1","targets":4},{"name":"test2","targets":5},{"name":"test3","targets":6},{"name":"test4","targets":7}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<section id="评分标准" class="level2" data-number="F.1">
+<h2 data-number="F.1" class="anchored" data-anchor-id="评分标准"><span class="header-section-number">F.1</span> 评分标准</h2>
+<section id="test-1" class="level3" data-number="F.1.1">
+<h3 data-number="F.1.1" class="anchored" data-anchor-id="test-1"><span class="header-section-number">F.1.1</span> Test 1</h3>
+<ul>
+<li>本次作业是雨课堂系统分发的联系，全部为客观题，满分 100 分。</li>
+<li>成绩以系统评分为依据。</li>
+</ul>
+</section>
+<section id="test-2" class="level3" data-number="F.1.2">
+<h3 data-number="F.1.2" class="anchored" data-anchor-id="test-2"><span class="header-section-number">F.1.2</span> Test 2</h3>
+<ul>
+<li>本次作业是提交的项目复现结果，满分 100 分。</li>
+<li>要求：
+<ul>
+<li>项目复现结果，包括代码、数据、结果，以及对结果的分析。</li>
+<li>以 PDF 格式按时提交。</li>
+</ul></li>
+</ul>
+</section>
+<section id="test-3" class="level3" data-number="F.1.3">
+<h3 data-number="F.1.3" class="anchored" data-anchor-id="test-3"><span class="header-section-number">F.1.3</span> Test 3</h3>
+<ul>
+<li>本次作业是搭建个人主页，满分 100 分。</li>
+<li>要求：
+<ul>
+<li>使用 Issue 评论的方法提交链接。</li>
+<li>考察 Markdown 语法、Issue 的用法。</li>
+<li>考察使用人工智能工具开发及使用 GitHub Pages 部署网站的能力。</li>
+</ul></li>
+</ul>
+</section>
+<section id="test-4" class="level3" data-number="F.1.4">
+<h3 data-number="F.1.4" class="anchored" data-anchor-id="test-4"><span class="header-section-number">F.1.4</span> Test 4</h3>
+<ul>
+<li>本次作业是给课程写评论，满分 100 分。</li>
+<li>要求：
+<ul>
+<li>考察 Pull Request 的用法。</li>
+<li>要求是自己的真实体会。长短不限。</li>
+<li>正面或负面意见不影响得分。</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="异议方式" class="level2" data-number="F.2">
+<h2 data-number="F.2" class="anchored" data-anchor-id="异议方式"><span class="header-section-number">F.2</span> 异议方式</h2>
+<p>如果对成绩有异议，请于公示期内在下方留言说明情况（要有根据、证据）。老师会在 3 天内回复。</p>
+<p>公示期为：2025-03-26 00:00 至 2025-03-28 24:00。</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./dplyr-cheatsheet.html" class="pagination-link" aria-label="dplyr 速查表">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/score-confirmation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/score-confirmation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>
