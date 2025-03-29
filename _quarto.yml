@@ -86,6 +86,7 @@ book:
     - quarto-cheatsheet.qmd
     - ggplot2-cheatsheet.qmd
     - dplyr-cheatsheet.qmd
+   # - score-confirmation.qmd 
 
 bibliography: [references.bib, packages.bib]
 

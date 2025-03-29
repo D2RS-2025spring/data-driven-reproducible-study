@@ -1,0 +1,117 @@
+# 成绩公示
+
+因人数众多，为避免因为老师失误遗漏某位同学的成绩，这里公示所有同学的成绩，如果有问题请在下方留言。公示期为 3 天，过期后将会录入平时成绩，不可更改。
+
+**说明**：
+
+- 表格中为空的，表示该次作业没有提交，或者没有按要求提交（包括学号写错，过期等）。
+- 表格中成绩为 0 的，表示作业检测为雷同（仅 Test 2 有此情况）。
+- 您可以在输出框中输入自己的分组、学号或姓氏筛选成绩，快速找到自己的成绩。
+
+```{r}
+#| eval: false
+#| echo: false
+library(readr)
+library(dplyr)
+library(openxlsx)
+library(tidyr)
+
+id2name = read.xlsx('/Users/gaoch/Nutstore Files/Spring_Work/100. 教学/2025-03-06 D2RS教学记录/2025-02-21 课堂分组情况/list-of-student.xlsx') |> 
+  as_tibble() |> 
+  mutate(id = as.numeric(id)) |>
+  select(id, name)
+
+group_role = read_csv('/Users/gaoch/Nutstore Files/Spring_Work/100. 教学/2025-03-06 D2RS教学记录/2025-02-21 课堂分组情况/group-role.csv') |> 
+  mutate(group = sprintf("group%02d", group))  |> 
+  full_join(id2name) |> 
+  select(group, id, name, role)
+
+score_test1 = read_csv('/Users/gaoch/Nutstore Files/Spring_Work/100. 教学/2025-03-06 D2RS教学记录/2025-03-06 D2RS-Test1/score-test1.csv') |> 
+  mutate(test = "test1", score = as.numeric(score)) |> 
+  select(id, test, score)
+
+score_test2 = read_csv('/Users/gaoch/Nutstore Files/Spring_Work/100. 教学/2025-03-06 D2RS教学记录/2025-03-17 D2RS-Test2-reproducible/score-tes2.csv') |> 
+  summarize(score = max(score), .by = c('id', 'test')) |>
+  select(id, test, score)
+
+score_test3 = read_csv('/Users/gaoch/Nutstore Files/Spring_Work/100. 教学/2025-03-06 D2RS教学记录/2025-03-24 D2RS-Test3-homepage/score-test3.csv') |> 
+  mutate(score = score + extra, test = 'test3') |> 
+  summarize(score = max(score), .by = c('id', 'test')) |>
+  select(id, test, score)
+
+score_test4 = read_csv('/Users/gaoch/Nutstore Files/Spring_Work/100. 教学/2025-03-06 D2RS教学记录/2025-03-25 D2RS-Test4-comments/score-test4.csv') |> 
+  mutate(score = score + extra, test = 'test4') |>
+  summarize(score = max(score), .by = c('id', 'test')) |>
+  select(id, test, score)
+
+score_all = bind_rows(score_test1, score_test2, score_test3, score_test4) |> 
+  left_join(group_role) |> 
+  select(group, role, id, name, test, score) |> 
+  pivot_wider(names_from = test, values_from = score) |>
+  arrange(group, role, id) |> 
+  rowwise() |>
+  mutate(name =  str_c(str_sub(name,1,1), str_dup("*", str_length(name)-1)))
+
+write_csv(score_all, "score-all.csv")
+```
+
+
+**更新时间**：`{r} Sys.time()`。
+
+```{r}
+#| echo: false
+library(readr)
+library(DT)
+library(dplyr)
+
+score_all = read_csv("score-all.csv") |> 
+  mutate(group = factor(group),
+         role = factor(role),
+         id = as.character(id),
+         name = as.character(name),
+         test1 = as.numeric(test1),
+         test2 = as.numeric(test2),
+         test3 = as.numeric(test3),
+         test4 = as.numeric(test4))
+
+# 输出表格
+datatable(score_all, rownames = FALSE, 
+          options = list(pageLength = 10))
+```
+
+
+## 评分标准
+
+### Test 1
+
+- 本次作业是雨课堂系统分发的联系，全部为客观题，满分 100 分。
+- 成绩以系统评分为依据。
+
+### Test 2
+
+- 本次作业是提交的项目复现结果，满分 100 分。
+- 要求：
+  - 项目复现结果，包括代码、数据、结果，以及对结果的分析。
+  - 以 PDF 格式按时提交。
+
+### Test 3
+
+- 本次作业是搭建个人主页，满分 100 分。
+- 要求：
+  - 使用 Issue 评论的方法提交链接。
+  - 考察 Markdown 语法、Issue 的用法。
+  - 考察使用人工智能工具开发及使用 GitHub Pages 部署网站的能力。
+
+### Test 4
+
+- 本次作业是给课程写评论，满分 100 分。
+- 要求：
+  - 考察 Pull Request 的用法。
+  - 要求是自己的真实体会。长短不限。
+  - 正面或负面意见不影响得分。
+
+## 异议方式
+
+如果对成绩有异议，请于公示期内在下方留言说明情况（要有根据、证据）。老师会在 3 天内回复。
+
+公示期为：2025-03-26 00:00 至 2025-03-28 24:00。
