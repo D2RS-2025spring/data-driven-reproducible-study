@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>20&nbsp; Hugging Face – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./chatanywhere.html" rel="next">
+<link href="./bailian.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./how-to-get-api-key.html">大模型API调用</a></li><li class="breadcrumb-item"><a href="./huggingface.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#安装" id="toc-安装" class="nav-link active" data-scroll-target="#安装"><span class="header-section-number">20.1</span> 安装</a></li>
+  <li><a href="#配置-gpu-加速" id="toc-配置-gpu-加速" class="nav-link" data-scroll-target="#配置-gpu-加速"><span class="header-section-number">20.2</span> 配置 GPU 加速</a></li>
+  <li><a href="#pipeline" id="toc-pipeline" class="nav-link" data-scroll-target="#pipeline"><span class="header-section-number">20.3</span> Pipeline</a>
+  <ul class="collapse">
+  <li><a href="#文本分类-text-classification" id="toc-文本分类-text-classification" class="nav-link" data-scroll-target="#文本分类-text-classification"><span class="header-section-number">20.3.1</span> 文本分类 (<code>text-classification</code>)</a></li>
+  <li><a href="#命名实体识别-ner" id="toc-命名实体识别-ner" class="nav-link" data-scroll-target="#命名实体识别-ner"><span class="header-section-number">20.3.2</span> 命名实体识别 (<code>ner</code>)</a></li>
+  <li><a href="#问答-question-answering" id="toc-问答-question-answering" class="nav-link" data-scroll-target="#问答-question-answering"><span class="header-section-number">20.3.3</span> 问答 (<code>question-answering</code>)</a></li>
+  <li><a href="#文本生成-text-generation" id="toc-文本生成-text-generation" class="nav-link" data-scroll-target="#文本生成-text-generation"><span class="header-section-number">20.3.4</span> 文本生成 (<code>text-generation</code>)</a></li>
+  <li><a href="#翻译-translation" id="toc-翻译-translation" class="nav-link" data-scroll-target="#翻译-translation"><span class="header-section-number">20.3.5</span> 翻译 (<code>translation</code>)</a></li>
+  <li><a href="#文本摘要-summarization" id="toc-文本摘要-summarization" class="nav-link" data-scroll-target="#文本摘要-summarization"><span class="header-section-number">20.3.6</span> 文本摘要 (<code>summarization</code>)</a></li>
+  </ul></li>
+  <li><a href="#运行机制" id="toc-运行机制" class="nav-link" data-scroll-target="#运行机制"><span class="header-section-number">20.4</span> 运行机制</a>
+  <ul class="collapse">
+  <li><a href="#配置模型和参数" id="toc-配置模型和参数" class="nav-link" data-scroll-target="#配置模型和参数"><span class="header-section-number">20.4.1</span> 配置模型和参数</a></li>
+  <li><a href="#本地模型的存储和管理" id="toc-本地模型的存储和管理" class="nav-link" data-scroll-target="#本地模型的存储和管理"><span class="header-section-number">20.4.2</span> 本地模型的存储和管理</a></li>
+  <li><a href="#配置一个翻译器" id="toc-配置一个翻译器" class="nav-link" data-scroll-target="#配置一个翻译器"><span class="header-section-number">20.4.3</span> 配置一个翻译器</a></li>
+  </ul></li>
+  <li><a href="#两种调用模型的方式" id="toc-两种调用模型的方式" class="nav-link" data-scroll-target="#两种调用模型的方式"><span class="header-section-number">20.5</span> 两种调用模型的方式</a>
+  <ul class="collapse">
+  <li><a href="#使用-pipeline" id="toc-使用-pipeline" class="nav-link" data-scroll-target="#使用-pipeline"><span class="header-section-number">20.5.1</span> 使用 Pipeline</a></li>
+  <li><a href="#直接使用模型" id="toc-直接使用模型" class="nav-link" data-scroll-target="#直接使用模型"><span class="header-section-number">20.5.2</span> 直接使用模型</a></li>
+  <li><a href="#结果比较" id="toc-结果比较" class="nav-link" data-scroll-target="#结果比较"><span class="header-section-number">20.5.3</span> 结果比较</a></li>
+  </ul></li>
+  <li><a href="#yolov8" id="toc-yolov8" class="nav-link" data-scroll-target="#yolov8"><span class="header-section-number">20.6</span> YOLOv8</a></li>
+  <li><a href="#vit-图像分类" id="toc-vit-图像分类" class="nav-link" data-scroll-target="#vit-图像分类"><span class="header-section-number">20.7</span> ViT 图像分类</a></li>
+  <li><a href="#vit-特征提取" id="toc-vit-特征提取" class="nav-link" data-scroll-target="#vit-特征提取"><span class="header-section-number">20.8</span> ViT 特征提取</a>
+  <ul class="collapse">
+  <li><a href="#主要功能" id="toc-主要功能" class="nav-link" data-scroll-target="#主要功能"><span class="header-section-number">20.8.1</span> 主要功能</a></li>
+  <li><a href="#用途" id="toc-用途" class="nav-link" data-scroll-target="#用途"><span class="header-section-number">20.8.2</span> 用途</a></li>
+  <li><a href="#示例" id="toc-示例" class="nav-link" data-scroll-target="#示例"><span class="header-section-number">20.8.3</span> 示例</a></li>
+  <li><a href="#说明" id="toc-说明" class="nav-link" data-scroll-target="#说明"><span class="header-section-number">20.8.4</span> 说明：</a></li>
+  </ul></li>
+  <li><a href="#总结" id="toc-总结" class="nav-link" data-scroll-target="#总结"><span class="header-section-number">20.9</span> 总结</a></li>
+  <li><a href="#参考资料" id="toc-参考资料" class="nav-link" data-scroll-target="#参考资料"><span class="header-section-number">20.10</span> 参考资料</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/huggingface.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/huggingface.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./how-to-get-api-key.html">大模型API调用</a></li><li class="breadcrumb-item"><a href="./huggingface.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Hugging Face 是一个专注于人工智能（AI）和机器学习（ML）的平台，特别以自然语言处理（NLP）工具和模型而闻名。它提供了一个丰富的开源生态系统，供研究人员、开发者和数据科学家使用。其中，最著名的工具之一是 <strong>Transformers</strong> 库，这个库包含了多种预训练的模型（如BERT、GPT、T5等），这些模型可以用于各种 任务，如文本生成、翻译、问答、情感分析等。</p>
+<p>Hugging Face 还提供了 <strong>Hub</strong>，一个模型托管平台，用户可以在上面分享和下载各种预训练的AI模型。此外，它还支持自定义训练模型和通过API进行推理。Hugging Face 的平台和社区非常活跃，是当前AI和NLP领域的重要资源之一。</p>
+<section id="安装" class="level2" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="安装"><span class="header-section-number">20.1</span> 安装</h2>
+<ol type="1">
+<li><p>安装机器学习基础库（pytorch 或者 TensorFlow）。 首先创建一个 Conda 环境，然后安装 Pytorch。<code>conda install pytorch::pytorch torchvision torchaudio -c pytorch</code></p></li>
+<li><p>安装 transformers： <code>pip install transformers datasets evaluate accelerate</code>。</p></li>
+</ol>
+</section>
+<section id="配置-gpu-加速" class="level2" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="配置-gpu-加速"><span class="header-section-number">20.2</span> 配置 GPU 加速</h2>
+<p>Pytorch 支持 CUDA（NVIDIA）和 MPS（Mac）平台的 GPU 加速，所以这里检测一下硬件环境。</p>
+<div id="ff872b69" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># select the device for computation</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> torch.cuda.is_available():</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"cuda"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> torch.backends.mps.is_available():</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"mps"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> torch.device(<span class="st">"cpu"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"using device: </span><span class="sc">{</span>device<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>using device: mps</code></pre>
+</div>
+</div>
+</section>
+<section id="pipeline" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="pipeline"><span class="header-section-number">20.3</span> Pipeline</h2>
+<p><code>pipeline</code> 是 <code>transformers</code> 库中的一个高层接口，旨在简化模型的使用。它封装了模型的加载、输入处理、预测和输出处理的细节，使得用户可以以更简单的方式执行常见任务。</p>
+<p>在 Hugging Face Transformers 库中，pipelines 可以被分为不同的类别，以适应音频、计算机视觉、自然语言处理（NLP）和多模态任务。以下是这些类别中常见的 pipelines：</p>
+<ol type="1">
+<li><strong>音频（Audio）</strong>:
+<ul>
+<li>语音识别（Speech Recognition）: 将音频转换为文本。</li>
+<li>语音合成（Text-to-Speech）: 将文本转换为语音。</li>
+<li>语音分类（Speech Classification）: 对音频进行分类，如情绪识别。</li>
+</ul></li>
+<li><strong>计算机视觉（Computer Vision）</strong>:
+<ul>
+<li>图像分类（Image Classification）: 识别图像中的主要对象或场景。</li>
+<li>对象检测（Object Detection）: 识别并定位图像中的对象。</li>
+<li>图像分割（Image Segmentation）: 将图像分割成多个部分或对象。</li>
+<li>图像生成（Image Generation）: 根据文本描述生成图像。</li>
+</ul></li>
+<li><strong>自然语言处理（NLP）</strong>:
+<ul>
+<li>文本分类（Text Classification）: 对文本进行分类，如情感分析。</li>
+<li>命名实体识别（Named Entity Recognition, NER）: 识别文本中的实体。</li>
+<li>问答（Question Answering）: 从文本中找到问题的答案。</li>
+<li>文本生成（Text Generation）: 生成新的文本内容。</li>
+<li>摘要（Summarization）: 生成文本的摘要。</li>
+<li>翻译（Translation）: 将文本从一种语言翻译成另一种语言。</li>
+</ul></li>
+<li><strong>多模态（Multimodal）</strong>:
+<ul>
+<li>视觉问答（Visual Question Answering, VQA）: 结合图像和文本问题，提供答案。</li>
+<li>图像字幕生成（Image Captioning）: 为图像生成描述性文本。</li>
+<li>视频问答（Video Question Answering）: 根据视频内容回答问题。</li>
+<li>多模态情感分析（Multimodal Sentiment Analysis）: 结合文本、音频和视觉信息进行情感分析。</li>
+</ul></li>
+</ol>
+<p>这些 pipelines 利用了预训练的模型，可以处理各种任务，从单一模态的音频或图像处理到结合多种模态信息的复杂任务。用户可以根据自己的需求选择合适的模型和pipeline来实现特定的任务。</p>
+<div id="87fe1742" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> inspect</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipelines</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 获取 transformers.pipeline 模块中的所有成员</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>pipeline_members <span class="op">=</span> inspect.getmembers(pipelines)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 过滤出类，并且名称以 'Pipeline' 结尾</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>pipeline_classes <span class="op">=</span> [name <span class="cf">for</span> name, obj <span class="kw">in</span> pipeline_members <span class="cf">if</span> inspect.isclass(obj) <span class="kw">and</span> name.endswith(<span class="st">'Pipeline'</span>)]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 打印符合条件的类名称</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Classes ending with 'Pipeline':"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> class_name <span class="kw">in</span> pipeline_classes:</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(class_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes ending with 'Pipeline':
+AudioClassificationPipeline
+AutomaticSpeechRecognitionPipeline
+DepthEstimationPipeline
+DocumentQuestionAnsweringPipeline
+FeatureExtractionPipeline
+FillMaskPipeline
+ImageClassificationPipeline
+ImageFeatureExtractionPipeline
+ImageSegmentationPipeline
+ImageTextToTextPipeline
+ImageToImagePipeline
+ImageToTextPipeline
+MaskGenerationPipeline
+NerPipeline
+ObjectDetectionPipeline
+Pipeline
+QuestionAnsweringPipeline
+SummarizationPipeline
+TableQuestionAnsweringPipeline
+Text2TextGenerationPipeline
+TextClassificationPipeline
+TextGenerationPipeline
+TextToAudioPipeline
+TokenClassificationPipeline
+TranslationPipeline
+VideoClassificationPipeline
+VisualQuestionAnsweringPipeline
+ZeroShotAudioClassificationPipeline
+ZeroShotClassificationPipeline
+ZeroShotImageClassificationPipeline
+ZeroShotObjectDetectionPipeline</code></pre>
+</div>
+</div>
+<p>以下是一些常见的 <code>pipeline</code> 类型和它们的应用场景：</p>
+<section id="文本分类-text-classification" class="level3" data-number="20.3.1">
+<h3 data-number="20.3.1" class="anchored" data-anchor-id="文本分类-text-classification"><span class="header-section-number">20.3.1</span> 文本分类 (<code>text-classification</code>)</h3>
+<p>用于对输入文本进行分类，例如情感分析。</p>
+<div id="2b1e2533" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pprint <span class="im">import</span> pprint  <span class="co"># pretty print</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>classifier <span class="op">=</span> pipeline(<span class="st">'text-classification'</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> classifier(<span class="st">"I love using transformers!"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'label': 'POSITIVE', 'score': 0.9994327425956726}]</code></pre>
+</div>
+</div>
+</section>
+<section id="命名实体识别-ner" class="level3" data-number="20.3.2">
+<h3 data-number="20.3.2" class="anchored" data-anchor-id="命名实体识别-ner"><span class="header-section-number">20.3.2</span> 命名实体识别 (<code>ner</code>)</h3>
+<p>用于识别文本中的命名实体（如人名、地点、组织等）。</p>
+<div id="fdcbf0fe" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ner <span class="op">=</span> pipeline(<span class="st">'ner'</span>, device <span class="op">=</span> device)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> ner(<span class="st">"Hugging Face is based in New York City."</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'end': 2,
+  'entity': 'I-ORG',
+  'index': 1,
+  'score': np.float32(0.9736425),
+  'start': 0,
+  'word': 'Hu'},
+ {'end': 7,
+  'entity': 'I-ORG',
+  'index': 2,
+  'score': np.float32(0.7939444),
+  'start': 2,
+  'word': '##gging'},
+ {'end': 12,
+  'entity': 'I-ORG',
+  'index': 3,
+  'score': np.float32(0.9046833),
+  'start': 8,
+  'word': 'Face'},
+ {'end': 28,
+  'entity': 'I-LOC',
+  'index': 7,
+  'score': np.float32(0.9990658),
+  'start': 25,
+  'word': 'New'},
+ {'end': 33,
+  'entity': 'I-LOC',
+  'index': 8,
+  'score': np.float32(0.99908113),
+  'start': 29,
+  'word': 'York'},
+ {'end': 38,
+  'entity': 'I-LOC',
+  'index': 9,
+  'score': np.float32(0.99939454),
+  'start': 34,
+  'word': 'City'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="问答-question-answering" class="level3" data-number="20.3.3">
+<h3 data-number="20.3.3" class="anchored" data-anchor-id="问答-question-answering"><span class="header-section-number">20.3.3</span> 问答 (<code>question-answering</code>)</h3>
+<p>用于从给定上下文中回答问题。</p>
+<div id="8dc44575" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>question_answerer <span class="op">=</span> pipeline(<span class="st">'question-answering'</span>, device <span class="op">=</span> device)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> question_answerer(question<span class="op">=</span><span class="st">"What is the capital of France?"</span>, context<span class="op">=</span><span class="st">"The capital of France is Paris."</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'answer': 'Paris', 'end': 30, 'score': 0.9863281846046448, 'start': 25}</code></pre>
+</div>
+</div>
+</section>
+<section id="文本生成-text-generation" class="level3" data-number="20.3.4">
+<h3 data-number="20.3.4" class="anchored" data-anchor-id="文本生成-text-generation"><span class="header-section-number">20.3.4</span> 文本生成 (<code>text-generation</code>)</h3>
+<p>用于生成文本，例如生成续写或对话。</p>
+<div id="2430c928" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>generator <span class="op">=</span> pipeline(<span class="st">'text-generation'</span>, device <span class="op">=</span> device)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> generator(<span class="st">"Once upon a time"</span>, max_length<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'generated_text': 'Once upon a time her vision suddenly became clear and so '
+                    'did her ears and she could clearly hear it on the bright '
+                    'plains of the Himalayas. This image was known '
+                    "as'shambhala' – 'Shambhala is the ocean"}]</code></pre>
+</div>
+</div>
+</section>
+<section id="翻译-translation" class="level3" data-number="20.3.5">
+<h3 data-number="20.3.5" class="anchored" data-anchor-id="翻译-translation"><span class="header-section-number">20.3.5</span> 翻译 (<code>translation</code>)</h3>
+<p>用于将文本从一种语言翻译成另一种语言。</p>
+<div id="2596d7ff" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>translator <span class="op">=</span> pipeline(<span class="st">'translation_en_to_fr'</span>, device <span class="op">=</span> device)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> translator(<span class="st">"Hello, how are you?"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'translation_text': 'Bonjour, comment êtes-vous?'}]</code></pre>
+</div>
+</div>
+</section>
+<section id="文本摘要-summarization" class="level3" data-number="20.3.6">
+<h3 data-number="20.3.6" class="anchored" data-anchor-id="文本摘要-summarization"><span class="header-section-number">20.3.6</span> 文本摘要 (<code>summarization</code>)</h3>
+<p>用于对长文本进行摘要，提取主要内容。</p>
+<div id="8eb495bd" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>summarizer <span class="op">=</span> pipeline(<span class="st">'summarization'</span>, device <span class="op">=</span> device)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> summarizer(<span class="st">"Hugging Face is creating a tool that democratizes AI. The library will support various tasks and models."</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>pprint(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'summary_text': ' Hugging Face is creating a tool that democratizes AI . The '
+                  'library will support various tasks and models . Hugging '
+                  'face is creating an AI tool that can be used to help people '
+                  'learn more about AI . It will be available in the U.S. for '
+                  'free .'}]</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="运行机制" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="运行机制"><span class="header-section-number">20.4</span> 运行机制</h2>
+<p>使用 Hugging Face 的 <code>pipeline</code> 运行任务时，任务默认是在本地执行的。</p>
+<p>当你使用 <code>pipeline</code> 函数时，它会加载一个预训练的模型（可以是 Hugging Face Hub 上的模型，也可以是你本地的模型），然后在你的本地机器上执行推理任务。这意味着所有计算都是在你的本地计算机上进行的，而不是在 Hugging Face 的服务器上进行的。</p>
+<p>不过，<code>pipeline</code> 也可以访问在线的模型存储库。如果你指定了一个在线模型（例如 Hugging Face Hub 上的某个模型），那么 <code>pipeline</code> 会先从在线存储库下载模型到本地，然后在本地运行推理任务。因此，即使你访问的是在线模型，执行过程仍然是在本地完成的。</p>
+<p>本地运行推理，可以很方便的执行批处理任务。</p>
+<div id="1f8bc78d" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>classifier <span class="op">=</span> pipeline(<span class="st">"sentiment-analysis"</span>, device<span class="op">=</span>device)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> classifier([<span class="st">"We are very happy to show you the 🤗 Transformers library."</span>, <span class="st">"We hope you don't hate it."</span>])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> result <span class="kw">in</span> results:</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"label: </span><span class="sc">{</span>result[<span class="st">'label'</span>]<span class="sc">}</span><span class="ss">, with score: </span><span class="sc">{</span><span class="bu">round</span>(result[<span class="st">'score'</span>], <span class="dv">4</span>)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>label: POSITIVE, with score: 0.9998
+label: NEGATIVE, with score: 0.5309</code></pre>
+</div>
+</div>
+<section id="配置模型和参数" class="level3" data-number="20.4.1">
+<h3 data-number="20.4.1" class="anchored" data-anchor-id="配置模型和参数"><span class="header-section-number">20.4.1</span> 配置模型和参数</h3>
+<p><code>pipeline</code> 会自动下载和使用默认的预训练模型。但是有些任务可能没有指定模型，这时候就需要配置模型参数。此外，如果需要使用特定的模型，也可以在 <code>pipeline</code> 构造函数中指定模型名称。</p>
+<p><code>pipeline</code> 会根据任务类型自动处理输入和输出。例如，文本分类任务的输出通常是每个类别的概率，而翻译任务的输出是翻译后的文本。如果提供的任务名称不正确，<code>pipeline</code> 可能会抛出错误。如果模型不适合特定任务，也可能会得到不准确的结果或遇到运行时错误。</p>
+<p>下面的示例中，我们针对 <code>ZeroShotClassificationPipeline</code> 任务指定使用了 Facebook 的 <code>bart-large-mnli</code> 模型。</p>
+<div id="e876f9f0" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>oracle <span class="op">=</span> pipeline(<span class="st">"zero-shot-classification"</span>, </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                  model<span class="op">=</span><span class="st">"facebook/bart-large-mnli"</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                  device<span class="op">=</span>device)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>oracle(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"I have a problem with my iphone that needs to be resolved asap!!"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    candidate_labels<span class="op">=</span>[<span class="st">"urgent"</span>, <span class="st">"not urgent"</span>, <span class="st">"phone"</span>, <span class="st">"tablet"</span>, <span class="st">"computer"</span>],</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>{'sequence': 'I have a problem with my iphone that needs to be resolved asap!!',
+ 'labels': ['urgent', 'phone', 'computer', 'not urgent', 'tablet'],
+ 'scores': [0.503635823726654,
+  0.47879907488822937,
+  0.012600619345903397,
+  0.002655782038345933,
+  0.002308761700987816]}</code></pre>
+</div>
+</div>
+<div id="32b6a34a" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>oracle(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"I have a problem with my iphone that needs to be resolved asap!!"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    candidate_labels<span class="op">=</span>[<span class="st">"english"</span>, <span class="st">"german"</span>],</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>{'sequence': 'I have a problem with my iphone that needs to be resolved asap!!',
+ 'labels': ['english', 'german'],
+ 'scores': [0.8135169744491577, 0.18648304045200348]}</code></pre>
+</div>
+</div>
+<p>整个流程以及本地模型的安装和运行情况：</p>
+<ol type="1">
+<li><strong>模型下载</strong>：
+<ul>
+<li>当你指定 <code>model="facebook/bart-large-mnli"</code> 时，Hugging Face 的 <code>transformers</code> 库会从 Hugging Face Hub 下载这个预训练模型（<code>facebook/bart-large-mnli</code>）。</li>
+<li>模型下载后，会被存储在你的本地文件系统中，默认位置通常是 <code>~/.cache/huggingface/transformers/</code> 目录下。如果你有自定义的缓存目录设置，模型将下载到指定位置。</li>
+</ul></li>
+<li><strong>模型加载</strong>：
+<ul>
+<li>下载完成后，<code>pipeline</code> 会将该模型加载到内存中。这包括模型的权重、配置文件以及与之相关的词汇表（tokenizer）。</li>
+</ul></li>
+<li><strong>任务执行</strong>：
+<ul>
+<li>当你使用 <code>oracle</code> 这个 <code>pipeline</code> 对象来进行零样本分类任务时，所有的计算和推理（inference）都是在你的本地机器上执行的。这包括文本的预处理、模型的前向传播计算、以及后处理和输出结果。</li>
+</ul></li>
+</ol>
+</section>
+<section id="本地模型的存储和管理" class="level3" data-number="20.4.2">
+<h3 data-number="20.4.2" class="anchored" data-anchor-id="本地模型的存储和管理"><span class="header-section-number">20.4.2</span> 本地模型的存储和管理</h3>
+<ul>
+<li><p><strong>存储位置</strong>：模型的权重文件、配置文件和词汇表会存储在 <code>~/.cache/huggingface/hub/</code> 下的一个以模型名称命名的目录中。例如：<code>~/.cache/huggingface/hub/models--facebook--bart-large-mnli/</code>。</p></li>
+<li><p><strong>缓存机制</strong>：如果你再次使用同一个模型（如 <code>facebook/bart-large-mnli</code>），<code>pipeline</code> 会直接从本地缓存中加载模型，而不会再次从 Hugging Face Hub 下载，除非你手动清除缓存或指定下载新的模型版本。</p></li>
+</ul>
+</section>
+<section id="配置一个翻译器" class="level3" data-number="20.4.3">
+<h3 data-number="20.4.3" class="anchored" data-anchor-id="配置一个翻译器"><span class="header-section-number">20.4.3</span> 配置一个翻译器</h3>
+<p>上面我们调用一个翻译器，将英文翻译为法文。</p>
+<div id="938ac9c5" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>en_fr_translator <span class="op">=</span> pipeline(<span class="st">"translation_en_to_fr"</span>, device<span class="op">=</span>device)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>en_fr_translator(<span class="st">"How old are you?"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>[{'translation_text': ' quel âge êtes-vous?'}]</code></pre>
+</div>
+</div>
+<p>不过，调用 <code>pipeline("tranlation_en_to_zh")</code> 却会出错。这是因为：虽然 “translation_en_to_zh” 是一个有效的任务标识符，但它并不是直接指定模型的名称。这时，需要显式指定模型名称来避免这种情况：</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>这里还需要安装一个缺失的模块：<code>SentencePiece</code>。</p>
+<p><code>SentencePiece</code> 是一个用于文本分词和词汇生成的工具，它在自然语言处理（NLP）任务中非常有用，尤其是在训练和使用基于子词单元的模型时。<code>SentencePiece</code> 由 Google 开发，作为一种无语言依赖的方法，它可以处理几乎任何语言的文本数据。</p>
+<p><strong><code>SentencePiece</code> 的主要功能</strong></p>
+<ol type="1">
+<li><strong>子词单元（Subword Units）生成</strong>:
+<ul>
+<li><code>SentencePiece</code> 不依赖于语言的特定词汇表，而是通过数据驱动的方法生成子词单元。它通过分析训练数据中的常见字符序列，生成适合该数据集的子词单元，这些子词单元可以是完整的词、词的一部分（如词缀、词根）、甚至是单个字符。</li>
+<li>这在处理低资源语言或多语言任务时特别有用，因为它可以生成跨语言的统一词汇表，减少OOV（Out of Vocabulary，词汇表外的词）问题。</li>
+</ul></li>
+<li><strong>BPE（Byte-Pair Encoding）和 Unigram 模型</strong>:
+<ul>
+<li><code>SentencePiece</code> 支持多种子词分割方法，包括 BPE（Byte-Pair Encoding）和 Unigram 模型。BPE 是一种常用的子词分割算法，通过频繁地合并字符对来生成子词单元。Unigram 模型则是一种基于概率的模型，它根据子词单元的概率来分割文本。</li>
+</ul></li>
+<li><strong>语言无关性</strong>:
+<ul>
+<li>与传统的分词器不同，<code>SentencePiece</code> 不需要依赖于空格或其他特定的标记来分割词语。这使得它在处理没有明确单词边界的语言（如中文、日文、泰语等）时非常有效。</li>
+</ul></li>
+<li><strong>处理未归一化的文本</strong>:
+<ul>
+<li><code>SentencePiece</code> 可以直接处理未经归一化的原始文本（如带有标点符号的文本），这在实际应用中非常有用，避免了对数据进行预处理的需求。</li>
+</ul></li>
+</ol>
+<p><strong>使用 <code>SentencePiece</code> 的场景</strong></p>
+<ul>
+<li><strong>机器翻译</strong>: 在训练机器翻译模型时，使用 <code>SentencePiece</code> 可以将输入和输出文本分割成子词单元，减少词汇表大小，并提高模型的泛化能力。</li>
+<li><strong>预训练语言模型</strong>: 诸如 BERT、GPT、T5 等模型在预训练时，通常使用 <code>SentencePiece</code> 生成子词单元词汇表，这些词汇表有助于处理多语言数据和稀有词汇。</li>
+<li><strong>文本生成</strong>: 在生成任务中，子词单元可以更好地表示稀有或长尾词汇，减少生成过程中出现的OOV问题。</li>
+</ul>
+<p><code>SentencePiece</code> 是一个强大的分词工具，它通过生成数据驱动的子词单元词汇表，在 NLP 任务中广泛使用，特别是在处理多语言文本和训练深度学习模型时。</p>
+</div>
+</div>
+<div id="8859f3ef" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>translator <span class="op">=</span> pipeline(<span class="st">"translation_en_to_zh"</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                      model<span class="op">=</span><span class="st">"Helsinki-NLP/opus-mt-en-zh"</span>, device<span class="op">=</span>device)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>translator(<span class="st">"This is a introduction to Huggingface."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>[{'translation_text': '这是哈ggingface的介绍。'}]</code></pre>
+</div>
+</div>
+<p>结果很一般。这是因为翻译任务不仅需要模型支持，还需要有一个中文的分词器。而默认的分词器不适合进行中文分词的任务。下面，我们优化一下分词器的设置。</p>
+<div id="c3debb28" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelWithLMHead,AutoTokenizer,pipeline</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mode_name <span class="op">=</span> <span class="st">'liam168/trans-opus-mt-en-zh'</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelWithLMHead.from_pretrained(mode_name)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(mode_name)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>translation <span class="op">=</span> pipeline(<span class="st">"translation_en_to_zh"</span>, </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                      model<span class="op">=</span>model, </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                      tokenizer<span class="op">=</span>tokenizer, device<span class="op">=</span>device)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>translation(<span class="st">'This is a introduction to Huggingface.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="14">
+<pre><code>[{'translation_text': '这是"抱起脸"的引言'}]</code></pre>
+</div>
+</div>
+<p>让我们逐行解释代码的含义：</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoModelWithLMHead, AutoTokenizer, pipeline</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>AutoModelWithLMHead</code></strong>: 这是一个自动加载语言模型（Language Model）的类，通常用于加载带有语言建模头的模型。<code>LMHead</code> 代表语言模型的输出层。</li>
+<li><strong><code>AutoTokenizer</code></strong>: 这是一个自动加载适当的分词器（tokenizer）的类。分词器用于将输入文本转换为模型可以处理的令牌（tokens）序列。</li>
+<li><strong><code>pipeline</code></strong>: 这是 Hugging Face 的高层 API，它提供了各种 NLP 任务的预定义管道（pipeline），如文本分类、翻译、文本生成等。</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>mode_name <span class="op">=</span> <span class="st">'liam168/trans-opus-mt-en-zh'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>mode_name</code></strong>: 这是一个字符串变量，存储了模型的名称或路径。这里的 <code>liam168/trans-opus-mt-en-zh</code> 是在 Hugging Face 模型库中的一个模型名称，表示一个预训练的从英语到中文翻译的模型。</li>
+</ul>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelWithLMHead.from_pretrained(mode_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>AutoModelWithLMHead.from_pretrained(mode_name)</code></strong>: 这行代码加载了 <code>liam168/trans-opus-mt-en-zh</code> 模型的预训练权重和配置。<code>from_pretrained</code> 方法从 Hugging Face 的模型库下载（如果尚未下载）并加载该模型到内存中。</li>
+</ul>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(mode_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>AutoTokenizer.from_pretrained(mode_name)</code></strong>: 这行代码加载了与模型配套的分词器。分词器将输入的英文句子转换为模型所需的令牌（tokens），并且会执行必要的文本预处理。</li>
+</ul>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>translation <span class="op">=</span> pipeline(<span class="st">"translation_en_to_zh"</span>, model<span class="op">=</span>model, tokenizer<span class="op">=</span>tokenizer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>pipeline("translation_en_to_zh", model=model, tokenizer=tokenizer)</code></strong>: 这里使用了 <code>pipeline</code> 函数来创建一个翻译管道，指定了任务类型为 <code>"translation_en_to_zh"</code>（从英语到中文的翻译），并传入了之前加载的模型和分词器。这个管道封装了翻译任务的所有步骤，使得翻译文本变得简单且易于使用。</li>
+</ul>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>translation(<span class="st">'This is a introduction to Huggingface.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><strong><code>translation('This is a introduction to Huggingface.')</code></strong>: 这行代码调用了翻译管道，将输入的英文句子 <code>"This is a introduction to Huggingface."</code> 翻译为中文。管道会自动执行以下步骤：
+<ol type="1">
+<li>使用 <code>tokenizer</code> 将输入的英文句子分词为令牌。</li>
+<li>将令牌输入到 <code>model</code> 中进行翻译。</li>
+<li>生成的中文令牌序列被解码成自然语言文本。</li>
+</ol></li>
+</ul>
+<p>最终输出会是 <code>"This is a introduction to Huggingface."</code> 的中文翻译版本，例如 <code>"这是对 Huggingface 的介绍。"</code>（具体翻译结果可能有所不同，取决于模型的性能）。</p>
+<p>这段代码通过加载 Hugging Face 提供的预训练模型和分词器，实现了从英语到中文的自动翻译任务，并且通过使用高层的 <code>pipeline</code> API，简化了翻译任务的执行。</p>
+</section>
+</section>
+<section id="两种调用模型的方式" class="level2" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="两种调用模型的方式"><span class="header-section-number">20.5</span> 两种调用模型的方式</h2>
+<p>这里以一个图片对象识别任务为例，展示使用图片数据调用模型执行对象检测任务的两种方式。两种方式都使用 DETR 模型。</p>
+<p>DEtection TRansformer（DETR）模型，通过端到端训练在 COCO 2017 对象检测数据集上进行训练（包含 118K 张标注图像）。</p>
+<p>DETR 模型是一种具有卷积骨干的编码器-解码器变换器。在解码器输出之上添加了两个头部，以执行对象检测：一个线性层用于类别标签，一个多层感知器（MLP）用于边界框。该模型使用所谓的对象查询来检测图像中的对象。每个对象查询都在寻找图像中的特定对象。对于 COCO，设置的对象查询数量为 100。</p>
+<p>模型使用“二部匹配损失”进行训练：将预测的 <code>N=100</code> 个对象查询中的每个类别的预测框与 ground truth 注释进行比较，填充到相同的长度 <code>N</code>（如果一张图片只包含 4 个对象，那么 96 个注释将只是“无对象”作为类别，“无框”作为框）。匈牙利匹配算法用于在每个 <code>N</code> 查询和每个 <code>N</code> 注释之间创建最优的一对一映射。接下来，使用标准交叉熵（对于类别）以及 L1 和通用 IoU 损失的线性组合（对于框）来优化模型参数。</p>
+<div id="0461a7ff" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"http://images.cocodataset.org/val2017/000000039769.jpg"</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> Image.<span class="bu">open</span>(requests.get(url, stream<span class="op">=</span><span class="va">True</span>).raw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="使用-pipeline" class="level3" data-number="20.5.1">
+<h3 data-number="20.5.1" class="anchored" data-anchor-id="使用-pipeline"><span class="header-section-number">20.5.1</span> 使用 Pipeline</h3>
+<div id="4b15e2fc" class="cell" data-cache="true" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a pipeline as a high-level helper</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载对象检测流程</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>object_detector <span class="op">=</span> pipeline(<span class="st">"object-detection"</span>, model<span class="op">=</span><span class="st">"facebook/detr-resnet-50"</span>, device<span class="op">=</span>device)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 执行对象检测</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>detection_results <span class="op">=</span> object_detector(image)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>pprint(detection_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'box': {'xmax': 175, 'xmin': 40, 'ymax': 117, 'ymin': 70},
+  'label': 'remote',
+  'score': 0.9982203841209412},
+ {'box': {'xmax': 368, 'xmin': 333, 'ymax': 187, 'ymin': 72},
+  'label': 'remote',
+  'score': 0.9960022568702698},
+ {'box': {'xmax': 639, 'xmin': 0, 'ymax': 473, 'ymin': 1},
+  'label': 'couch',
+  'score': 0.9954743981361389},
+ {'box': {'xmax': 314, 'xmin': 13, 'ymax': 470, 'ymin': 52},
+  'label': 'cat',
+  'score': 0.99880051612854},
+ {'box': {'xmax': 640, 'xmin': 345, 'ymax': 368, 'ymin': 23},
+  'label': 'cat',
+  'score': 0.9986782670021057}]</code></pre>
+</div>
+</div>
+</section>
+<section id="直接使用模型" class="level3" data-number="20.5.2">
+<h3 data-number="20.5.2" class="anchored" data-anchor-id="直接使用模型"><span class="header-section-number">20.5.2</span> 直接使用模型</h3>
+<div id="150e8979" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载图片处理器和模型构建器</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> AutoImageProcessor, AutoModelForObjectDetection</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载图片处理器</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>image_processor <span class="op">=</span> AutoImageProcessor.from_pretrained(<span class="st">"facebook/detr-resnet-50"</span>, device<span class="op">=</span>device)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载模型</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForObjectDetection.from_pretrained(<span class="st">"facebook/detr-resnet-50"</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 准备图片</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> image_processor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 执行前向传播</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 转换输出（边界框和类别得分）到 COCO API</span></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 只保留得分大于 0.9 的检测结果</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>target_sizes <span class="op">=</span> torch.tensor([image.size[::<span class="op">-</span><span class="dv">1</span>]])</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> image_processor.post_process_object_detection(</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    outputs, </span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    target_sizes<span class="op">=</span>target_sizes, </span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.9</span>)[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="结果比较" class="level3" data-number="20.5.3">
+<h3 data-number="20.5.3" class="anchored" data-anchor-id="结果比较"><span class="header-section-number">20.5.3</span> 结果比较</h3>
+<p>下面是使用第一种调用方式调用 DETR 模型时结果的处理示例。</p>
+<div id="70c507cd" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> patches</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_color():</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generate a random color."""</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.random.rand(<span class="dv">3</span>,)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a figure and axis for plotting</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the original image</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>ax.imshow(image)</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay bounding boxes and labels with random colors</span></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> result <span class="kw">in</span> detection_results:</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> result[<span class="st">'score'</span>]</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> result[<span class="st">'label'</span>]</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    box <span class="op">=</span> result[<span class="st">'box'</span>]</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a random color</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> random_color()</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw bounding box</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> patches.Rectangle(</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>        (box[<span class="st">'xmin'</span>], box[<span class="st">'ymin'</span>]),</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>        box[<span class="st">'xmax'</span>] <span class="op">-</span> box[<span class="st">'xmin'</span>],</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>        box[<span class="st">'ymax'</span>] <span class="op">-</span> box[<span class="st">'ymin'</span>],</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>        linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>        edgecolor<span class="op">=</span>color,</span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span><span class="st">'none'</span></span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw label and score with the same color as the rectangle</span></span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>    label_text <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>score<span class="sc">:.2f}</span><span class="ss">"</span></span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>    ax.text(</span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>        box[<span class="st">'xmin'</span>],</span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a>        box[<span class="st">'ymin'</span>] <span class="op">-</span> <span class="dv">10</span>,</span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>        label_text,</span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a>        color<span class="op">=</span>color,</span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a>        fontsize<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a>        bbox<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">'white'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, </span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a>                  edgecolor<span class="op">=</span>color, boxstyle<span class="op">=</span><span class="st">'round,pad=0.5'</span>)</span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Hide axis</span></span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Show the plot with bounding boxes and labels</span></span>
+<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="huggingface_files/figure-html/cell-19-output-1.png" width="808" height="633" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>下面是对第二种调用方式结果处理的方法。</p>
+<div id="8482229c" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制结果</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>ax.imshow(image)  <span class="co"># image 需要是检测的原始图像</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> score, label, box <span class="kw">in</span> <span class="bu">zip</span>(results[<span class="st">"scores"</span>], results[<span class="st">"labels"</span>], results[<span class="st">"boxes"</span>]):</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    box <span class="op">=</span> [<span class="bu">round</span>(i, <span class="dv">2</span>) <span class="cf">for</span> i <span class="kw">in</span> box.tolist()]</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    x, y, w, h <span class="op">=</span> box</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> patches.Rectangle((x, y), w <span class="op">-</span> x, h <span class="op">-</span> y, linewidth<span class="op">=</span><span class="dv">2</span>, edgecolor<span class="op">=</span><span class="st">'r'</span>, facecolor<span class="op">=</span><span class="st">'none'</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    ax.text(x, y <span class="op">-</span> <span class="dv">5</span>, <span class="ss">f"</span><span class="sc">{</span>model<span class="sc">.</span>config<span class="sc">.</span>id2label[label.item()]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">round</span>(score.item(), <span class="dv">3</span>)<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>            fontsize<span class="op">=</span><span class="dv">12</span>, color<span class="op">=</span><span class="st">'white'</span>, bbox<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">'red'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>))</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="huggingface_files/figure-html/cell-20-output-1.png" width="611" height="478" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>两种调用方式的结果是一致的。</p>
+</section>
+</section>
+<section id="yolov8" class="level2" data-number="20.6">
+<h2 data-number="20.6" class="anchored" data-anchor-id="yolov8"><span class="header-section-number">20.6</span> YOLOv8</h2>
+<p>YOLOv8 需要使用 pip 或者 conda 安装。安装后提供 cli 和 Python 等两种运行方式。详情参见：https://docs.ultralytics.com/quickstart/。</p>
+</section>
+<section id="vit-图像分类" class="level2" data-number="20.7">
+<h2 data-number="20.7" class="anchored" data-anchor-id="vit-图像分类"><span class="header-section-number">20.7</span> ViT 图像分类</h2>
+<p>The Vision Transformer（ViT）是一种以监督方式在大量图像集合（即 ImageNet - 21k）上进行预训练的 Transformer 编码器模型（类似于 BERT），图像分辨率为 224x224 像素。接下来，该模型在 ImageNet（也称为 ILSVRC2012）上进行微调，这是一个包含 100 万张图像和 1000 个类别的数据集，图像分辨率同样为 224x224。</p>
+<p>图像作为一系列固定大小的补丁（分辨率为 16x16）呈现给模型，这些补丁是线性嵌入的。还在序列开头添加一个[CLS]标记，用于分类任务。在将序列输入到 Transformer 编码器的层之前，还添加了绝对位置嵌入。</p>
+<p>通过对模型进行预训练，它学习到图像的内部表示，然后可用于提取对下游任务有用的特征：例如，如果您有一个带标签图像的数据集，则可以通过在预训练的编码器顶部放置一个线性层来训练标准分类器。通常会在 [CLS] 标记的顶部放置一个线性层，因为此标记的最后一个隐藏状态可以视为整个图像的表示。</p>
+<div id="29f38aa4" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>image_classifier <span class="op">=</span> pipeline(<span class="st">"image-classification"</span>, </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                            model<span class="op">=</span><span class="st">"google/vit-base-patch16-224"</span>, </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                            device<span class="op">=</span>device)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>class_results <span class="op">=</span> image_classifier(image)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>pprint(class_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[{'label': 'Egyptian cat', 'score': 0.9374418258666992},
+ {'label': 'tabby, tabby cat', 'score': 0.03844244033098221},
+ {'label': 'tiger cat', 'score': 0.01441139355301857},
+ {'label': 'lynx, catamount', 'score': 0.003274328075349331},
+ {'label': 'Siamese cat, Siamese', 'score': 0.0006795933004468679}]</code></pre>
+</div>
+</div>
+</section>
+<section id="vit-特征提取" class="level2" data-number="20.8">
+<h2 data-number="20.8" class="anchored" data-anchor-id="vit-特征提取"><span class="header-section-number">20.8</span> ViT 特征提取</h2>
+<p>视觉转换器（ViT）模型在 ImageNet-21k 上预训练，包含 1.4 亿张图片和 21843 个类别。其分辨率为 224 x 224。</p>
+<div id="92bf701e" class="cell" data-cache="true" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> ViTImageProcessor, ViTModel</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'http://images.cocodataset.org/val2017/000000039769.jpg'</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> Image.<span class="bu">open</span>(requests.get(url, stream<span class="op">=</span><span class="va">True</span>).raw)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>processor <span class="op">=</span> ViTImageProcessor.from_pretrained(<span class="st">'google/vit-base-patch16-224-in21k'</span>)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ViTModel.from_pretrained(<span class="st">'google/vit-base-patch16-224-in21k'</span>)</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>inputs <span class="op">=</span> processor(images<span class="op">=</span>image, return_tensors<span class="op">=</span><span class="st">"pt"</span>)</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>outputs <span class="op">=</span> model(<span class="op">**</span>inputs)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>last_hidden_states <span class="op">=</span> outputs.last_hidden_state</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>BaseModelOutputWithPooling</code> 是 Hugging Face 的 <code>transformers</code> 库中的一个类，用于模型输出的表示。这个类通常在模型返回的输出中包含了池化层的结果，这对于一些任务，比如文本分类或嵌入生成，特别有用。</p>
+<section id="主要功能" class="level3" data-number="20.8.1">
+<h3 data-number="20.8.1" class="anchored" data-anchor-id="主要功能"><span class="header-section-number">20.8.1</span> 主要功能</h3>
+<p><code>BaseModelOutputWithPooling</code> 类是从 <code>BaseModelOutput</code> 派生而来的，它包含以下几个重要的组件：</p>
+<ul>
+<li><strong><code>last_hidden_state</code></strong>：模型在所有隐藏层的输出，这些输出通常用于获取序列的特征表示。</li>
+<li><strong><code>pooler_output</code></strong>：经过池化层（通常是池化后的第一个 token）的输出，用于获得序列的整体表示。对于 BERT 等模型，这通常是 <code>[CLS]</code> token 的输出经过池化操作的结果。</li>
+<li><strong><code>hidden_states</code></strong>（可选）：模型在每个隐藏层的输出（如果 <code>output_hidden_states=True</code> 时会返回）。</li>
+</ul>
+</section>
+<section id="用途" class="level3" data-number="20.8.2">
+<h3 data-number="20.8.2" class="anchored" data-anchor-id="用途"><span class="header-section-number">20.8.2</span> 用途</h3>
+<ul>
+<li><strong><code>pooler_output</code></strong>：这个输出是用来获取序列的整体表示的，例如用于分类任务。对于很多预训练模型来说，这个输出是对 <code>[CLS]</code> token 的表示经过池化后的结果。</li>
+<li><strong><code>last_hidden_state</code></strong>：如果你需要对每个 token 的表示进行进一步的处理或分析（例如，进行序列标注任务），这个输出将是有用的。</li>
+</ul>
+</section>
+<section id="示例" class="level3" data-number="20.8.3">
+<h3 data-number="20.8.3" class="anchored" data-anchor-id="示例"><span class="header-section-number">20.8.3</span> 示例</h3>
+<p>以下是如何在使用 Hugging Face 模型时，利用 <code>BaseModelOutputWithPooling</code> 获取模型输出的一个例子：</p>
+<div id="0dcd9942" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the output</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>last_hidden_state <span class="op">=</span> outputs.last_hidden_state  <span class="co"># Shape: [batch_size, sequence_length, hidden_size]</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>pooler_output <span class="op">=</span> outputs.pooler_output  <span class="co"># Shape: [batch_size, hidden_size]</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Last hidden state:"</span>, last_hidden_state.shape)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pooler output:"</span>, pooler_output.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Last hidden state: torch.Size([1, 197, 768])
+Pooler output: torch.Size([1, 768])</code></pre>
+</div>
+</div>
+</section>
+<section id="说明" class="level3" data-number="20.8.4">
+<h3 data-number="20.8.4" class="anchored" data-anchor-id="说明"><span class="header-section-number">20.8.4</span> 说明：</h3>
+<ol type="1">
+<li><strong><code>last_hidden_state</code></strong>：通常是三维张量，形状为 <code>[batch_size, sequence_length, hidden_size]</code>。</li>
+<li><strong><code>pooler_output</code></strong>：通常是二维张量，形状为 <code>[batch_size, hidden_size]</code>，用于表示整个序列的特征。</li>
+</ol>
+<p><code>BaseModelOutputWithPooling</code> 是一个结构化的返回对象，帮助你从模型中提取有用的特征表示，特别是当需要处理序列数据时。</p>
+</section>
+</section>
+<section id="总结" class="level2" data-number="20.9">
+<h2 data-number="20.9" class="anchored" data-anchor-id="总结"><span class="header-section-number">20.9</span> 总结</h2>
+<p>Hugging Face 是世界上最大的<strong>开源 AI 社区</strong>，提供了大量的预训练模型和数据集，支持多种 AI 任务，如自然语言处理、计算机视觉、语音识别等。</p>
+</section>
+<section id="参考资料" class="level2" data-number="20.10">
+<h2 data-number="20.10" class="anchored" data-anchor-id="参考资料"><span class="header-section-number">20.10</span> 参考资料</h2>
+<ul>
+<li><a href="https://huggingface.co/">Hugging Face 官网</a></li>
+<li><a href="https://huggingface.co/docs">Hugging Face 文档</a></li>
+<li><a href="https://www.bilibili.com/video/BV1vN41127ob/?share_source=copy_web&amp;vd_source=d345aeeaedba2347709dc8ca7b1b5cb1">HuggingFace 10分钟快速入门（一），利用Transformers，Pipeline探索AI</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./bailian.html" class="pagination-link" aria-label="阿里云百炼">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./chatanywhere.html" class="pagination-link" aria-label="ChatAnyWhere 服务">
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/huggingface.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/huggingface.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>
