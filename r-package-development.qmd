@@ -8,12 +8,15 @@
 
 开发 R 包的第一步，不妨建立一个开发者档案。最佳的地方便是 GitHub 了。GitHub 是世界上最大的代码托管平台，也是开发者们展示自己才华的舞台。
 
-我的 GitHub 主页是：<https://github.com/gaospecial>。从这里可以看到我的所有项目，包括 R 包。GitHub 会记录你所有的活动，包括提交代码、创建 issue、PR 等。并根据这些记录为你的水平打分。主页上出现一个“A”，说明你已经是一个合格的开发者了（[@fig-github-a-level]）。
+我的 GitHub 主页是：<https://github.com/gaospecial>。从这里可以看到我的所有项目，包括 R 包。GitHub 会记录你所有的活动，包括提交代码、创建 issue、PR 等。并根据这些记录为你的水平打分。主页上出现一个“A”，说明你已经是一个合格的开发者了。
 
 
 ```{r}
+#| eval: !expr format == "html"
 #| label: fig-github-a-level
-knitr::include_graphics("https://github-readme-stats.vercel.app/api?username=gaospecial&show_icons=true&theme=blueberry")
+#| echo: false
+#| fig-cap: GitHub 上的开发者档案（由 `vercel.app` 提供）。
+knitr::include_graphics("https://github-readme-stats.vercel.app/api?username=gaospecial&show_icons=true&theme=blueberry&format=png")
 ```
 
 在这个项目中，我会以自己开发的 `ggVennDiagram` 包[@R-ggVennDiagram]为例，介绍开发一个 R 包的始末。
