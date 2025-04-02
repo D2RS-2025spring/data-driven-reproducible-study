@@ -13,7 +13,7 @@
 
 ```{r}
 #| label: fig-github-a-level
-knitr::include_graphics("https://vnote-1251564393.cos.ap-chengdu.myqcloud.com/20231020095321.png")
+knitr::include_graphics("https://github-readme-stats.vercel.app/api?username=gaospecial&show_icons=true&theme=blueberry")
 ```
 
 在这个项目中，我会以自己开发的 `ggVennDiagram` 包[@R-ggVennDiagram]为例，介绍开发一个 R 包的始末。
