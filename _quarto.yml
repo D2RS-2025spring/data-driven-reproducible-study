@@ -75,7 +75,7 @@ book:
     - part: 开发协作
       chapters:
         - collaboration-with-global-developers.qmd
-        - r-package-development.qmd      
+        - r-package-development.qmd
     - part: 问题解答
       chapters:
         - FAQ.qmd
