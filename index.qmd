@@ -35,4 +35,10 @@
 -   项目可以以课程建设为立足点，为[课程课件](https://github.com/D2RS-2025spring/data-driven-reproducible-study)提出改进意见。
 -   需要保证每个人在项目中都有贡献（通过 Git 追踪）。
 
-## PR
+## 联系方式
+
+如有任何问题或建议，请通过以下方式联系：
+
+- 项目 [Issue 板块](https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues)
+- 邮箱：[联系老师](mailto:gaoch@mail.hzau.edu.cn)
+- QQ群：759598173（公共群，加群时请说明来意）
