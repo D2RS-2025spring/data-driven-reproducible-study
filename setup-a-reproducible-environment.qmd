@@ -19,7 +19,7 @@
 3.  安装 Git，注册 GitHub/Gitee 账号
     1.  安装 Git
     2.  注册 GitHub（国际）/Gitee（国内）账号
-    3.  加入课程群组（QQ 群：973581293，GitHub Organization：<https://github.com/D2RS-2025spring>）
+    3.  加入课程群组（QQ 群：759598173（请说明来意），GitHub Organization：<https://github.com/D2RS-2025spring>）
 
 4.  安装 Quarto
     1.  下载安装 Quarto

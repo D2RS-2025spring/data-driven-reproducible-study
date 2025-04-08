@@ -110,6 +110,8 @@
 
 - 项目Issue板块
 - 邮箱：[联系老师](mailto:gaoch@mail.hzau.edu.cn)
+- QQ群：759598173（公共群，请说明来意）
+
 
 <!-- 
 
