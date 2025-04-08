@@ -12,7 +12,7 @@
 
 
 ```{r}
-#| eval: (format == "html")
+#| eval: !expr knitr::is_html_output()
 #| label: fig-github-a-level
 #| echo: false
 #| fig-cap: GitHub 上的开发者档案（由 `vercel.app` 提供）。
