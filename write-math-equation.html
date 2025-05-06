@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Appendix B — 书写数学公式 – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./quarto-cheatsheet.html" rel="next">
+<link href="./markdown.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.html">Appendices</a></li><li class="breadcrumb-item"><a href="./write-math-equation.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#希腊字母" id="toc-希腊字母" class="nav-link active" data-scroll-target="#希腊字母"><span class="header-section-number">B.1</span> 希腊字母</a></li>
+  <li><a href="#二元运算符" id="toc-二元运算符" class="nav-link" data-scroll-target="#二元运算符"><span class="header-section-number">B.2</span> 二元运算符</a></li>
+  <li><a href="#二元关系符" id="toc-二元关系符" class="nav-link" data-scroll-target="#二元关系符"><span class="header-section-number">B.3</span> 二元关系符</a></li>
+  <li><a href="#逻辑符号" id="toc-逻辑符号" class="nav-link" data-scroll-target="#逻辑符号"><span class="header-section-number">B.4</span> 逻辑符号</a></li>
+  <li><a href="#集合符号" id="toc-集合符号" class="nav-link" data-scroll-target="#集合符号"><span class="header-section-number">B.5</span> 集合符号</a></li>
+  <li><a href="#特殊符号" id="toc-特殊符号" class="nav-link" data-scroll-target="#特殊符号"><span class="header-section-number">B.6</span> 特殊符号</a></li>
+  <li><a href="#分数" id="toc-分数" class="nav-link" data-scroll-target="#分数"><span class="header-section-number">B.7</span> 分数</a></li>
+  <li><a href="#数值函数" id="toc-数值函数" class="nav-link" data-scroll-target="#数值函数"><span class="header-section-number">B.8</span> 数值函数</a></li>
+  <li><a href="#根号" id="toc-根号" class="nav-link" data-scroll-target="#根号"><span class="header-section-number">B.9</span> 根号</a></li>
+  <li><a href="#微分与导数" id="toc-微分与导数" class="nav-link" data-scroll-target="#微分与导数"><span class="header-section-number">B.10</span> 微分与导数</a></li>
+  <li><a href="#极限" id="toc-极限" class="nav-link" data-scroll-target="#极限"><span class="header-section-number">B.11</span> 极限</a></li>
+  <li><a href="#大型运算符" id="toc-大型运算符" class="nav-link" data-scroll-target="#大型运算符"><span class="header-section-number">B.12</span> 大型运算符</a></li>
+  <li><a href="#上下标" id="toc-上下标" class="nav-link" data-scroll-target="#上下标"><span class="header-section-number">B.13</span> 上下标</a></li>
+  <li><a href="#二项式系数" id="toc-二项式系数" class="nav-link" data-scroll-target="#二项式系数"><span class="header-section-number">B.14</span> 二项式系数</a></li>
+  <li><a href="#矩阵" id="toc-矩阵" class="nav-link" data-scroll-target="#矩阵"><span class="header-section-number">B.15</span> 矩阵</a></li>
+  <li><a href="#数组" id="toc-数组" class="nav-link" data-scroll-target="#数组"><span class="header-section-number">B.16</span> 数组</a></li>
+  <li><a href="#方程组" id="toc-方程组" class="nav-link" data-scroll-target="#方程组"><span class="header-section-number">B.17</span> 方程组</a></li>
+  <li><a href="#多行等式" id="toc-多行等式" class="nav-link" data-scroll-target="#多行等式"><span class="header-section-number">B.18</span> 多行等式</a></li>
+  <li><a href="#对齐" id="toc-对齐" class="nav-link" data-scroll-target="#对齐"><span class="header-section-number">B.19</span> 对齐</a></li>
+  <li><a href="#括号" id="toc-括号" class="nav-link" data-scroll-target="#括号"><span class="header-section-number">B.20</span> 括号</a></li>
+  <li><a href="#空格" id="toc-空格" class="nav-link" data-scroll-target="#空格"><span class="header-section-number">B.21</span> 空格</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/write-math-equation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/write-math-equation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markdown.html">Appendices</a></li><li class="breadcrumb-item"><a href="./write-math-equation.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="write-math-equation" class="quarto-section-identifier">Appendix B — 书写数学公式</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>参考页面</strong>：<a href="http://www.uinio.com/Math/LaTex" class="uri">http://www.uinio.com/Math/LaTex</a></p>
+<p>写技术文档少不了公式。这需要用到一些 <span class="math inline">\(LATEX\)</span> 语法。</p>
+<p>下面列举一些常用字符的写法。</p>
+<section id="希腊字母" class="level2" data-number="B.1">
+<h2 data-number="B.1" class="anchored" data-anchor-id="希腊字母"><span class="header-section-number">B.1</span> 希腊字母</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>标准符号</th>
+<th>LaTeX</th>
+<th>首字母大写</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1</strong></td>
+<td><span class="math inline">\(\alpha\)</span></td>
+<td><code>\alpha</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td><span class="math inline">\(\beta\)</span></td>
+<td><code>\beta</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td><span class="math inline">\(\gamma\)</span></td>
+<td><code>\gamma</code></td>
+<td><span class="math inline">\(\Gamma\)</span></td>
+<td><code>\Gamma</code></td>
+</tr>
+<tr class="even">
+<td><strong>4</strong></td>
+<td><span class="math inline">\(\delta\)</span></td>
+<td><code>\delta</code></td>
+<td><span class="math inline">\(\Delta\)</span></td>
+<td><code>\Delta</code></td>
+</tr>
+<tr class="odd">
+<td><strong>5</strong></td>
+<td><span class="math inline">\(\epsilon\)</span></td>
+<td><code>\epsilon</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>6</strong></td>
+<td><span class="math inline">\(\zeta\)</span></td>
+<td><code>\zeta</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>7</strong></td>
+<td><span class="math inline">\(\eta\)</span></td>
+<td><code>\eta</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>8</strong></td>
+<td><span class="math inline">\(\theta\)</span></td>
+<td><code>\theta</code></td>
+<td><span class="math inline">\(\Theta\)</span></td>
+<td><code>\Theta</code></td>
+</tr>
+<tr class="odd">
+<td><strong>9</strong></td>
+<td><span class="math inline">\(\iota\)</span></td>
+<td><code>\iota</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>10</strong></td>
+<td><span class="math inline">\(\kappa\)</span></td>
+<td><code>\kappa</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>11</strong></td>
+<td><span class="math inline">\(\lambda\)</span></td>
+<td><code>\lambda</code></td>
+<td><span class="math inline">\(\Lambda\)</span></td>
+<td><code>\Lambda</code></td>
+</tr>
+<tr class="even">
+<td><strong>12</strong></td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td><code>\mu</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>13</strong></td>
+<td><span class="math inline">\(\nu\)</span></td>
+<td><code>\nu</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>14</strong></td>
+<td><span class="math inline">\(\xi\)</span></td>
+<td><code>\xi</code></td>
+<td><span class="math inline">\(\Xi\)</span></td>
+<td><code>\Xi</code></td>
+</tr>
+<tr class="odd">
+<td><strong>15</strong></td>
+<td><span class="math inline">\(o\)</span></td>
+<td><code>o</code></td>
+<td><span class="math inline">\(O\)</span></td>
+<td><code>O</code></td>
+</tr>
+<tr class="even">
+<td><strong>16</strong></td>
+<td><span class="math inline">\(\pi\)</span></td>
+<td><code>\pi</code></td>
+<td><span class="math inline">\(\Pi\)</span></td>
+<td><code>\Pi</code></td>
+</tr>
+<tr class="odd">
+<td><strong>17</strong></td>
+<td><span class="math inline">\(\rho\)</span></td>
+<td><code>\rho</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>18</strong></td>
+<td><span class="math inline">\(\sigma\)</span></td>
+<td><code>\sigma</code></td>
+<td><span class="math inline">\(\Sigma\)</span></td>
+<td><code>\Sigma</code></td>
+</tr>
+<tr class="odd">
+<td><strong>19</strong></td>
+<td><span class="math inline">\(\tau\)</span></td>
+<td><code>\tau</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><strong>20</strong></td>
+<td><span class="math inline">\(\upsilon\)</span></td>
+<td><code>\upsilon</code></td>
+<td><span class="math inline">\(\Upsilon\)</span></td>
+<td><code>\Upsilon</code></td>
+</tr>
+<tr class="odd">
+<td><strong>21</strong></td>
+<td><span class="math inline">\(\phi\)</span></td>
+<td><code>\phi</code></td>
+<td><span class="math inline">\(\Phi\)</span></td>
+<td><code>\Phi</code></td>
+</tr>
+<tr class="even">
+<td><strong>22</strong></td>
+<td><span class="math inline">\(\chi\)</span></td>
+<td><code>\chi</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><strong>23</strong></td>
+<td><span class="math inline">\(\psi\)</span></td>
+<td><code>\psi</code></td>
+<td><span class="math inline">\(\Psi\)</span></td>
+<td><code>\Psi</code></td>
+</tr>
+<tr class="even">
+<td><strong>24</strong></td>
+<td><span class="math inline">\(\omega\)</span></td>
+<td><code>\omega</code></td>
+<td><span class="math inline">\(\Omega\)</span></td>
+<td><code>\Omega</code></td>
+</tr>
+<tr class="odd">
+<td><strong>25</strong></td>
+<td><span class="math inline">\(\digamma\)</span></td>
+<td><code>\digamma</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="二元运算符" class="level2" data-number="B.2">
+<h2 data-number="B.2" class="anchored" data-anchor-id="二元运算符"><span class="header-section-number">B.2</span> 二元运算符</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1</strong></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><code>+</code></td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td><span class="math inline">\(-\)</span></td>
+<td><code>-</code></td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td><span class="math inline">\(\times\)</span></td>
+<td><code>\times</code></td>
+</tr>
+<tr class="even">
+<td><strong>4</strong></td>
+<td><span class="math inline">\(\div\)</span></td>
+<td><code>\div</code></td>
+</tr>
+<tr class="odd">
+<td><strong>5</strong></td>
+<td><span class="math inline">\(\pm\)</span></td>
+<td><code>\pm</code></td>
+</tr>
+<tr class="even">
+<td><strong>6</strong></td>
+<td><span class="math inline">\(\mp\)</span></td>
+<td><code>\mp</code></td>
+</tr>
+<tr class="odd">
+<td><strong>7</strong></td>
+<td><span class="math inline">\(\triangleleft\)</span></td>
+<td><code>\triangleleft</code></td>
+</tr>
+<tr class="even">
+<td><strong>8</strong></td>
+<td><span class="math inline">\(\triangleright\)</span></td>
+<td><code>\triangleright</code></td>
+</tr>
+<tr class="odd">
+<td><strong>9</strong></td>
+<td><span class="math inline">\(\cdot\)</span></td>
+<td><code>\cdot</code></td>
+</tr>
+<tr class="even">
+<td><strong>10</strong></td>
+<td><span class="math inline">\(\setminus\)</span></td>
+<td><code>\setminus</code></td>
+</tr>
+<tr class="odd">
+<td><strong>11</strong></td>
+<td><span class="math inline">\(\star\)</span></td>
+<td><code>\star</code></td>
+</tr>
+<tr class="even">
+<td><strong>12</strong></td>
+<td><span class="math inline">\(\ast\)</span></td>
+<td><code>\ast</code></td>
+</tr>
+<tr class="odd">
+<td><strong>13</strong></td>
+<td><span class="math inline">\(\cup\)</span></td>
+<td><code>\cup</code></td>
+</tr>
+<tr class="even">
+<td><strong>14</strong></td>
+<td><span class="math inline">\(\cap\)</span></td>
+<td><code>\cap</code></td>
+</tr>
+<tr class="odd">
+<td><strong>15</strong></td>
+<td><span class="math inline">\(\sqcup\)</span></td>
+<td><code>\sqcup</code></td>
+</tr>
+<tr class="even">
+<td><strong>16</strong></td>
+<td><span class="math inline">\(\sqcap\)</span></td>
+<td><code>\sqcap</code></td>
+</tr>
+<tr class="odd">
+<td><strong>17</strong></td>
+<td><span class="math inline">\(\vee\)</span></td>
+<td><code>\vee</code></td>
+</tr>
+<tr class="even">
+<td><strong>18</strong></td>
+<td><span class="math inline">\(\wedge\)</span></td>
+<td><code>\wedge</code></td>
+</tr>
+<tr class="odd">
+<td><strong>19</strong></td>
+<td><span class="math inline">\(\circ\)</span></td>
+<td><code>\circ</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="二元关系符" class="level2" data-number="B.3">
+<h2 data-number="B.3" class="anchored" data-anchor-id="二元关系符"><span class="header-section-number">B.3</span> 二元关系符</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1</strong></td>
+<td><span class="math inline">\(=\)</span></td>
+<td><code>=</code></td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td><span class="math inline">\(\ne\)</span></td>
+<td><code>\ne</code></td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td><span class="math inline">\(\neq\)</span></td>
+<td><code>\neq</code></td>
+</tr>
+<tr class="even">
+<td><strong>4</strong></td>
+<td><span class="math inline">\(\equiv\)</span></td>
+<td><code>\equiv</code></td>
+</tr>
+<tr class="odd">
+<td><strong>5</strong></td>
+<td><span class="math inline">\(\not\equiv\)</span></td>
+<td><code>\not\equiv</code></td>
+</tr>
+<tr class="even">
+<td><strong>6</strong></td>
+<td><span class="math inline">\(\doteq\)</span></td>
+<td><code>\doteq</code></td>
+</tr>
+<tr class="odd">
+<td><strong>7</strong></td>
+<td><span class="math inline">\(\doteqdot\)</span></td>
+<td><code>\doteqdot</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="逻辑符号" class="level2" data-number="B.4">
+<h2 data-number="B.4" class="anchored" data-anchor-id="逻辑符号"><span class="header-section-number">B.4</span> 逻辑符号</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1</strong></td>
+<td><span class="math inline">\(\forall\)</span></td>
+<td><code>\forall</code></td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td><span class="math inline">\(\exists\)</span></td>
+<td><code>\exists</code></td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td><span class="math inline">\(\nexists\)</span></td>
+<td><code>\nexists</code></td>
+</tr>
+<tr class="even">
+<td><strong>4</strong></td>
+<td><span class="math inline">\(\therefore\)</span></td>
+<td><code>\therefore</code></td>
+</tr>
+<tr class="odd">
+<td><strong>5</strong></td>
+<td><span class="math inline">\(\because\)</span></td>
+<td><code>\because</code></td>
+</tr>
+<tr class="even">
+<td><strong>6</strong></td>
+<td><span class="math inline">\(\And\)</span></td>
+<td><code>\And</code></td>
+</tr>
+<tr class="odd">
+<td><strong>7</strong></td>
+<td><span class="math inline">\(\lor\)</span></td>
+<td><code>\lor</code></td>
+</tr>
+<tr class="even">
+<td><strong>8</strong></td>
+<td><span class="math inline">\(\vee\)</span></td>
+<td><code>\vee</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="集合符号" class="level2" data-number="B.5">
+<h2 data-number="B.5" class="anchored" data-anchor-id="集合符号"><span class="header-section-number">B.5</span> 集合符号</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1</strong></td>
+<td><span class="math inline">\(\{ \}\)</span></td>
+<td><code>\{ \}</code></td>
+</tr>
+<tr class="even">
+<td><strong>2</strong></td>
+<td><span class="math inline">\(\emptyset\)</span></td>
+<td><code>\emptyset</code></td>
+</tr>
+<tr class="odd">
+<td><strong>3</strong></td>
+<td><span class="math inline">\(\varnothing\)</span></td>
+<td><code>\varnothing</code></td>
+</tr>
+<tr class="even">
+<td><strong>4</strong></td>
+<td><span class="math inline">\(\in\)</span></td>
+<td><code>\in</code></td>
+</tr>
+<tr class="odd">
+<td><strong>5</strong></td>
+<td><span class="math inline">\(\notin\)</span></td>
+<td><code>\notin</code></td>
+</tr>
+<tr class="even">
+<td><strong>6</strong></td>
+<td><span class="math inline">\(\ni\)</span></td>
+<td><code>\ni</code></td>
+</tr>
+<tr class="odd">
+<td><strong>7</strong></td>
+<td><span class="math inline">\(\cap\)</span></td>
+<td><code>\cap</code></td>
+</tr>
+<tr class="even">
+<td><strong>8</strong></td>
+<td><span class="math inline">\(\Cap\)</span></td>
+<td><code>\Cap</code></td>
+</tr>
+<tr class="odd">
+<td><strong>9</strong></td>
+<td><span class="math inline">\(\sqcap\)</span></td>
+<td><code>\sqcap</code></td>
+</tr>
+<tr class="even">
+<td><strong>10</strong></td>
+<td><span class="math inline">\(\bigcap\)</span></td>
+<td><code>\bigcap</code></td>
+</tr>
+<tr class="odd">
+<td><strong>11</strong></td>
+<td><span class="math inline">\(\cup\)</span></td>
+<td><code>\cup</code></td>
+</tr>
+<tr class="even">
+<td><strong>12</strong></td>
+<td><span class="math inline">\(\Cup\)</span></td>
+<td><code>\Cup</code></td>
+</tr>
+<tr class="odd">
+<td><strong>13</strong></td>
+<td><span class="math inline">\(\sqcup\)</span></td>
+<td><code>\sqcup</code></td>
+</tr>
+<tr class="even">
+<td><strong>14</strong></td>
+<td><span class="math inline">\(\bigcup\)</span></td>
+<td><code>\bigcup</code></td>
+</tr>
+<tr class="odd">
+<td><strong>15</strong></td>
+<td><span class="math inline">\(\bigsqcup\)</span></td>
+<td><code>\bigsqcup</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="特殊符号" class="level2" data-number="B.6">
+<h2 data-number="B.6" class="anchored" data-anchor-id="特殊符号"><span class="header-section-number">B.6</span> 特殊符号</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>1</strong></td>
+<td><span class="math inline">\(\infty\)</span></td>
+<td><code>\infty</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="分数" class="level2" data-number="B.7">
+<h2 data-number="B.7" class="anchored" data-anchor-id="分数"><span class="header-section-number">B.7</span> 分数</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>分数</strong></td>
+<td><span class="math inline">\(\frac{2}{4}x=0.5x\)</span></td>
+<td><code>\frac{2}{4}x=0.5x</code></td>
+</tr>
+<tr class="even">
+<td><strong>分数</strong></td>
+<td><span class="math inline">\({2 \over 4}x=0.5x\)</span></td>
+<td><code>{2 \over 4}x=0.5x</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="数值函数" class="level2" data-number="B.8">
+<h2 data-number="B.8" class="anchored" data-anchor-id="数值函数"><span class="header-section-number">B.8</span> 数值函数</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\exp_a b = a^b, \exp b = e^b, 10^m\)</span></td>
+<td><code>\exp_a b = a^b, \exp b = e^b, 10^m</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\ln c, \lg d = \log e, \log_{10} f\)</span></td>
+<td><code>\ln c, \lg d = \log e, \log_{10} f</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\sin a, \cos b, \tan c, \cot d, \sec e, \csc f\)</span></td>
+<td><code>\sin a, \cos b, \tan c, \cot d, \sec e, \csc f</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\min(x,y), \max(x,y)\)</span></td>
+<td><code>\min(x,y), \max(x,y)</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="根号" class="level2" data-number="B.9">
+<h2 data-number="B.9" class="anchored" data-anchor-id="根号"><span class="header-section-number">B.9</span> 根号</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\surd\)</span></td>
+<td><code>\surd</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\sqrt{\pi}\)</span></td>
+<td><code>\sqrt{\pi}</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\sqrt[n]{\pi}\)</span></td>
+<td><code>\sqrt[n]{\pi}</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\sqrt[3]{\frac{x^3+y^3}{2}}*\)</span></td>
+<td><code>\sqrt[3]{\frac{x^3+y^3}{2}}*</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="微分与导数" class="level2" data-number="B.10">
+<h2 data-number="B.10" class="anchored" data-anchor-id="微分与导数"><span class="header-section-number">B.10</span> 微分与导数</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(dt, \mathrm{d}t, \partial t, \nabla\psi\)</span></td>
+<td><code>dt, \mathrm{d}t, \partial t, \nabla\psi</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(dy/dx, \mathrm{d}y/\mathrm{d}x\)</span></td>
+<td><code>dy/dx, \mathrm{d}y/\mathrm{d}x</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\frac{dy}{dx}, \frac{\mathrm{d}y}{\mathrm{d}x}\)</span></td>
+<td><code>\frac{dy}{dx}, \frac{\mathrm{d}y}{\mathrm{d}x}</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\prime, \backprime, f^\prime, f', f''\)</span></td>
+<td><code>\prime, \backprime, f^\prime, f', f''</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="极限" class="level2" data-number="B.11">
+<h2 data-number="B.11" class="anchored" data-anchor-id="极限"><span class="header-section-number">B.11</span> 极限</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\lim_{n \to \infty}x_n\)</span></td>
+<td><code>\lim_{n \to \infty}x_n</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="大型运算符" class="level2" data-number="B.12">
+<h2 data-number="B.12" class="anchored" data-anchor-id="大型运算符"><span class="header-section-number">B.12</span> 大型运算符</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>分类</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>求和</strong></td>
+<td><span class="math inline">\(\sum_{a}^{b}\)</span></td>
+<td><code>\sum_{a}^{b}</code></td>
+</tr>
+<tr class="even">
+<td><strong>连乘积</strong></td>
+<td><span class="math inline">\(\prod_{a}^{b}\)</span></td>
+<td><code>\prod_{a}^{b}</code></td>
+</tr>
+<tr class="odd">
+<td><strong>余积</strong></td>
+<td><span class="math inline">\(\coprod_{a}^{b}\)</span></td>
+<td><code>\coprod_{a}^{b}</code></td>
+</tr>
+<tr class="even">
+<td><strong>并集</strong></td>
+<td><span class="math inline">\(\bigcup_{a}^{b}\)</span></td>
+<td><code>\bigcup_{a}^{b}</code></td>
+</tr>
+<tr class="odd">
+<td><strong>交集</strong></td>
+<td><span class="math inline">\(\bigcap_{a}^{b}\)</span></td>
+<td><code>\bigcap_{a}^{b}</code></td>
+</tr>
+<tr class="even">
+<td><strong>析取</strong></td>
+<td><span class="math inline">\(\bigvee_{a}^{b}\)</span></td>
+<td><code>\bigvee_{a}^{b}</code></td>
+</tr>
+<tr class="odd">
+<td><strong>合取</strong></td>
+<td><span class="math inline">\(\bigwedge_{a}^{b}\)</span></td>
+<td><code>\bigwedge_{a}^{b}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="上下标" class="level2" data-number="B.13">
+<h2 data-number="B.13" class="anchored" data-anchor-id="上下标"><span class="header-section-number">B.13</span> 上下标</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 37%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>符号</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>上标</strong></td>
+<td><span class="math inline">\(a^2\)</span> <span class="math inline">\(a^{x+3}\)</span></td>
+<td><code>a^2</code> <code>a^{x+3}</code></td>
+</tr>
+<tr class="even">
+<td><strong>下标</strong></td>
+<td><span class="math inline">\(a_2\)</span></td>
+<td><code>a_2</code></td>
+</tr>
+<tr class="odd">
+<td><strong>组合</strong></td>
+<td><span class="math inline">\(10^{30} a^{2+2}\)</span> <span class="math inline">\(a{i,j} b{f'}\)</span></td>
+<td><code>10^{30} a^{2+2}</code> <code>a{i,j} b{f'}</code></td>
+</tr>
+<tr class="even">
+<td><strong>上下标混合</strong></td>
+<td><span class="math inline">\(x_2^3\)</span> <span class="math inline">\({x_2}^3\)</span></td>
+<td><code>x_2^3</code> <code>{x_2}^3</code></td>
+</tr>
+<tr class="odd">
+<td><strong>上标的上标</strong></td>
+<td><span class="math inline">\(10^{10^{8}}\)</span></td>
+<td><code>10^{10^{8}}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="二项式系数" class="level2" data-number="B.14">
+<h2 data-number="B.14" class="anchored" data-anchor-id="二项式系数"><span class="header-section-number">B.14</span> 二项式系数</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>二项式系数</td>
+<td><span class="math inline">\(\binom{n}{k}\)</span></td>
+<td><code>\binom{n}{k}</code></td>
+</tr>
+<tr class="even">
+<td>小型二项式系数</td>
+<td><span class="math inline">\(\tbinom{n}{k}\)</span></td>
+<td><code>\tbinom{n}{k}</code></td>
+</tr>
+<tr class="odd">
+<td>大型二项式系数</td>
+<td><span class="math inline">\(\dbinom{n}{k}\)</span></td>
+<td><code>\dbinom{n}{k}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="矩阵" class="level2" data-number="B.15">
+<h2 data-number="B.15" class="anchored" data-anchor-id="矩阵"><span class="header-section-number">B.15</span> 矩阵</h2>
+<p><span class="math display">\[
+\begin{matrix}
+x &amp; y \\
+z &amp; v
+\end{matrix}
+\]</span></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode tex code-with-copy"><code class="sourceCode latex"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">matrix</span>}</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x &amp; y <span class="fu">\\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>z &amp; v</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">matrix</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><span class="math display">\[
+\begin{vmatrix}
+x &amp; y \\
+z &amp; v
+\end{vmatrix}
+\]</span></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode tex code-with-copy"><code class="sourceCode latex"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">vmatrix</span>}</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ss">x &amp; y </span><span class="sc">\\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ss">z &amp; v</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">vmatrix</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="数组" class="level2" data-number="B.16">
+<h2 data-number="B.16" class="anchored" data-anchor-id="数组"><span class="header-section-number">B.16</span> 数组</h2>
+<p><span class="math display">\[
+\begin{array}{ | c | c | c | }
+a &amp; b &amp; S \\
+\hline
+0 &amp; 0 &amp; 1 \\
+0 &amp; 1 &amp; 1 \\
+1 &amp; 0 &amp; 1 \\
+1 &amp; 1 &amp; 0
+\end{array}
+\]</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode tex code-with-copy"><code class="sourceCode latex"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">array</span>}{ | c | c | c | }</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>a &amp; b &amp; S <span class="fu">\\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">\hline</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>0 &amp; 0 &amp; 1 <span class="fu">\\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>0 &amp; 1 &amp; 1 <span class="fu">\\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>1 &amp; 0 &amp; 1 <span class="fu">\\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>1 &amp; 1 &amp; 0</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">array</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="方程组" class="level2" data-number="B.17">
+<h2 data-number="B.17" class="anchored" data-anchor-id="方程组"><span class="header-section-number">B.17</span> 方程组</h2>
+<p><span class="math display">\[
+\begin{cases}
+3x + 5y + z \\
+7x - 2y + 4z \\
+-6x + 3y + 2z
+\end{cases}
+\]</span></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode tex code-with-copy"><code class="sourceCode latex"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">cases</span>}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ss">3x + 5y + z </span><span class="sc">\\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ss">7x - 2y + 4z </span><span class="sc">\\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ss">-6x + 3y + 2z</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">cases</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="多行等式" class="level2" data-number="B.18">
+<h2 data-number="B.18" class="anchored" data-anchor-id="多行等式"><span class="header-section-number">B.18</span> 多行等式</h2>
+<p>MathJax 3.0 取消了单行公式环境下 <code>\\</code> 的强制换行功能，因此强制换行命令 <code>\\</code> 仅能用于 <code>eqnarray</code>、<code>align</code>、<code>array</code>、<code>matrix</code> 等多行环境当中。</p>
+<p><span class="math display">\[
+\begin{array}{rl}
+f(x) &amp; = (a+b)^2 \\
+&amp; = a^2+2ab+b^2
+\end{array}
+\]</span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">array</span>}{rl}</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>f(x) &amp; = (a+b)^2 <span class="fu">\\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>&amp; = a^2+2ab+b^2</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">array</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="对齐" class="level2" data-number="B.19">
+<h2 data-number="B.19" class="anchored" data-anchor-id="对齐"><span class="header-section-number">B.19</span> 对齐</h2>
+<p>使用对齐符号 <code>&amp;</code> 和 <code>array</code> 可以将多个元素按照指定规则 <code>lcl</code> 对齐。</p>
+<p><span class="math display">\[
+\begin{array}{lcl}
+z &amp; = &amp; a \\
+f(x,y,z) &amp; = &amp; x + y + z
+\end{array}
+\]</span></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">array</span>}{lcl}</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>z &amp; = &amp; a <span class="fu">\\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>f(x,y,z) &amp; = &amp; x + y + z</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">array</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>改变对齐规则后：</p>
+<p><span class="math display">\[
+\begin{array}{rcl}
+z &amp; = &amp; a \\
+f(x,y,z) &amp; = &amp; x + y + z
+\end{array}
+\]</span></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode latex code-with-copy"><code class="sourceCode latex"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">array</span>}{rcl}</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>z &amp; = &amp; a <span class="fu">\\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>f(x,y,z) &amp; = &amp; x + y + z</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">array</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="括号" class="level2" data-number="B.20">
+<h2 data-number="B.20" class="anchored" data-anchor-id="括号"><span class="header-section-number">B.20</span> 括号</h2>
+<p>常用的 <code>()</code>、<code>[]</code>、<code>{}</code> 括号符号可以在 LaTeX 环境当中直接进行使用，但是如果处于较大的符号当中，就应该配合 <code>\left</code> 与 <code>\right</code> 命令来使用：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 37%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>圆括号、小括号</td>
+<td><span class="math inline">\(\left ( \frac{a}{b} \right )\)</span></td>
+<td><code>\left ( \frac{a}{b} \right )</code></td>
+</tr>
+<tr class="even">
+<td>圆括号、小括号</td>
+<td><span class="math inline">\(( \frac{a}{b} )\)</span></td>
+<td><code>( \frac{a}{b} )</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="空格" class="level2" data-number="B.21">
+<h2 data-number="B.21" class="anchored" data-anchor-id="空格"><span class="header-section-number">B.21</span> 空格</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>符号</th>
+<th>LaTeX</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>双空格</strong></td>
+<td><span class="math inline">\(a \qquad b\)</span></td>
+<td><code>a \qquad b</code></td>
+</tr>
+<tr class="even">
+<td><strong>单空格</strong></td>
+<td><span class="math inline">\(a \quad b\)</span></td>
+<td><code>a \quad b</code></td>
+</tr>
+<tr class="odd">
+<td><strong>字符空格</strong></td>
+<td><span class="math inline">\(a\ b\)</span></td>
+<td><code>a\ b</code></td>
+</tr>
+<tr class="even">
+<td><strong>文本模式中的字符空格</strong></td>
+<td><span class="math inline">\(a \text{ } b\)</span></td>
+<td><code>a \text{ } b</code></td>
+</tr>
+<tr class="odd">
+<td><strong>大空格</strong></td>
+<td><span class="math inline">\(a\;b\)</span></td>
+<td><code>a\;b</code></td>
+</tr>
+<tr class="even">
+<td><strong>小空格</strong></td>
+<td><span class="math inline">\(a\,b\)</span></td>
+<td><code>a\,b</code></td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./markdown.html" class="pagination-link" aria-label="Markdown 速查表">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./quarto-cheatsheet.html" class="pagination-link" aria-label="Quarto 速查表">
+        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/write-math-equation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/write-math-equation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>

@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>18&nbsp; AI 批量读文献 – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./bailian.html" rel="next">
+<link href="./how-to-get-api-key.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./how-to-get-api-key.html">大模型API调用</a></li><li class="breadcrumb-item"><a href="./reading-paper.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#批处理程序" id="toc-批处理程序" class="nav-link active" data-scroll-target="#批处理程序"><span class="header-section-number">18.1</span> 批处理程序</a>
+  <ul class="collapse">
+  <li><a href="#配置客户端和缓存" id="toc-配置客户端和缓存" class="nav-link" data-scroll-target="#配置客户端和缓存"><span class="header-section-number">18.1.1</span> 配置客户端和缓存</a></li>
+  <li><a href="#设定提示词" id="toc-设定提示词" class="nav-link" data-scroll-target="#设定提示词"><span class="header-section-number">18.1.2</span> 设定提示词</a></li>
+  <li><a href="#编写自定义函数" id="toc-编写自定义函数" class="nav-link" data-scroll-target="#编写自定义函数"><span class="header-section-number">18.1.3</span> 编写自定义函数</a></li>
+  </ul></li>
+  <li><a href="#输出报告" id="toc-输出报告" class="nav-link" data-scroll-target="#输出报告"><span class="header-section-number">18.2</span> 输出报告</a></li>
+  <li><a href="#papergao-et-al_2021_emergent-transcriptional-adaption-facilitates-convergent-succession-within-a.pdf" id="toc-papergao-et-al_2021_emergent-transcriptional-adaption-facilitates-convergent-succession-within-a.pdf" class="nav-link" data-scroll-target="#papergao-et-al_2021_emergent-transcriptional-adaption-facilitates-convergent-succession-within-a.pdf"><span class="header-section-number">18.3</span> paper/Gao et al_2021_Emergent transcriptional adaption facilitates convergent succession within a.pdf</a>
+  <ul class="collapse">
+  <li><a href="#基本信息提取" id="toc-基本信息提取" class="nav-link" data-scroll-target="#基本信息提取"><span class="header-section-number">18.3.1</span> 基本信息提取</a></li>
+  <li><a href="#研究背景" id="toc-研究背景" class="nav-link" data-scroll-target="#研究背景"><span class="header-section-number">18.3.2</span> 研究背景</a></li>
+  <li><a href="#研究结论" id="toc-研究结论" class="nav-link" data-scroll-target="#研究结论"><span class="header-section-number">18.3.3</span> 研究结论</a></li>
+  <li><a href="#核心创新点" id="toc-核心创新点" class="nav-link" data-scroll-target="#核心创新点"><span class="header-section-number">18.3.4</span> 核心创新点</a></li>
+  <li><a href="#实验设计" id="toc-实验设计" class="nav-link" data-scroll-target="#实验设计"><span class="header-section-number">18.3.5</span> 实验设计</a></li>
+  <li><a href="#讨论" id="toc-讨论" class="nav-link" data-scroll-target="#讨论"><span class="header-section-number">18.3.6</span> 讨论</a></li>
+  <li><a href="#产业转化可行性" id="toc-产业转化可行性" class="nav-link" data-scroll-target="#产业转化可行性"><span class="header-section-number">18.3.7</span> 产业转化可行性</a></li>
+  <li><a href="#结论" id="toc-结论" class="nav-link" data-scroll-target="#结论"><span class="header-section-number">18.3.8</span> 结论</a></li>
+  </ul></li>
+  <li><a href="#papergao-et-al_2021_the-initial-inoculation-ratio-regulates-bacterial-coculture-interactions-and.pdf" id="toc-papergao-et-al_2021_the-initial-inoculation-ratio-regulates-bacterial-coculture-interactions-and.pdf" class="nav-link" data-scroll-target="#papergao-et-al_2021_the-initial-inoculation-ratio-regulates-bacterial-coculture-interactions-and.pdf"><span class="header-section-number">18.4</span> paper/Gao et al_2021_The initial inoculation ratio regulates bacterial coculture interactions and.pdf</a>
+  <ul class="collapse">
+  <li><a href="#基本信息提取-1" id="toc-基本信息提取-1" class="nav-link" data-scroll-target="#基本信息提取-1"><span class="header-section-number">18.4.1</span> 基本信息提取</a></li>
+  <li><a href="#研究背景-1" id="toc-研究背景-1" class="nav-link" data-scroll-target="#研究背景-1"><span class="header-section-number">18.4.2</span> 研究背景</a></li>
+  <li><a href="#研究结论-1" id="toc-研究结论-1" class="nav-link" data-scroll-target="#研究结论-1"><span class="header-section-number">18.4.3</span> 研究结论</a></li>
+  <li><a href="#核心创新点-1" id="toc-核心创新点-1" class="nav-link" data-scroll-target="#核心创新点-1"><span class="header-section-number">18.4.4</span> 核心创新点</a></li>
+  <li><a href="#实验设计-1" id="toc-实验设计-1" class="nav-link" data-scroll-target="#实验设计-1"><span class="header-section-number">18.4.5</span> 实验设计</a></li>
+  <li><a href="#讨论-1" id="toc-讨论-1" class="nav-link" data-scroll-target="#讨论-1"><span class="header-section-number">18.4.6</span> 讨论</a></li>
+  <li><a href="#产业转化可行性-1" id="toc-产业转化可行性-1" class="nav-link" data-scroll-target="#产业转化可行性-1"><span class="header-section-number">18.4.7</span> 产业转化可行性</a></li>
+  <li><a href="#结论-1" id="toc-结论-1" class="nav-link" data-scroll-target="#结论-1"><span class="header-section-number">18.4.8</span> 结论</a></li>
+  </ul></li>
+  <li><a href="#paperho-et-al.---2019---rapid-identification-of-pathogenic-bacteria-using-raman-spectroscopy-and-deep-learning.pdf" id="toc-paperho-et-al.---2019---rapid-identification-of-pathogenic-bacteria-using-raman-spectroscopy-and-deep-learning.pdf" class="nav-link" data-scroll-target="#paperho-et-al.---2019---rapid-identification-of-pathogenic-bacteria-using-raman-spectroscopy-and-deep-learning.pdf"><span class="header-section-number">18.5</span> paper/Ho et al.&nbsp;- 2019 - Rapid identification of pathogenic bacteria using Raman spectroscopy and deep learning.pdf</a>
+  <ul class="collapse">
+  <li><a href="#基本信息提取-2" id="toc-基本信息提取-2" class="nav-link" data-scroll-target="#基本信息提取-2"><span class="header-section-number">18.5.1</span> 基本信息提取</a></li>
+  <li><a href="#研究背景-2" id="toc-研究背景-2" class="nav-link" data-scroll-target="#研究背景-2"><span class="header-section-number">18.5.2</span> 研究背景</a></li>
+  <li><a href="#研究结论-2" id="toc-研究结论-2" class="nav-link" data-scroll-target="#研究结论-2"><span class="header-section-number">18.5.3</span> 研究结论</a></li>
+  <li><a href="#核心创新点-2" id="toc-核心创新点-2" class="nav-link" data-scroll-target="#核心创新点-2"><span class="header-section-number">18.5.4</span> 核心创新点</a></li>
+  <li><a href="#实验设计-2" id="toc-实验设计-2" class="nav-link" data-scroll-target="#实验设计-2"><span class="header-section-number">18.5.5</span> 实验设计</a></li>
+  <li><a href="#讨论-2" id="toc-讨论-2" class="nav-link" data-scroll-target="#讨论-2"><span class="header-section-number">18.5.6</span> 讨论</a></li>
+  <li><a href="#产业转化可行性-2" id="toc-产业转化可行性-2" class="nav-link" data-scroll-target="#产业转化可行性-2"><span class="header-section-number">18.5.7</span> 产业转化可行性</a></li>
+  <li><a href="#结论-2" id="toc-结论-2" class="nav-link" data-scroll-target="#结论-2"><span class="header-section-number">18.5.8</span> 结论</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/reading-paper.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/reading-paper.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./how-to-get-api-key.html">大模型API调用</a></li><li class="breadcrumb-item"><a href="./reading-paper.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="批处理程序" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="批处理程序"><span class="header-section-number">18.1</span> 批处理程序</h2>
+<section id="配置客户端和缓存" class="level3" data-number="18.1.1">
+<h3 data-number="18.1.1" class="anchored" data-anchor-id="配置客户端和缓存"><span class="header-section-number">18.1.1</span> 配置客户端和缓存</h3>
+<div id="setup" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openai <span class="im">import</span> OpenAI</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 初始化百炼客户端</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>client <span class="op">=</span> OpenAI(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    api_key<span class="op">=</span>os.getenv(<span class="st">"DASHSCOPE_API_KEY"</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    base_url<span class="op">=</span><span class="st">"https://dashscope.aliyuncs.com/compatible-mode/v1"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置路径</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>PDF_BASE_DIR <span class="op">=</span> Path(<span class="st">"paper"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>CACHE_DIR <span class="op">=</span> Path(<span class="st">"output/data-processed/paper-cache/"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>FILEID_CACHE_DIR <span class="op">=</span> Path(<span class="st">"output/data-processed/fileid-cache/"</span>)  <span class="co"># 新增fileid缓存目录</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>CACHE_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>FILEID_CACHE_DIR.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="设定提示词" class="level3" data-number="18.1.2">
+<h3 data-number="18.1.2" class="anchored" data-anchor-id="设定提示词"><span class="header-section-number">18.1.2</span> 设定提示词</h3>
+<div id="d90ccfb3" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 提示词模板</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>PROMPT_TEMPLATE <span class="op">=</span> <span class="st">"""请按照以下步骤对英文文献进行深入解读和分析，确保结果逻辑清晰、内容全面：</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="st">### 基本信息提取</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="st">提取文章标题、作者、通讯作者的单位（附中文翻译）、发表年份、期刊名称等关键信息。</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="st">### 研究背景</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">- 总结文献的研究背景，说明研究所解决的问题或提出的假设。</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="st">- 明确指出作者的研究目的和研究动机。</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="st">### 研究结论</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="st">- 概述文章的核心发现和关键数据。</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="st">- 对图表、统计数据和实验结果进行总结和分析。</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="st">- 强调研究结果对原始问题的解答和新发现。</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="st">### 核心创新点</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="st">- 指出文献在理论、方法或实践方面的创新与独特贡献。</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="st">- 讨论该研究如何推动领域的发展，及其实际应用意义。</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="st">### 实验设计</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="st">- 指出研究使用的样品来源，材料出处等。</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="st">- 描述作者采用的研究方法（如实验、调查、建模、定量/定性分析等）。</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="st">- 解释数据来源、采集方式以及实验设计或分析框架。</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="st">### 讨论</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="st">分析作者如何讨论结果及其对研究领域的影响，并指出研究局限性、未解决的问题或作者提出的未来研究方向。</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="st">### 产业转化可行性</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="st">评估研究在产业转化上的前景并给出理由。</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="st">### 结论</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="st">最后，用一句话讲清楚研究的重要发现及意义。</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="st">请确保在解读过程中：</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="st">- 语言表达准确、逻辑清晰；</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="st">- 分析内容既关注整体框架也注意细节；</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="st">- 引用和解释关键概念和数据时要做到充分且有条理。</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="st">注意：在输出列表的时候，需要再列表头与列表项之间加入两个空行（换行符），否则Quarto渲染时候会出错。</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="编写自定义函数" class="level3" data-number="18.1.3">
+<h3 data-number="18.1.3" class="anchored" data-anchor-id="编写自定义函数"><span class="header-section-number">18.1.3</span> 编写自定义函数</h3>
+<div id="c04e95a5" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pdf_files():</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""获取paper目录下的所有pdf文件"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    pdf_files <span class="op">=</span> []</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> PDF_BASE_DIR.glob(<span class="st">"*.pdf"</span>):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        pdf_files.append({</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>            <span class="st">"ID"</span>: <span class="bu">file</span>.stem,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"pdf_path"</span>: <span class="bu">str</span>(<span class="bu">file</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pdf_files</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_paper(entry):</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""处理单个文献条目"""</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    cache_file <span class="op">=</span> CACHE_DIR <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>entry[<span class="st">'ID'</span>]<span class="sc">}</span><span class="ss">.json"</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    fileid_cache_file <span class="op">=</span> FILEID_CACHE_DIR <span class="op">/</span> <span class="ss">f"</span><span class="sc">{</span>entry[<span class="st">'ID'</span>]<span class="sc">}</span><span class="ss">.txt"</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 检查处理结果缓存</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> cache_file.exists():</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(cache_file, <span class="st">'r'</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>) <span class="im">as</span> f:</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> json.load(f)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 检查PDF文件存在性</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    pdf_path <span class="op">=</span> Path(entry[<span class="st">'pdf_path'</span>])</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"正在检查PDF文件路径: </span><span class="sc">{</span>pdf_path<span class="sc">}</span><span class="ss">"</span>)  <span class="co"># 调试日志</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> pdf_path.exists():</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"警告：跳过未找到的PDF文件: </span><span class="sc">{</span>pdf_path<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 检查文件ID缓存</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> fileid_cache_file.exists():</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> <span class="bu">open</span>(fileid_cache_file, <span class="st">'r'</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>) <span class="im">as</span> f:</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>                file_id <span class="op">=</span> f.read().strip()</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 上传文件并缓存ID</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>            file_object <span class="op">=</span> client.files.create(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>                <span class="bu">file</span><span class="op">=</span>Path(entry[<span class="st">'pdf_path'</span>]),</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>                purpose<span class="op">=</span><span class="st">"file-extract"</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>            file_id <span class="op">=</span> file_object.<span class="bu">id</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> <span class="bu">open</span>(fileid_cache_file, <span class="st">'w'</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>) <span class="im">as</span> f:</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>                f.write(file_id)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>        completion <span class="op">=</span> client.chat.completions.create(</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>            model<span class="op">=</span><span class="st">"qwen-long"</span>,</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>            messages<span class="op">=</span>[</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>                {<span class="st">'role'</span>: <span class="st">'system'</span>, <span class="st">'content'</span>: <span class="ss">f'fileid://</span><span class="sc">{</span>file_id<span class="sc">}</span><span class="ss">'</span>},</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>                {<span class="st">'role'</span>: <span class="st">'user'</span>, <span class="st">'content'</span>: PROMPT_TEMPLATE}</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>            ],</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>            temperature<span class="op">=</span><span class="fl">0.2</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 解析结果并缓存</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> {</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>            <span class="st">"id"</span>: entry[<span class="st">'ID'</span>],</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>            <span class="st">"title"</span>: entry[<span class="st">'pdf_path'</span>],</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content"</span>: completion.choices[<span class="dv">0</span>].message.content,</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>            <span class="st">"processed_at"</span>: datetime.now().isoformat()</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(cache_file, <span class="st">'w'</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>) <span class="im">as</span> f:</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>            json.dump(result, f, ensure_ascii<span class="op">=</span><span class="va">False</span>, indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"处理文献 </span><span class="sc">{</span>entry[<span class="st">'ID'</span>]<span class="sc">}</span><span class="ss"> 时出错: </span><span class="sc">{</span><span class="bu">str</span>(e)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 清理可能不完整的缓存</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="st">'file_id'</span> <span class="kw">in</span> <span class="bu">locals</span>() <span class="kw">and</span> <span class="kw">not</span> fileid_cache_file.exists():</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>            fileid_cache_file.unlink(missing_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_markdown(result):</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""生成Markdown格式的报告"""</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> result:</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">""</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>    md_content <span class="op">=</span> <span class="ss">f"""</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="ss">## </span><span class="sc">{</span>result[<span class="st">'title'</span>]<span class="sc">}</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="sc">{</span>result[<span class="st">'content'</span>]<span class="sc">}</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="ss">---</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> md_content</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="d3fa223c" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 主处理流程</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>entries <span class="op">=</span> get_pdf_files()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(entries)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>3</code></pre>
+</div>
+</div>
+<div id="860b90ae" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>all_results <span class="op">=</span> []</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> entry <span class="kw">in</span> entries:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> process_paper(entry)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> result:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        all_results.append(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="2873a53b" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 生成最终报告</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>output <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([generate_markdown(r) <span class="cf">for</span> r <span class="kw">in</span> all_results])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="输出报告" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="输出报告"><span class="header-section-number">18.2</span> 输出报告</h2>
+</section>
+<section id="papergao-et-al_2021_emergent-transcriptional-adaption-facilitates-convergent-succession-within-a.pdf" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="papergao-et-al_2021_emergent-transcriptional-adaption-facilitates-convergent-succession-within-a.pdf"><span class="header-section-number">18.3</span> paper/Gao et al_2021_Emergent transcriptional adaption facilitates convergent succession within a.pdf</h2>
+<section id="基本信息提取" class="level3" data-number="18.3.1">
+<h3 data-number="18.3.1" class="anchored" data-anchor-id="基本信息提取"><span class="header-section-number">18.3.1</span> 基本信息提取</h3>
+<p>文章标题：<br>
+Emergent transcriptional adaption facilitates convergent succession within a synthetic community</p>
+<p>作者：<br>
+Chun-Hui Gao, Hui Cao, Feng Ju, Ke-Qing Xiao, Peng Cai, Yichao Wu, Qiaoyun Huang</p>
+<p>通讯作者单位：<br>
+College of Resources and Environment, Huazhong Agricultural University, 武汉, 中国 (华中农业大学资源与环境学院)</p>
+<p>发表年份：<br>
+2021</p>
+<p>期刊名称：<br>
+ISME Communications</p>
+<hr>
+</section>
+<section id="研究背景" class="level3" data-number="18.3.2">
+<h3 data-number="18.3.2" class="anchored" data-anchor-id="研究背景"><span class="header-section-number">18.3.2</span> 研究背景</h3>
+<p>文献的研究背景主要集中在微生物群落的趋同演化及其分子机制。尽管趋同现象在自然界的细菌群落中普遍存在，但其背后的分子机制尚不明确。为此，作者通过构建一个由两种模式微生物（大肠杆菌K-12和铜绿假单胞菌KT2440）组成的合成群落，在封闭的培养系统中进行了时间序列转录组分析。研究旨在探讨物种间的相互作用如何影响基因表达，并揭示这些变化对群落结构和功能的影响。</p>
+<hr>
+</section>
+<section id="研究结论" class="level3" data-number="18.3.3">
+<h3 data-number="18.3.3" class="anchored" data-anchor-id="研究结论"><span class="header-section-number">18.3.3</span> 研究结论</h3>
+<p>文章的核心发现包括：</p>
+<ol type="1">
+<li><strong>“0 h效应”</strong>：基因表达的变化在培养初期就已经开始，表明物种间的相互作用不可避免地影响了基因表达。</li>
+<li><strong>“群体效应”</strong>：多数物种对少数物种的基因表达有更大的影响。</li>
+<li><strong>严格的时间和初始结构调控</strong>：基因表达受到时间和初始结构的严格调控，特别是在共培养条件下，许多代谢途径被抑制，而少数途径被激活或条件性表达。</li>
+</ol>
+<p>通过对基因表达的分析，作者发现，在24小时后，E. coli 和 P. putida 的基因表达趋于一致，这表明基因表达的变化是群落趋同的基础。</p>
+<hr>
+</section>
+<section id="核心创新点" class="level3" data-number="18.3.4">
+<h3 data-number="18.3.4" class="anchored" data-anchor-id="核心创新点"><span class="header-section-number">18.3.4</span> 核心创新点</h3>
+<p>该研究在以下几个方面具有创新性和独特贡献：</p>
+<ol type="1">
+<li><strong>首次揭示了基因表达变化在群落趋同中的作用</strong>：通过时间序列转录组分析，作者证明了基因表达的变化是群落结构趋同的关键驱动因素。</li>
+<li><strong>提出了“0 h效应”和“群体效应”</strong>：这两个概念为理解物种间相互作用提供了新的视角，尤其是在早期阶段的相互作用对基因表达的影响。</li>
+<li><strong>揭示了代谢途径的调控机制</strong>：研究表明，大多数代谢途径在共培养条件下被抑制，而少数途径被激活或条件性表达，这为理解微生物群落的功能调节提供了新的见解。</li>
+</ol>
+<hr>
+</section>
+<section id="实验设计" class="level3" data-number="18.3.5">
+<h3 data-number="18.3.5" class="anchored" data-anchor-id="实验设计"><span class="header-section-number">18.3.5</span> 实验设计</h3>
+<p><strong>样品来源和材料</strong>：<br>
+研究使用了两种模式微生物——大肠杆菌K-12（Escherichia coli K-12）和铜绿假单胞菌KT2440（Pseudomonas putida KT2440）。实验中设置了三种不同的初始比例（1:1000、1:1、1000:1），并在封闭的培养系统中进行共培养。</p>
+<p><strong>研究方法</strong>：<br>
+1. <strong>时间序列转录组分析</strong>：通过高通量mRNA测序（RNA-seq）分析不同时间点的基因表达变化。 2. <strong>定量PCR监测</strong>：使用物种特异性定量PCR监测细菌生长情况。 3. <strong>数据分析</strong>：使用DESeq2进行差异表达基因（DEGs）的鉴定，并通过基因集富集分析（GSEA）揭示代谢途径的变化。</p>
+<p><strong>数据来源和采集方式</strong>：<br>
+所有样本均在0、0.5、1、2、4、8和24小时采集，每个时间点至少重复三次。RNA-seq数据已存入Sequence Read Archive（SRA）数据库，qPCR原始数据及相关代码已存入GitHub。</p>
+<hr>
+</section>
+<section id="讨论" class="level3" data-number="18.3.6">
+<h3 data-number="18.3.6" class="anchored" data-anchor-id="讨论"><span class="header-section-number">18.3.6</span> 讨论</h3>
+<p>作者通过实验结果讨论了基因表达变化对群落趋同的影响，并指出了以下几点：</p>
+<ol type="1">
+<li><strong>基因表达变化是群落趋同的基础</strong>：研究结果表明，基因表达的变化发生在群落结构变化之前，因此可以推断基因表达的变化是群落趋同的诱导因素。</li>
+<li><strong>物种间相互作用的复杂性</strong>：即使在细胞数量相近的情况下，物种间的相互作用仍然显著影响基因表达，这表明微生物之间的相互作用是不可避免的。</li>
+<li><strong>代谢途径的调控机制</strong>：大多数代谢途径在共培养条件下被抑制，这可能反映了微生物在资源有限的情况下优化能量利用的策略。</li>
+</ol>
+<p>然而，研究也存在一些局限性，例如实验是在封闭的培养系统中进行的，可能无法完全模拟自然环境中的复杂条件。此外，研究仅涉及两种微生物，未来的研究可以扩展到更多种类的微生物群落。</p>
+<hr>
+</section>
+<section id="产业转化可行性" class="level3" data-number="18.3.7">
+<h3 data-number="18.3.7" class="anchored" data-anchor-id="产业转化可行性"><span class="header-section-number">18.3.7</span> 产业转化可行性</h3>
+<p>该研究在产业转化上具有一定的前景。首先，研究揭示了微生物群落趋同的分子机制，这对于开发新型生物技术（如合成生物学、生物修复等）具有重要意义。其次，通过理解基因表达的变化，可以更好地设计和优化微生物群落的功能，从而应用于工业发酵、环境保护等领域。此外，研究结果还可以为微生物生态学的基础研究提供新的思路，推动相关领域的进一步发展。</p>
+<hr>
+</section>
+<section id="结论" class="level3" data-number="18.3.8">
+<h3 data-number="18.3.8" class="anchored" data-anchor-id="结论"><span class="header-section-number">18.3.8</span> 结论</h3>
+<p>该研究通过时间序列转录组分析揭示了基因表达变化在微生物群落趋同中的重要作用，提出了“0 h效应”和“群体效应”等新概念，为理解微生物群落的生态和进化机制提供了新的视角。</p>
+<hr>
+</section>
+</section>
+<section id="papergao-et-al_2021_the-initial-inoculation-ratio-regulates-bacterial-coculture-interactions-and.pdf" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="papergao-et-al_2021_the-initial-inoculation-ratio-regulates-bacterial-coculture-interactions-and.pdf"><span class="header-section-number">18.4</span> paper/Gao et al_2021_The initial inoculation ratio regulates bacterial coculture interactions and.pdf</h2>
+<section id="基本信息提取-1" class="level3" data-number="18.4.1">
+<h3 data-number="18.4.1" class="anchored" data-anchor-id="基本信息提取-1"><span class="header-section-number">18.4.1</span> 基本信息提取</h3>
+<p>文章标题：The initial inoculation ratio regulates bacterial coculture interactions and metabolic capacity<br>
+作者：Chun-Hui Gao, Hui Cao, Peng Cai, Søren J. Sørensen<br>
+通讯作者单位：<br>
+- 华中农业大学农业微生物学国家重点实验室，资源与环境学院，中国武汉（华中农业大学）<br>
+- 哥本哈根大学生物系微生物学部，丹麦哥本哈根（哥本哈根大学）<br>
+发表年份：2020<br>
+期刊名称：The ISME Journal</p>
+</section>
+<section id="研究背景-1" class="level3" data-number="18.4.2">
+<h3 data-number="18.4.2" class="anchored" data-anchor-id="研究背景-1"><span class="header-section-number">18.4.2</span> 研究背景</h3>
+<section id="研究背景概述" class="level4" data-number="18.4.2.1">
+<h4 data-number="18.4.2.1" class="anchored" data-anchor-id="研究背景概述"><span class="header-section-number">18.4.2.1</span> 研究背景概述</h4>
+<p>微生物共培养系统是微生物生态学研究中的重要模型系统。初始接种比例作为关键实验参数，对共培养系统的结构和功能有着至关重要的影响。然而，这种影响从未在多种生态位条件下进行过系统研究。本文旨在探讨不同初始接种比例对细菌共培养系统在不同碳源条件下的群落结构、功能和细菌相互作用的影响。</p>
+</section>
+<section id="研究目的和动机" class="level4" data-number="18.4.2.2">
+<h4 data-number="18.4.2.2" class="anchored" data-anchor-id="研究目的和动机"><span class="header-section-number">18.4.2.2</span> 研究目的和动机</h4>
+<p>作者希望通过这项研究揭示初始接种比例如何调节细菌共培养系统的代谢能力和相互作用模式，从而为微生物生态学研究提供新的视角，并提高共培养实验的可重复性和预测性。</p>
+</section>
+</section>
+<section id="研究结论-1" class="level3" data-number="18.4.3">
+<h3 data-number="18.4.3" class="anchored" data-anchor-id="研究结论-1"><span class="header-section-number">18.4.3</span> 研究结论</h3>
+<section id="核心发现和关键数据" class="level4" data-number="18.4.3.1">
+<h4 data-number="18.4.3.1" class="anchored" data-anchor-id="核心发现和关键数据"><span class="header-section-number">18.4.3.1</span> 核心发现和关键数据</h4>
+<ol type="1">
+<li><strong>最终比例依赖于初始接种比例</strong>：在大约五分之六的碳源中，不同初始接种比例的共培养系统的最终比例存在显著差异，表明最终比例高度依赖于初始接种比例。</li>
+<li><strong>初始比例调节代谢能力</strong>：只有初始比例为1:1和1000:1的共培养系统在14种特定碳源上表现出高代谢能力，这可能是由于初始比例改变了物种间的相互作用模式。</li>
+<li><strong>碳源偏好无法预测最终比例</strong>：细菌对碳源的偏好并不能预测共培养系统的最终比例。</li>
+</ol>
+</section>
+<section id="图表和实验结果分析" class="level4" data-number="18.4.3.2">
+<h4 data-number="18.4.3.2" class="anchored" data-anchor-id="图表和实验结果分析"><span class="header-section-number">18.4.3.2</span> 图表和实验结果分析</h4>
+<ul>
+<li><strong>图2</strong>展示了不同碳源下三种共培养系统的最终比例分布，表明初始比例对最终比例有显著影响。</li>
+<li><strong>图3</strong>显示了不同碳源偏好下共培养系统的最终比例变化，强调了碳源偏好对相对丰度的影响。</li>
+<li><strong>图4</strong>展示了不同初始比例的共培养系统在71种碳源上的代谢能力（CUE）差异，突出了1:1和1000:1比例在某些碳源上的高效利用。</li>
+</ul>
+</section>
+</section>
+<section id="核心创新点-1" class="level3" data-number="18.4.4">
+<h3 data-number="18.4.4" class="anchored" data-anchor-id="核心创新点-1"><span class="header-section-number">18.4.4</span> 核心创新点</h3>
+<section id="理论和方法创新" class="level4" data-number="18.4.4.1">
+<h4 data-number="18.4.4.1" class="anchored" data-anchor-id="理论和方法创新"><span class="header-section-number">18.4.4.1</span> 理论和方法创新</h4>
+<ol type="1">
+<li><strong>首次系统研究</strong>：这是首次系统地研究初始接种比例在多种培养条件下对共培养系统的影响。</li>
+<li><strong>引入代谢耦合概念</strong>：通过实验验证了初始比例如何影响代谢耦合的建立，特别是在14种特定碳源上的协同作用。</li>
+<li><strong>多因素综合分析</strong>：结合碳源偏好、初始比例和代谢能力，提出了一个综合模型来解释共培养系统的动态变化。</li>
+</ol>
+</section>
+<section id="推动领域发展" class="level4" data-number="18.4.4.2">
+<h4 data-number="18.4.4.2" class="anchored" data-anchor-id="推动领域发展"><span class="header-section-number">18.4.4.2</span> 推动领域发展</h4>
+<p>该研究不仅揭示了初始接种比例对共培养系统结构和功能的调控机制，还为微生物生态学研究提供了新的理论框架和实验方法，有助于更好地理解和预测复杂微生物群落的行为。</p>
+</section>
+</section>
+<section id="实验设计-1" class="level3" data-number="18.4.5">
+<h3 data-number="18.4.5" class="anchored" data-anchor-id="实验设计-1"><span class="header-section-number">18.4.5</span> 实验设计</h3>
+<section id="样品来源和材料出处" class="level4" data-number="18.4.5.1">
+<h4 data-number="18.4.5.1" class="anchored" data-anchor-id="样品来源和材料出处"><span class="header-section-number">18.4.5.1</span> 样品来源和材料出处</h4>
+<ul>
+<li>使用了两种常见的模式菌株：大肠杆菌K-12（EC）和假单胞菌KT2440（PP），这些菌株广泛存在于土壤、水体和宿主相关环境中。</li>
+<li>实验使用了Biolog GEN III微孔板，包含71种不同的碳源。</li>
+</ul>
+</section>
+<section id="研究方法" class="level4" data-number="18.4.5.2">
+<h4 data-number="18.4.5.2" class="anchored" data-anchor-id="研究方法"><span class="header-section-number">18.4.5.2</span> 研究方法</h4>
+<ul>
+<li><strong>实验设计</strong>：建立了两物种共培养系统，初始比例分别为1:1000、1:1和1000:1，在71种不同碳源中进行培养。</li>
+<li><strong>数据分析</strong>：通过Biolog MicroStation机器测量碳氧化效率（CUE），并使用qPCR定量分析共培养系统中各物种的相对丰度。</li>
+<li><strong>统计分析</strong>：使用R软件进行多元线性回归分析，揭示关键参数之间的关联。</li>
+</ul>
+</section>
+</section>
+<section id="讨论-1" class="level3" data-number="18.4.6">
+<h3 data-number="18.4.6" class="anchored" data-anchor-id="讨论-1"><span class="header-section-number">18.4.6</span> 讨论</h3>
+<section id="结果讨论及其影响" class="level4" data-number="18.4.6.1">
+<h4 data-number="18.4.6.1" class="anchored" data-anchor-id="结果讨论及其影响"><span class="header-section-number">18.4.6.1</span> 结果讨论及其影响</h4>
+<p>作者讨论了初始接种比例对细菌相互作用和代谢能力的调控机制，强调了碳源偏好和初始比例的协同作用。研究结果表明，初始比例不仅影响共培养实验的可重复性，还对理解通用微生物生态学具有重要意义。</p>
+</section>
+<section id="研究局限性和未来方向" class="level4" data-number="18.4.6.2">
+<h4 data-number="18.4.6.2" class="anchored" data-anchor-id="研究局限性和未来方向"><span class="header-section-number">18.4.6.2</span> 研究局限性和未来方向</h4>
+<ul>
+<li><strong>局限性</strong>：研究主要集中在两种模式菌株和71种碳源，未来可以扩展到更多种类的菌株和更复杂的生态位条件。</li>
+<li><strong>未来方向</strong>：进一步探索初始比例与其他环境因素（如温度、pH值）的交互作用，以更全面地理解微生物群落的动态变化。</li>
+</ul>
+</section>
+</section>
+<section id="产业转化可行性-1" class="level3" data-number="18.4.7">
+<h3 data-number="18.4.7" class="anchored" data-anchor-id="产业转化可行性-1"><span class="header-section-number">18.4.7</span> 产业转化可行性</h3>
+<p>该研究在工业微生物发酵、生物修复和合成生物学等领域具有潜在的应用价值。通过优化初始接种比例，可以提高共培养系统的代谢效率和稳定性，从而提升生产效率和产品质量。</p>
+</section>
+<section id="结论-1" class="level3" data-number="18.4.8">
+<h3 data-number="18.4.8" class="anchored" data-anchor-id="结论-1"><span class="header-section-number">18.4.8</span> 结论</h3>
+<p>该研究揭示了初始接种比例对细菌共培养系统结构和功能的调控机制，特别是其对代谢能力和物种相互作用的影响，为微生物生态学研究提供了新的理论框架和实验方法。</p>
+<hr>
+</section>
+</section>
+<section id="paperho-et-al.---2019---rapid-identification-of-pathogenic-bacteria-using-raman-spectroscopy-and-deep-learning.pdf" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="paperho-et-al.---2019---rapid-identification-of-pathogenic-bacteria-using-raman-spectroscopy-and-deep-learning.pdf"><span class="header-section-number">18.5</span> paper/Ho et al.&nbsp;- 2019 - Rapid identification of pathogenic bacteria using Raman spectroscopy and deep learning.pdf</h2>
+<section id="基本信息提取-2" class="level3" data-number="18.5.1">
+<h3 data-number="18.5.1" class="anchored" data-anchor-id="基本信息提取-2"><span class="header-section-number">18.5.1</span> 基本信息提取</h3>
+<p>文章标题：<br>
+Rapid identification of pathogenic bacteria using Raman spectroscopy and deep learning</p>
+<p>作者：<br>
+Chi-Sing Ho, Neal Jean, Catherine A. Hogan, Lena Blackmon, Stefanie S. Jeffrey, Mark Holodniy, Niaz Banaei, Amr A.E. Saleh, Stefano Ermon, Jennifer Dionne</p>
+<p>通讯作者单位：<br>
+- 斯坦福大学应用物理系（Stanford University, Dept. of Applied Physics） - 斯坦福大学材料科学与工程系（Stanford University, Dept. of Materials Science and Engineering） - 斯坦福大学计算机科学系（Stanford University, Dept. of Computer Science） - 斯坦福大学电气工程系（Stanford University, Dept. of Electrical Engineering） - 斯坦福大学医学院病理学系（Stanford University School of Medicine, Dept. of Pathology） - 斯坦福健康护理临床微生物实验室（Stanford Health Care, Clinical Microbiology Laboratory） - 斯坦福大学医学院外科系（Stanford University School of Medicine, Dept. of Surgery） - 斯坦福大学医学院医学系（Stanford University School of Medicine, Dept. of Medicine） - 退伍军人事务部帕洛阿尔托医疗保健系统（VA Palo Alto Health Care System） - 斯坦福大学医学院传染病与地理医学科（Stanford University School of Medicine, Division of Infectious Diseases and Geographic Medicine） - 开罗大学工程学院工程数学与物理系（Cairo University, Faculty of Engineering, Dept. of Engineering Mathematics and Physics）</p>
+<p>发表年份：<br>
+2019</p>
+<p>期刊名称：<br>
+Nature Communications</p>
+</section>
+<section id="研究背景-2" class="level3" data-number="18.5.2">
+<h3 data-number="18.5.2" class="anchored" data-anchor-id="研究背景-2"><span class="header-section-number">18.5.2</span> 研究背景</h3>
+<p>该研究旨在解决细菌感染诊断中的速度和准确性问题。当前的诊断方法依赖于样本培养，这不仅耗时，而且可能导致不必要的广谱抗生素使用。研究提出了一种结合拉曼光谱和深度学习的新方法，以实现快速、无培养的病原体识别和抗生素敏感性测试。这种方法可以显著缩短诊断时间，提高治疗效果，并有助于减少抗生素滥用。</p>
+</section>
+<section id="研究结论-2" class="level3" data-number="18.5.3">
+<h3 data-number="18.5.3" class="anchored" data-anchor-id="研究结论-2"><span class="header-section-number">18.5.3</span> 研究结论</h3>
+<p>文章的核心发现包括：</p>
+<ul>
+<li>使用深度学习模型（卷积神经网络，CNN）对30种常见病原菌进行了分类，平均分离水平准确率达到82.2±0.3%。</li>
+<li>在低信噪比（SNR=4.1）的情况下，仍能保持较高的分类精度。</li>
+<li>对经验性治疗的识别准确率高达97.0±0.3%，显著优于传统的逻辑回归和支持向量机（SVM）方法。</li>
+<li>成功区分了耐甲氧西林金黄色葡萄球菌（MRSA）和敏感株（MSSA），准确率为89.1±0.1%。</li>
+<li>在临床样本中，仅使用每个患者隔离物的10个光谱，即可达到99.7%的治疗识别准确率。</li>
+</ul>
+<p>这些结果表明，该方法在快速、准确地识别病原体和指导抗生素选择方面具有巨大潜力。</p>
+</section>
+<section id="核心创新点-2" class="level3" data-number="18.5.4">
+<h3 data-number="18.5.4" class="anchored" data-anchor-id="核心创新点-2"><span class="header-section-number">18.5.4</span> 核心创新点</h3>
+<p>该研究在以下几个方面具有创新性和独特贡献：</p>
+<ul>
+<li><strong>理论创新</strong>：首次将深度学习应用于低信噪比的拉曼光谱数据处理，解决了传统方法难以处理的高噪声问题。</li>
+<li><strong>方法创新</strong>：开发了一种基于残差连接的1D卷积神经网络架构，能够有效保留光谱峰值位置，提高了分类性能。</li>
+<li><strong>实践意义</strong>：该方法无需样本培养，可在数小时内完成病原体识别和抗生素敏感性测试，为临床快速诊断提供了新的工具。</li>
+</ul>
+<p>这项研究推动了拉曼光谱技术在微生物诊断中的应用，有望改善感染性疾病患者的治疗效果。</p>
+</section>
+<section id="实验设计-2" class="level3" data-number="18.5.5">
+<h3 data-number="18.5.5" class="anchored" data-anchor-id="实验设计-2"><span class="header-section-number">18.5.5</span> 实验设计</h3>
+<p><strong>样品来源和材料</strong>：<br>
+- 研究使用了来自斯坦福医院的30种细菌和酵母分离物，涵盖了超过94%的常见感染病原体。 - 还包括从临床患者样本中获得的额外12,000个光谱，用于验证模型的泛化能力。</p>
+<p><strong>研究方法</strong>：<br>
+- <strong>光谱采集</strong>：通过短时间测量（1秒）获取干燥单层样品的拉曼光谱，确保大多数光谱来自单个细胞。 - <strong>数据预处理</strong>：对光谱进行背景校正，使用多项式拟合去除背景噪声。 - <strong>模型训练</strong>：使用参考数据集训练CNN模型，然后在临床数据集上进行微调，以适应不同样本条件的变化。 - <strong>性能评估</strong>：通过混淆矩阵、ROC曲线等指标评估模型的分类性能，并与传统方法进行比较。</p>
+</section>
+<section id="讨论-2" class="level3" data-number="18.5.6">
+<h3 data-number="18.5.6" class="anchored" data-anchor-id="讨论-2"><span class="header-section-number">18.5.6</span> 讨论</h3>
+<p>作者讨论了研究结果对微生物诊断领域的潜在影响：</p>
+<ul>
+<li><strong>优势</strong>：该方法能够在短时间内提供高精度的病原体识别和抗生素敏感性测试，有助于早期针对性治疗，减少抗生素滥用。</li>
+<li><strong>局限性</strong>：尽管取得了显著进展，但该方法仍需进一步优化以应对更多种类的病原体和复杂的临床环境。</li>
+<li><strong>未来研究方向</strong>：建议扩大数据集，涵盖更多耐药性和敏感性的临床分离物，以提高模型的鲁棒性和泛化能力。此外，还需探索将该方法应用于其他生物流体（如全血、痰液、尿液）的可行性。</li>
+</ul>
+</section>
+<section id="产业转化可行性-2" class="level3" data-number="18.5.7">
+<h3 data-number="18.5.7" class="anchored" data-anchor-id="产业转化可行性-2"><span class="header-section-number">18.5.7</span> 产业转化可行性</h3>
+<p>该研究在产业转化方面具有广阔前景：</p>
+<ul>
+<li><strong>快速诊断</strong>：该方法可以在数小时内完成病原体识别和抗生素敏感性测试，显著缩短诊断时间，提高临床效率。</li>
+<li><strong>自动化潜力</strong>：结合高度自动化的样本制备和数据分析系统，该平台可以实现大规模临床应用，降低医疗成本。</li>
+<li><strong>广泛适用性</strong>：由于不需要特殊标签，该方法易于推广到新的病原体种类，具有广泛的临床应用价值。</li>
+</ul>
+</section>
+<section id="结论-2" class="level3" data-number="18.5.8">
+<h3 data-number="18.5.8" class="anchored" data-anchor-id="结论-2"><span class="header-section-number">18.5.8</span> 结论</h3>
+<p>该研究展示了结合拉曼光谱和深度学习在快速、无培养的病原体识别和抗生素敏感性测试中的巨大潜力，为临床快速诊断提供了新的高效工具。</p>
+<hr>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./how-to-get-api-key.html" class="pagination-link" aria-label="获取 API KEY">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./bailian.html" class="pagination-link" aria-label="阿里云百炼">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/reading-paper.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/reading-paper.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>

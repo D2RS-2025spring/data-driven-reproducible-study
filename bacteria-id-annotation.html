@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>28&nbsp; 开源代码释读 – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./pretrained-model.html" rel="next">
+<link href="./pathogen-identification-with-raman-spectroscopy.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./pathogen-identification-with-raman-spectroscopy.html">拉曼光谱识别病原菌</a></li><li class="breadcrumb-item"><a href="./bacteria-id-annotation.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#notebooks" id="toc-notebooks" class="nav-link active" data-scroll-target="#notebooks"><span class="header-section-number">28.1</span> Notebooks</a></li>
+  <li><a href="#config.py---包含提供数据集的相关信息" id="toc-config.py---包含提供数据集的相关信息" class="nav-link" data-scroll-target="#config.py---包含提供数据集的相关信息"><span class="header-section-number">28.2</span> <code>config.py</code> - 包含提供数据集的相关信息</a></li>
+  <li><a href="#datasets.py---包含设置光谱数据的数据集和数据加载器的代码" id="toc-datasets.py---包含设置光谱数据的数据集和数据加载器的代码" class="nav-link" data-scroll-target="#datasets.py---包含设置光谱数据的数据集和数据加载器的代码"><span class="header-section-number">28.3</span> <code>datasets.py</code> - 包含设置光谱数据的数据集和数据加载器的代码</a></li>
+  <li><a href="#resnet.py---包含-resnet-卷积神经网络模型类" id="toc-resnet.py---包含-resnet-卷积神经网络模型类" class="nav-link" data-scroll-target="#resnet.py---包含-resnet-卷积神经网络模型类"><span class="header-section-number">28.4</span> <code>resnet.py</code> - 包含 ResNet 卷积神经网络模型类</a>
+  <ul class="collapse">
+  <li><a href="#residualblock-类" id="toc-residualblock-类" class="nav-link" data-scroll-target="#residualblock-类"><span class="header-section-number">28.4.1</span> <code>ResidualBlock</code> 类</a></li>
+  <li><a href="#resnet-类" id="toc-resnet-类" class="nav-link" data-scroll-target="#resnet-类"><span class="header-section-number">28.4.2</span> <code>ResNet</code> 类</a></li>
+  <li><a href="#add_activation-函数" id="toc-add_activation-函数" class="nav-link" data-scroll-target="#add_activation-函数"><span class="header-section-number">28.4.3</span> <code>add_activation</code> 函数</a></li>
+  </ul></li>
+  <li><a href="#training.py---包含训练卷积神经网络和进行预测的代码" id="toc-training.py---包含训练卷积神经网络和进行预测的代码" class="nav-link" data-scroll-target="#training.py---包含训练卷积神经网络和进行预测的代码"><span class="header-section-number">28.5</span> <code>training.py</code> - 包含训练卷积神经网络和进行预测的代码</a>
+  <ul class="collapse">
+  <li><a href="#run_epoch-函数" id="toc-run_epoch-函数" class="nav-link" data-scroll-target="#run_epoch-函数"><span class="header-section-number">28.5.1</span> <code>run_epoch</code> 函数：</a></li>
+  <li><a href="#get_predictions-函数" id="toc-get_predictions-函数" class="nav-link" data-scroll-target="#get_predictions-函数"><span class="header-section-number">28.5.2</span> <code>get_predictions</code> 函数：</a></li>
+  </ul></li>
+  <li><a href="#模型权重文件" id="toc-模型权重文件" class="nav-link" data-scroll-target="#模型权重文件"><span class="header-section-number">28.6</span> 模型权重文件</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/bacteria-id-annotation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/bacteria-id-annotation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./pathogen-identification-with-raman-spectroscopy.html">拉曼光谱识别病原菌</a></li><li class="breadcrumb-item"><a href="./bacteria-id-annotation.html"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>在这篇论文开放的源代码中 <span class="citation" data-cites="csho33/b">(<a href="references.html#ref-csho33/b" role="doc-biblioref"><span>“Csho33/Bacteria-ID: Source Code and Demos for <span>"</span>Rapid Identification of Pathogenic Bacteria Using Raman Spectroscopy and Deep Learning<span>"</span>,”</span> n.d.</a>)</span>，包含以下文件：</p>
+<ol type="1">
+<li><code>1_reference_finetuning.ipynb</code> - 展示如何对预训练的卷积神经网络进行微调，以实施 30 种菌株分类任务</li>
+<li><code>2_prediction.ipynb</code>- 展示如何使用调优后的卷积神经网络进行预测</li>
+<li><code>3_clinical_finetuning.ipynb</code> - 展示如何使用临床数据对预训练的卷积神经网络进行调优，并对个体患者进行预测</li>
+<li><code>config.py</code> - 包含提供数据集的相关信息</li>
+<li><code>datasets.py</code> - 包含设置光谱数据的数据集和数据加载器的代码</li>
+<li><code>resnet.py</code> - 包含 ResNet 卷积神经网络模型类</li>
+<li><code>training.py</code> - 包含训练卷积神经网络和进行预测的代码</li>
+<li><code>reference_model.ckpt</code> - 保存的预训练卷积神经网络参数，用于笔记本1和2</li>
+<li><code>clinical_model.ckpt</code> - 保存的预训练卷积神经网络参数，用于演示3</li>
+</ol>
+<section id="notebooks" class="level2" data-number="28.1">
+<h2 data-number="28.1" class="anchored" data-anchor-id="notebooks"><span class="header-section-number">28.1</span> Notebooks</h2>
+<p>代码库中包含了 3 个 <code>*.ipynb</code> 文件，它们的内容大同小异，分别执行不同的任务。</p>
+<ol type="1">
+<li><code>1_reference_finetuning.ipynb</code> - 展示如何对预训练的卷积神经网络进行微调，以实施 30 种菌株分类任务</li>
+<li><code>2_prediction.ipynb</code>- 展示如何使用调优后的卷积神经网络进行预测</li>
+<li><code>3_clinical_finetuning.ipynb</code> - 展示如何使用临床数据对预训练的卷积神经网络进行调优，并对个体患者进行预测</li>
+</ol>
+<p>以第 1 个 Notebook 为例，解释说明一下：</p>
+<p>第一块代码：导入使用到的基本模块。</p>
+<div id="d82e66b3" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> time</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>t00 <span class="op">=</span> time()</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>第二块代码：导入数据，打印数据的形状。<code>X</code> 包含了 3000 行数据，每行有 1000 列。这说明拉曼光谱一共采集了 1000 个波段的数据。<code>y</code> 的行数与 <code>X</code> 一样，但是只有一维。说明它保存的是物种信息。查看它的值，恰好是 0 - 29 之间的数字，应当是分别代表 30 个物种的编号。</p>
+<div id="5651e1ad" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X_fn <span class="op">=</span> <span class="st">'./data/X_finetune.npy'</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y_fn <span class="op">=</span> <span class="st">'./data/y_finetune.npy'</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.load(X_fn)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.load(y_fn)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(X.shape, y.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(3000, 1000) (3000,)</code></pre>
+</div>
+</div>
+<p>第三块代码：导入神经网络相关的模块。</p>
+<div id="2fcf1ac2" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> resnet <span class="im">import</span> ResNet</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>第四块代码：设置模型的参数。</p>
+<div id="ecff860d" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CNN 参数</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>layers <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>hidden_size <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>block_size <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>hidden_sizes <span class="op">=</span> [hidden_size] <span class="op">*</span> layers</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>num_blocks <span class="op">=</span> [block_size] <span class="op">*</span> layers</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>input_dim <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>in_channels <span class="op">=</span> <span class="dv">64</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>n_classes <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>os.environ[<span class="st">'CUDA_VISIBLE_DEVICES'</span>] <span class="op">=</span> <span class="st">'</span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(<span class="dv">0</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>cuda <span class="op">=</span> torch.cuda.is_available()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>第五块代码：创建模型，并加载保存的权重。</p>
+<div id="6afb1a8d" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 为演示加载训练好的权重</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cnn <span class="op">=</span> ResNet(hidden_sizes, num_blocks, input_dim<span class="op">=</span>input_dim,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                in_channels<span class="op">=</span>in_channels, n_classes<span class="op">=</span>n_classes)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> cuda: cnn.cuda()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>cnn.load_state_dict(torch.load(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'./pretrained_model.ckpt'</span>, map_location<span class="op">=</span><span class="kw">lambda</span> storage, loc: storage))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;All keys matched successfully&gt;</code></pre>
+</div>
+</div>
+<p>第六块代码：导入额外的模块，包括自定义的 <code>spectral_dataloader</code> 和 <code>run_epoch</code> 方法。</p>
+<div id="d40781e5" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> spectral_dataloader</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> training <span class="im">import</span> run_epoch</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> optim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>第七块代码：生成两个索引 <code>idx_val</code> 和 <code>idx_tr</code>，以便于将数据随机产分成训练集和测试集。</p>
+<div id="348cdb1a" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>p_val <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>n_val <span class="op">=</span> <span class="bu">int</span>(<span class="dv">3000</span> <span class="op">*</span> p_val)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>idx_tr <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">3000</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>np.random.shuffle(idx_tr)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>idx_val <span class="op">=</span> idx_tr[:n_val]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>idx_tr <span class="op">=</span> idx_tr[n_val:]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>第八块代码：拆分数据集，并进行训练和验证。</p>
+<div id="3b36abe6" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 微调 CNN</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">1</span> <span class="co"># 将这个数字改为约30来进行完整训练</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>t0 <span class="op">=</span> time()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置 Adam 优化器</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.Adam(cnn.parameters(), lr<span class="op">=</span><span class="fl">1e-3</span>, betas<span class="op">=</span>(<span class="fl">0.5</span>, <span class="fl">0.999</span>))</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置数据加载器</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>dl_tr <span class="op">=</span> spectral_dataloader(X, y, idxs<span class="op">=</span>idx_tr, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>dl_val <span class="op">=</span> spectral_dataloader(X, y, idxs<span class="op">=</span>idx_val, batch_size<span class="op">=</span>batch_size, shuffle<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 微调 CNN 的第一阶段</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>best_val <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>no_improvement <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>max_no_improvement <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'开始微调！'</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(epochs):</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">' Epoch </span><span class="sc">{}</span><span class="st">: </span><span class="sc">{:0.2f}</span><span class="st">s'</span>.<span class="bu">format</span>(epoch<span class="op">+</span><span class="dv">1</span>, time()<span class="op">-</span>t0))</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 训练</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    acc_tr, loss_tr <span class="op">=</span> run_epoch(epoch, cnn, dl_tr, cuda,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        training<span class="op">=</span><span class="va">True</span>, optimizer<span class="op">=</span>optimizer)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'  训练准确率: </span><span class="sc">{:0.2f}</span><span class="st">'</span>.<span class="bu">format</span>(acc_tr))</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 验证</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    acc_val, loss_val <span class="op">=</span> run_epoch(epoch, cnn, dl_val, cuda,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        training<span class="op">=</span><span class="va">False</span>, optimizer<span class="op">=</span>optimizer)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'  验证准确率: </span><span class="sc">{:0.2f}</span><span class="st">'</span>.<span class="bu">format</span>(acc_val))</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 早停检查性能</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> acc_val <span class="op">&gt;</span> best_val <span class="kw">or</span> epoch <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        best_val <span class="op">=</span> acc_val</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        no_improvement <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        no_improvement <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> no_improvement <span class="op">&gt;=</span> max_no_improvement:</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">'在 </span><span class="sc">{}</span><span class="st"> 轮后结束！'</span>.<span class="bu">format</span>(epoch<span class="op">+</span><span class="dv">1</span>))</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st"> 这个演示完成耗时: </span><span class="sc">{:0.2f}</span><span class="st">s'</span>.<span class="bu">format</span>(time()<span class="op">-</span>t00))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="config.py---包含提供数据集的相关信息" class="level2" data-number="28.2">
+<h2 data-number="28.2" class="anchored" data-anchor-id="config.py---包含提供数据集的相关信息"><span class="header-section-number">28.2</span> <code>config.py</code> - 包含提供数据集的相关信息</h2>
+<p>这个文件定义了数据集中编号对应的菌株。</p>
+<p>例如：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>STRAINS[<span class="dv">0</span>] <span class="op">=</span> <span class="st">"C. albicans"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>STRAINS[<span class="dv">1</span>] <span class="op">=</span> <span class="st">"C. glabrata"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>STRAINS[<span class="dv">2</span>] <span class="op">=</span> <span class="st">"K. aerogenes"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>STRAINS[<span class="dv">3</span>] <span class="op">=</span> <span class="st">"E. coli 1"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="datasets.py---包含设置光谱数据的数据集和数据加载器的代码" class="level2" data-number="28.3">
+<h2 data-number="28.3" class="anchored" data-anchor-id="datasets.py---包含设置光谱数据的数据集和数据加载器的代码"><span class="header-section-number">28.3</span> <code>datasets.py</code> - 包含设置光谱数据的数据集和数据加载器的代码</h2>
+<p>这段代码定义了如何在PyTorch中加载和处理光谱数据，以便用于机器学习模型的训练和评估。让我们逐步分析这里的组件和功能。</p>
+<ol type="1">
+<li><p>导入库和模块：</p>
+<ul>
+<li>使用PyTorch的<code>Dataset</code>和<code>DataLoader</code>来处理数据集与数据加载。</li>
+<li>使用PyTorch的<code>transforms</code>模块来进行数据转换。</li>
+<li>还导入了<code>torch</code>和<code>numpy</code>库以支持数组和张量操作。</li>
+</ul></li>
+<li><p><code>SpectralDataset</code> 类：</p>
+<ul>
+<li>这是一个继承自<code>Dataset</code>的自定义类，用于建立光谱数据集。</li>
+<li>它可以接收文件名（字符串形式，然后从中加载NumPy数组）或直接接收NumPy数组来初始化。</li>
+<li><code>idxs</code> 参数定义了从数据集中使用那些样本，这可以用于随机拆分数据集到训练、验证和测试集。</li>
+<li><code>transform</code> 参数允许在读取样本时应用一连串的数据变换操作。</li>
+<li><code>__len__</code> 方法返回数据集中样本的数量。</li>
+<li><code>__getitem__</code> 方法根据索引获取单个样本，并且可以通过自定义的变换来增加一个新的维度（如果提供了变换）。</li>
+</ul></li>
+<li><p>数据转换（Transforms）：</p>
+<ul>
+<li><code>GetInterval</code> 类从每个光谱中获取一段指定的区间。</li>
+<li><code>ToFloatTensor</code> 类将NumPy数组转换成PyTorch的浮点型张量（tensor）。</li>
+<li>这些类实现了<code>__call__</code>方法，使得它们可以像函数一样被调用，并直接作用于数据。</li>
+</ul></li>
+<li><p><code>spectral_dataloader</code> 函数：</p>
+<ul>
+<li>基于提供的文件名或NumPy数组、索引和其它参数，这个函数创建并返回一个<code>DataLoader</code>对象。</li>
+<li>在创建<code>DataLoader</code>前，它使用了一个转换列表，并将这些转换合并(<code>Compose</code>)成一个执行链。</li>
+</ul></li>
+<li><p><code>spectral_dataloaders</code> 函数：</p>
+<ul>
+<li>通过随机分割数据集，这个函数返回训练集、验证集和测试集的<code>DataLoader</code>对象。</li>
+<li>如果没有指定数据集的细分数量，它将依据百分比来计算训练和验证集的大小。</li>
+<li>根据提供的参数，分别使用<code>spectral_dataloader</code>函数来创建并返回训练集、验证集和测试集的<code>DataLoader</code>对象。</li>
+</ul></li>
+</ol>
+<p>总而言之，这段代码提供了一个完整的管道，从加载和变换光谱数据到为机器学习模型的训练、验证和测试准备好数据迭代器(<code>DataLoader</code>)。</p>
+</section>
+<section id="resnet.py---包含-resnet-卷积神经网络模型类" class="level2" data-number="28.4">
+<h2 data-number="28.4" class="anchored" data-anchor-id="resnet.py---包含-resnet-卷积神经网络模型类"><span class="header-section-number">28.4</span> <code>resnet.py</code> - 包含 ResNet 卷积神经网络模型类</h2>
+<p>这段代码定义了两个神经网络模型（类）和一个函数，用于构建残差网络（ResNet）结构主要用于处理一维信号。下面是对这段代码的具体解释：</p>
+<section id="residualblock-类" class="level3" data-number="28.4.1">
+<h3 data-number="28.4.1" class="anchored" data-anchor-id="residualblock-类"><span class="header-section-number">28.4.1</span> <code>ResidualBlock</code> 类</h3>
+<p><code>ResidualBlock</code> 是一个继承自 <code>nn.Module</code> 的类，代表一个残差模块，是构成 ResNet 的基本单元。一个残差模块通常包括两个卷积层，并引入一条“捷径”（shortcut）或“旁路”，其目的是为了解决深层网络训练中的退化问题（Degradation Problem）。</p>
+<ol type="1">
+<li><p><code>__init__</code> 方法初始化残差模块，接受以下参数：</p>
+<ul>
+<li><code>in_channels</code>: 输入信号的通道数。</li>
+<li><code>out_channels</code>: 输出信号的通道数。</li>
+<li><code>stride</code>: 卷积层的步长（stride）。</li>
+</ul></li>
+<li><p>构建两个含有批量归一化（Batch Normalization）的卷积层 <code>conv1</code> 和 <code>conv2</code>。</p></li>
+<li><p>对于捷径路径，如果输入和输出信道数不同或步长不为1，需要一个额外的卷积层和批量归一化来匹配维度。</p></li>
+<li><p><code>forward</code> 方法定义了数据在残差模块中的前向传播过程。输入 <code>x</code> 首先通过第一个卷积层、批量归一化和ReLU激活函数，然后再通过第二个卷积层和批量归一化。与此同时，输入 <code>x</code> 也通过捷径路径。最后将两个输出相加，再次应用 ReLU 激活函数，并返回结果。</p></li>
+</ol>
+</section>
+<section id="resnet-类" class="level3" data-number="28.4.2">
+<h3 data-number="28.4.2" class="anchored" data-anchor-id="resnet-类"><span class="header-section-number">28.4.2</span> <code>ResNet</code> 类</h3>
+<p><code>ResNet</code> 也是继承自 <code>nn.Module</code> 的类，代表整个残差网络模型。</p>
+<ol type="1">
+<li><p><code>__init__</code> 方法初始化网络，接收以下参数：</p>
+<ul>
+<li><code>hidden_sizes</code>: 各个残差模块的隐藏层大小的列表。</li>
+<li><code>num_blocks</code>: 每个隐藏层大小对应的残差模块数量的列表。</li>
+<li><code>input_dim</code>: 输入数据的维度。</li>
+<li><code>in_channels</code>: 输入信号的通道数。</li>
+<li><code>n_classes</code>: 用于分类任务的输出类别数量。</li>
+</ul></li>
+<li><p><code>conv1</code> 和 <code>bn1</code> 分别表示第一个卷积层和其批量归一化层，用于处理原始输入信号。</p></li>
+<li><p><code>layers</code> 列表和 <code>strides</code> 列表分别构建了网络的不同隐藏层的残差模块和对应的步长。</p></li>
+<li><p><code>encoder</code> 表示一个由残差模块组成的编码器。</p></li>
+<li><p><code>z_dim</code> 是编码后的维度，通过在一些随机输入上运行 <code>encode</code> 方法获取。</p></li>
+<li><p><code>linear</code> 是一个全连接层，将编码后的输出转换为类别预测。</p></li>
+<li><p><code>encode</code> 方法执行编码过程，将输入 <code>x</code> 通过第一个卷积层、批量归一化、编码器，最后将编码后的数据展平。</p></li>
+<li><p><code>forward</code> 方法将输入信号编码并通过全连接层获取最终类别预测。</p></li>
+<li><p><code>_make_layer</code> 方法构建残差模块的层。</p></li>
+<li><p><code>_get_encoding_size</code> 通过输入一些随机数据来计算编码器的输出维度。</p></li>
+</ol>
+</section>
+<section id="add_activation-函数" class="level3" data-number="28.4.3">
+<h3 data-number="28.4.3" class="anchored" data-anchor-id="add_activation-函数"><span class="header-section-number">28.4.3</span> <code>add_activation</code> 函数</h3>
+<p>这个函数是一个特殊的辅助函数，返回指定名称的激活函数的实例。它接受一个字符串参数 <code>activation</code>，用于选择所需的激活函数。.FloatTensor</p>
+<p>这些组件一起使用可以构建一个能够适应不同输入输出需求的弹性神经网络模型，特别适合于一维信号的处理任务，如语音识别、时间序列分析等。</p>
+<p>总之，这个文件的作用就是仿照 ResNet 的架构构建了一个可用于一维信号处理任务的 ResNet。前面的 ResNet 指的是用于进行图片分类任务的 ResNet 本体；后面的 ResNet 指的是利用残差网络思想的一类 CNN 的名称。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ResNet（Residual Network，残差网络）是一个深层的卷积神经网络（CNN）架构。它由微软研究院的研究者 Kaiming He 等人在2015年提出，并在同年的 ImageNet 竞赛中获得了胜利，大幅提升了图像识别任务的准确率。</p>
+<p><strong>核心概念：残差学习 (Residual Learning)</strong></p>
+<p>随着网络深度的增加，理论上模型的表达能力也应随之提高。然而，在实际操作中，直接训练深度很深的网络往往会遇到两个主要的问题： 1. 梯度消失或者梯度爆炸：随着网络层数的增加，梯度在反向传播过程中会逐渐消失或者爆炸，导致网络训练更加困难，甚至无法收敛。 2. 网络退化问题 (Degradation Problem)：网络深度增加到一定程度后，准确率会饱和甚至下降，而不是因为过拟合。</p>
+<p>为了解决这些问题，ResNet 引入了残差学习框架。如果一个浅层模型已经足够优秀，那么通过堆叠更多层来获得理论上更强大的表达能力时，除了学习新特征外，新增的层只需学习与浅层模型的输出差异（即残差），这比学习一个全新的特征映射要容易得多。</p>
+<p><strong>ResNet 的结构</strong></p>
+<p>一个标准的残差单元包括一个或多个卷积层，以及在这些卷积层之间的快捷连接（skip connection 或 shortcut），该连接直接跳过一些层。</p>
+<p>这样，在模型的学习过程中，即使有些层没有学到有用的信息，快捷连接仍然可以容许较低/较浅层次的信息向前传递，从而有效缓解梯度消失问题，并有助于信号直接传递，使得模型可以训练得更深。</p>
+<p><strong>不同版本的 ResNet</strong></p>
+<p>ResNet 有不同层数的变体，包括但不限于 ResNet-18, ResNet-34, ResNet-50, ResNet-101 和 ResNet-152。其中数字表示网络层数。ResNet-50 之后的模型使用了瓶颈设计（bottleneck design），使用3个卷积层代替每个残差块中的2个，这样在增加更深的层数的同时，保持了计算复杂度。</p>
+<p>此外，ResNet 常常用作许多视觉任务的基础架构，并且已被证明即使在非图像任务中也有不错的效果。由于其出色的性能和广泛的适用性，ResNet 成为深度学习领域的一个里程碑，并为后来的很多研究提供了灵感。</p>
+</div>
+</div>
+</section>
+</section>
+<section id="training.py---包含训练卷积神经网络和进行预测的代码" class="level2" data-number="28.5">
+<h2 data-number="28.5" class="anchored" data-anchor-id="training.py---包含训练卷积神经网络和进行预测的代码"><span class="header-section-number">28.5</span> <code>training.py</code> - 包含训练卷积神经网络和进行预测的代码</h2>
+<p>这段代码包含了两个函数 <code>run_epoch</code> 和 <code>get_predictions</code>，它们用于在使用 PyTorch 进行机器学习工作流程中的训练和预测阶段。</p>
+<section id="run_epoch-函数" class="level3" data-number="28.5.1">
+<h3 data-number="28.5.1" class="anchored" data-anchor-id="run_epoch-函数"><span class="header-section-number">28.5.1</span> <code>run_epoch</code> 函数：</h3>
+<p><code>run_epoch</code> 函数负责在给定数据集上训练模型一个epoch或者评估模型。</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><code>epoch</code>：当前的epoch索引。这在函数中没有被使用，但可以用于日志或回调。</li>
+<li><code>model</code>：要使用的PyTorch神经网络模型。</li>
+<li><code>dataloader</code>：一个提供数据批次的PyTorch <code>DataLoader</code>。</li>
+<li><code>cuda</code>：一个布尔值，指示是否在GPU上进行处理。如果为 <code>True</code>，则会将数据和模型移至GPU内存。</li>
+<li><code>training</code>：一个布尔值，指示模型应处于训练模式（<code>True</code>）还是评估模式（<code>False</code>）。</li>
+<li><code>optimizer</code>：用于在训练期间执行反向传播的优化器。仅当 <code>training</code> 设置为 <code>True</code> 时使用。</li>
+</ul>
+<p><strong>行为：</strong></p>
+<ul>
+<li>根据 <code>training</code> 标志，设置模型为训练模式或评估模式。</li>
+<li>初始化 <code>total_loss</code>、<code>correct</code> 和 <code>total</code> 来跟踪损失，正确预测的数量和数据点的总数。</li>
+<li>在 <code>dataloader</code> 中进行迭代，必要时将数据移至GPU，并将张量封装在 <code>Variable</code> 中。（注：从PyTorch 0.4.0开始，<code>Variable</code> 和张量已合并，这一行不是必需的）。</li>
+<li>对于每一批数据，使用模型进行预测，计算交叉熵损失，并且如果在训练模式下，执行反向传播和优化器步骤。</li>
+<li>跟踪总损失和正确预测的数量。</li>
+<li>计算并返回epoch的准确率和平均损失。</li>
+</ul>
+</section>
+<section id="get_predictions-函数" class="level3" data-number="28.5.2">
+<h3 data-number="28.5.2" class="anchored" data-anchor-id="get_predictions-函数"><span class="header-section-number">28.5.2</span> <code>get_predictions</code> 函数：</h3>
+<p><code>get_predictions</code> 函数使用训练好的模型对提供的数据进行预测，或者获取类别的概率。</p>
+<p><strong>参数：</strong></p>
+<ul>
+<li><code>model</code>：训练好的PyTorch神经网络模型。</li>
+<li><code>dataloader</code>：一个提供数据批次的PyTorch <code>DataLoader</code>。</li>
+<li><code>cuda</code>：一个指示是否在GPU上处理的布尔值。</li>
+<li><code>get_probs</code>：一个布尔值，指示是否检索原始softmax概率（<code>True</code>）而不是预测类别索引（<code>False</code>）。</li>
+</ul>
+<p><strong>行为：</strong></p>
+<ul>
+<li>将模型设置为评估模式。</li>
+<li>在 <code>dataloader</code> 中进行迭代，必要时将数据移至GPU，并将张量封装在 <code>Variable</code> 中。（注：从PyTorch 0.4.0开始，这也不是必需的）。</li>
+<li>使用模型进行预测。如果 <code>get_probs</code> 为 <code>True</code>，它会对输出应用 <code>softmax</code> 函数来获取预测概率；否则，它取argmax来获取预测的类别索引。</li>
+<li>将结果附加到列表 <code>preds</code> 中。</li>
+<li>收集所有预测或概率后，将它们作为NumPy数组返回。如果请求了概率，则将所有批次沿第一维度堆叠；否则，只是从预测类别的列表中创建一个数组。</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li>正如所提到的，使用 <code>Variable</code> 已经过时，在PyTorch 0.4.0及以上版本不再需要。</li>
+<li>对于 <code>cuda</code> 的检查以及数据/模型在GPU之间的传输，可以用更优雅的 PyTorch 功能来管理，比如 <code>to(device)</code>，其中 <code>device</code> 可以是 <code>'cuda'</code> 或 <code>'cpu'</code>。</li>
+<li><code>get_predictions</code> 函数可以根据 <code>get_probs</code> 标志返回类概率或类索引。</li>
+</ul>
+</section>
+</section>
+<section id="模型权重文件" class="level2" data-number="28.6">
+<h2 data-number="28.6" class="anchored" data-anchor-id="模型权重文件"><span class="header-section-number">28.6</span> 模型权重文件</h2>
+<p>代码库中提供了 3 个预训练模型的权重文件。分别是：</p>
+<ol type="1">
+<li><code>pretrained_model.ckpt</code>：</li>
+<li><code>clinical_pretrained_model.ckpt</code>：</li>
+<li><code>finetuned_model.ckpt</code>：</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>.ckpt</code> 文件扩展名是一个约定俗成的用来表示 <code>checkpoint</code>（检查点）的文件扩展名。在机器学习和深度学习中，<code>checkpoint</code> 文件用于存储训练模型的状态，可以用于恢复或者继续训练进程，或者用于模型的评估和部署。</p>
+<p>当使用如 TensorFlow、PyTorch 这样的深度学习框架时，<code>.ckpt</code> 文件通常包含了以下信息：</p>
+<ol type="1">
+<li><p><strong>模型参数（Weights and Biases）</strong>：这是训练过程中学习到的网络的核心，包括每一层的权重（weights）和偏差（biases）。</p></li>
+<li><p><strong>优化器状态</strong>：这包括了用于训练过程中优化算法的状态信息（如动量、学习率等），这对于继续中断的训练非常重要。</p></li>
+<li><p><strong>其他训练状态相关信息</strong>：例如，当前的epoch数、执行迭代的次数、最新的loss函数值等。</p></li>
+</ol>
+<p>这样，如果训练过程因为某些原因（如硬件故障、电源中断等）被迫中断，<code>.ckpt</code> 文件可以用来重载训练时的状态，从而无缝地继续训练，而不是从头开始。另外，也可以使用这个文件来对训练后的模型性能进行评估和测试。</p>
+<p>在实际操作中，根据使用的框架不同，<code>.ckpt</code> 文件的详细格式会有所不同。例如在 TensorFlow 中，检查点可能会由多个文件组成，并包含 <code>.index</code> 文件和 <code>.data</code> 文件的组合，以及一个 <code>.meta</code> 文件保存了模型的图信息。在 PyTorch 中，通常是一个单一的 <code>.p</code> 或 <code>.pt</code> 文件，或者是多个 <code>.ckpt</code> 文件，这取决于保存检查点的具体方法。</p>
+<p>简而言之，<code>.ckpt</code> 文件是深度学习中一个非常接重要的组件，允许数据科学家保存和恢复训练模型的状态。</p>
+</div>
+</div>
+<p>要比较三个 <code>.ckpt</code> 文件（假设是使用 PyTorch 保存的模型权重）之间的差异，你可以加载每一个文件，并提取模型的权重，然后逐个比较权重矩阵。以下是一个PyTorch的基本的步骤，用于比较三个检查点文件的权重差异：</p>
+<div id="b5e991e9" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 列出你的 .ckpt 文件路径</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>file_paths <span class="op">=</span> [<span class="st">'pretrained_model.ckpt'</span>, <span class="st">'clinical_pretrained_model.ckpt'</span>, <span class="st">'finetuned_model.ckpt'</span>]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建一个函数来加载所有的 .ckpt 文件</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_checkpoints(file_paths):</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    checkpoints <span class="op">=</span> []</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> path <span class="kw">in</span> file_paths:</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        checkpoints.append(torch.load(path, map_location<span class="op">=</span>torch.device(<span class="st">'cpu'</span>)))</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> checkpoints</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查 keys 是否相同，并计算权重值相同和不同的 keys 数量</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compare_checkpoints(checkpoints):</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    keys_list <span class="op">=</span> [<span class="bu">set</span>(ckpt.keys()) <span class="cf">for</span> ckpt <span class="kw">in</span> checkpoints]</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    intersection_keys <span class="op">=</span> <span class="bu">set</span>.intersection(<span class="op">*</span>keys_list)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 列出共有的和特有的 keys 数量</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    unique_keys <span class="op">=</span> [keys <span class="op">-</span> intersection_keys <span class="cf">for</span> keys <span class="kw">in</span> keys_list]</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Number of common keys: </span><span class="sc">{</span><span class="bu">len</span>(intersection_keys)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, unique <span class="kw">in</span> <span class="bu">enumerate</span>(unique_keys):</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Number of keys only in checkpoint </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">len</span>(unique)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 如果所有 keys 都相同</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">all</span>(keys <span class="op">==</span> intersection_keys <span class="cf">for</span> keys <span class="kw">in</span> keys_list):</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"All checkpoints have the same keys."</span>)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>        same_values_keys <span class="op">=</span> []</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>        different_values_keys <span class="op">=</span> []</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> key <span class="kw">in</span> intersection_keys:</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 比较每个检查点中对应键的权重值</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>            weights <span class="op">=</span> [ckpt[key].numpy() <span class="cf">for</span> ckpt <span class="kw">in</span> checkpoints]</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">all</span>(np.array_equal(weights[<span class="dv">0</span>], w) <span class="cf">for</span> w <span class="kw">in</span> weights[<span class="dv">1</span>:]):</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>                same_values_keys.append(key)</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>                different_values_keys.append(key)</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Number of keys with the exact same weights: </span><span class="sc">{</span><span class="bu">len</span>(same_values_keys)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Number of keys with differing weights: </span><span class="sc">{</span><span class="bu">len</span>(different_values_keys)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> same_values_keys, different_values_keys</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>比较 3 个权重文件。</p>
+<div id="286df5be" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载所有 .ckpt 文件</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>checkpoints <span class="op">=</span> load_checkpoints(file_paths)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 获取比较结果</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>compare_checkpoints(checkpoints)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of common keys: 157
+Number of keys only in checkpoint 1: 0
+Number of keys only in checkpoint 2: 0
+Number of keys only in checkpoint 3: 31</code></pre>
+</div>
+</div>
+<p>比较前 2 个权重文件。</p>
+<div id="285db188" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 获取比较结果</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>same_values_keys, different_values_keys <span class="op">=</span> compare_checkpoints(checkpoints[<span class="dv">0</span>:<span class="dv">2</span>])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 如果需要，可以进一步处理或打印相同和不同的 keys 信息</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 例如：</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Keys with the same weights:", same_values_keys)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Keys with differing weights:", different_values_keys)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of common keys: 157
+Number of keys only in checkpoint 1: 0
+Number of keys only in checkpoint 2: 0
+All checkpoints have the same keys.
+Number of keys with the exact same weights: 0
+Number of keys with differing weights: 157</code></pre>
+</div>
+</div>
+<p>在这个脚本中，我们首先加载了每个 <code>.ckpt</code> 文件。之后定义了一个函数 <code>compare_weights</code>，它会遍历每组权重的键（通常对应模型中的每一层），并计算两两之间的Frobenius范数（使用 <code>numpy.linalg.norm</code>）。Frobenius范数是度量矩阵（在这种情况下指权重矩阵）元素值的一种手段，可以作为比较它们相似度的一个指标。</p>
+<p>最后，我们输出每个权重矩阵之间比较的结果，这样可以直观地看到不同检查点之间权重的具体差异。</p>
+<p>请注意，上述代码片段假定所有 <code>.ckpt</code> 文件中包含相同的权重键，且这些权重是保存在同一模型结构中。如果模型结构不同，需要做进一步的处理来确保权重可以匹配对比。</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-csho33/b" class="csl-entry" role="listitem">
+<span>“Csho33/Bacteria-ID: Source Code and Demos for <span>"</span>Rapid Identification of Pathogenic Bacteria Using Raman Spectroscopy and Deep Learning<span>"</span>.”</span> n.d. <a href="https://github.com/csho33/bacteria-ID">https://github.com/csho33/bacteria-ID</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./pathogen-identification-with-raman-spectroscopy.html" class="pagination-link" aria-label="利用拉曼光谱识别病原菌">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./pretrained-model.html" class="pagination-link" aria-label="使用模型进行病原菌检测">
+        <span class="nav-page-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/bacteria-id-annotation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/bacteria-id-annotation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>

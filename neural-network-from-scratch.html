@@ -1,0 +1,2413 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>24&nbsp; 手搓神经网络模型 – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./two-dimensional-classification.html" rel="next">
+<link href="./Doc2X.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./neural-network-from-scratch.html">从零开始神经网络</a></li><li class="breadcrumb-item"><a href="./neural-network-from-scratch.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#先决条件" id="toc-先决条件" class="nav-link active" data-scroll-target="#先决条件"><span class="header-section-number">24.1</span> 先决条件</a></li>
+  <li><a href="#概述" id="toc-概述" class="nav-link" data-scroll-target="#概述"><span class="header-section-number">24.2</span> 概述</a></li>
+  <li><a href="#神经网络模型基础" id="toc-神经网络模型基础" class="nav-link" data-scroll-target="#神经网络模型基础"><span class="header-section-number">24.3</span> 神经网络模型基础</a>
+  <ul class="collapse">
+  <li><a href="#什么是神经网络" id="toc-什么是神经网络" class="nav-link" data-scroll-target="#什么是神经网络"><span class="header-section-number">24.3.1</span> 什么是神经网络？</a></li>
+  <li><a href="#神经网络训练的本质" id="toc-神经网络训练的本质" class="nav-link" data-scroll-target="#神经网络训练的本质"><span class="header-section-number">24.3.2</span> 神经网络训练的本质</a></li>
+  <li><a href="#卷积操作为什么有用" id="toc-卷积操作为什么有用" class="nav-link" data-scroll-target="#卷积操作为什么有用"><span class="header-section-number">24.3.3</span> 卷积操作为什么有用？</a></li>
+  </ul></li>
+  <li><a href="#手写字母识别的历史" id="toc-手写字母识别的历史" class="nav-link" data-scroll-target="#手写字母识别的历史"><span class="header-section-number">24.4</span> 手写字母识别的历史</a></li>
+  <li><a href="#配置环境和下载数据集" id="toc-配置环境和下载数据集" class="nav-link" data-scroll-target="#配置环境和下载数据集"><span class="header-section-number">24.5</span> 配置环境和下载数据集</a>
+  <ul class="collapse">
+  <li><a href="#配置-conda-环境" id="toc-配置-conda-环境" class="nav-link" data-scroll-target="#配置-conda-环境"><span class="header-section-number">24.5.1</span> 配置 Conda 环境</a></li>
+  <li><a href="#安装-pytorch-和-torchvision" id="toc-安装-pytorch-和-torchvision" class="nav-link" data-scroll-target="#安装-pytorch-和-torchvision"><span class="header-section-number">24.5.2</span> 安装 PyTorch 和 torchvision</a></li>
+  <li><a href="#下载-mnist-数据集" id="toc-下载-mnist-数据集" class="nav-link" data-scroll-target="#下载-mnist-数据集"><span class="header-section-number">24.5.3</span> 下载 MNIST 数据集</a></li>
+  <li><a href="#绘制数据集" id="toc-绘制数据集" class="nav-link" data-scroll-target="#绘制数据集"><span class="header-section-number">24.5.4</span> 绘制数据集</a></li>
+  </ul></li>
+  <li><a href="#构建-lenet-神经网络模型" id="toc-构建-lenet-神经网络模型" class="nav-link" data-scroll-target="#构建-lenet-神经网络模型"><span class="header-section-number">24.6</span> 构建 LeNet 神经网络模型</a>
+  <ul class="collapse">
+  <li><a href="#构建-lenet-模型" id="toc-构建-lenet-模型" class="nav-link" data-scroll-target="#构建-lenet-模型"><span class="header-section-number">24.6.1</span> 构建 LeNet 模型</a></li>
+  <li><a href="#lenet-模型结构图" id="toc-lenet-模型结构图" class="nav-link" data-scroll-target="#lenet-模型结构图"><span class="header-section-number">24.6.2</span> LeNet 模型结构图</a></li>
+  </ul></li>
+  <li><a href="#模型训练和评估" id="toc-模型训练和评估" class="nav-link" data-scroll-target="#模型训练和评估"><span class="header-section-number">24.7</span> 模型训练和评估</a>
+  <ul class="collapse">
+  <li><a href="#创建数据加载器" id="toc-创建数据加载器" class="nav-link" data-scroll-target="#创建数据加载器"><span class="header-section-number">24.7.1</span> 创建数据加载器</a></li>
+  <li><a href="#定义训练函数" id="toc-定义训练函数" class="nav-link" data-scroll-target="#定义训练函数"><span class="header-section-number">24.7.2</span> 定义训练函数</a></li>
+  <li><a href="#定义测试函数" id="toc-定义测试函数" class="nav-link" data-scroll-target="#定义测试函数"><span class="header-section-number">24.7.3</span> 定义测试函数</a></li>
+  <li><a href="#训练过程中的损失指标" id="toc-训练过程中的损失指标" class="nav-link" data-scroll-target="#训练过程中的损失指标"><span class="header-section-number">24.7.4</span> 训练过程中的损失指标</a></li>
+  <li><a href="#主函数训练与评估模型" id="toc-主函数训练与评估模型" class="nav-link" data-scroll-target="#主函数训练与评估模型"><span class="header-section-number">24.7.5</span> 主函数：训练与评估模型</a></li>
+  <li><a href="#优化器与损失函数" id="toc-优化器与损失函数" class="nav-link" data-scroll-target="#优化器与损失函数"><span class="header-section-number">24.7.6</span> 优化器与损失函数</a></li>
+  <li><a href="#开始训练" id="toc-开始训练" class="nav-link" data-scroll-target="#开始训练"><span class="header-section-number">24.7.7</span> 开始训练</a></li>
+  <li><a href="#绘制训练过程图表" id="toc-绘制训练过程图表" class="nav-link" data-scroll-target="#绘制训练过程图表"><span class="header-section-number">24.7.8</span> 绘制训练过程图表</a></li>
+  </ul></li>
+  <li><a href="#详解神经元的训练过程" id="toc-详解神经元的训练过程" class="nav-link" data-scroll-target="#详解神经元的训练过程"><span class="header-section-number">24.8</span> 详解神经元的训练过程</a>
+  <ul class="collapse">
+  <li><a href="#网络结构与设定" id="toc-网络结构与设定" class="nav-link" data-scroll-target="#网络结构与设定"><span class="header-section-number">24.8.1</span> 网络结构与设定</a></li>
+  <li><a href="#训练流程概述" id="toc-训练流程概述" class="nav-link" data-scroll-target="#训练流程概述"><span class="header-section-number">24.8.2</span> 训练流程概述</a></li>
+  <li><a href="#数值示例" id="toc-数值示例" class="nav-link" data-scroll-target="#数值示例"><span class="header-section-number">24.8.3</span> 数值示例</a></li>
+  <li><a href="#迭代-1" id="toc-迭代-1" class="nav-link" data-scroll-target="#迭代-1"><span class="header-section-number">24.8.4</span> 迭代 1</a></li>
+  <li><a href="#迭代-2" id="toc-迭代-2" class="nav-link" data-scroll-target="#迭代-2"><span class="header-section-number">24.8.5</span> 迭代 2</a></li>
+  <li><a href="#迭代-3" id="toc-迭代-3" class="nav-link" data-scroll-target="#迭代-3"><span class="header-section-number">24.8.6</span> 迭代 3</a></li>
+  <li><a href="#训练过程总结" id="toc-训练过程总结" class="nav-link" data-scroll-target="#训练过程总结"><span class="header-section-number">24.8.7</span> 训练过程总结</a></li>
+  <li><a href="#拓展多层神经网络" id="toc-拓展多层神经网络" class="nav-link" data-scroll-target="#拓展多层神经网络"><span class="header-section-number">24.8.8</span> 拓展：多层神经网络</a></li>
+  </ul></li>
+  <li><a href="#详解卷积滤波器的训练过程" id="toc-详解卷积滤波器的训练过程" class="nav-link" data-scroll-target="#详解卷积滤波器的训练过程"><span class="header-section-number">24.9</span> 详解卷积滤波器的训练过程</a>
+  <ul class="collapse">
+  <li><a href="#滤波器基本结构" id="toc-滤波器基本结构" class="nav-link" data-scroll-target="#滤波器基本结构"><span class="header-section-number">24.9.1</span> 滤波器基本结构</a></li>
+  <li><a href="#工作原理示例" id="toc-工作原理示例" class="nav-link" data-scroll-target="#工作原理示例"><span class="header-section-number">24.9.2</span> 工作原理示例</a></li>
+  <li><a href="#可视化理解" id="toc-可视化理解" class="nav-link" data-scroll-target="#可视化理解"><span class="header-section-number">24.9.3</span> 可视化理解</a></li>
+  </ul></li>
+  <li><a href="#总结" id="toc-总结" class="nav-link" data-scroll-target="#总结"><span class="header-section-number">24.10</span> 总结</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/neural-network-from-scratch.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/neural-network-from-scratch.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./neural-network-from-scratch.html">从零开始神经网络</a></li><li class="breadcrumb-item"><a href="./neural-network-from-scratch.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="先决条件" class="level2" data-number="24.1">
+<h2 data-number="24.1" class="anchored" data-anchor-id="先决条件"><span class="header-section-number">24.1</span> 先决条件</h2>
+<p>在开始之前，请确保您具备以下知识和环境配置：</p>
+<ol type="1">
+<li><strong>Python 编程基础</strong>：熟悉基本的 Python 语法和常用库</li>
+<li><strong>环境配置</strong>：
+<ul>
+<li>Python 3.10 或更高版本</li>
+<li>Conda 包管理工具</li>
+<li>PyTorch 2.0 或更高版本</li>
+<li>GPU 支持（可选，但推荐）</li>
+</ul></li>
+</ol>
+<p>如果您还没有准备好这些环境，请先按照 [./setup-a-reproducible-envionment.qmd] 部分的说明进行设置。</p>
+</section>
+<section id="概述" class="level2" data-number="24.2">
+<h2 data-number="24.2" class="anchored" data-anchor-id="概述"><span class="header-section-number">24.2</span> 概述</h2>
+<p>本项目将展示如何利用 PyTorch 从零开始构建一个神经网络模型，以解决手写字母（实际上这里使用的是 MNIST 手写数字）识别问题。本文内容不仅介绍了神经网络的基础知识、训练本质和卷积操作的优势，还给出了完整代码实现，让你能够亲自动手构建并训练模型。</p>
+</section>
+<section id="神经网络模型基础" class="level2" data-number="24.3">
+<h2 data-number="24.3" class="anchored" data-anchor-id="神经网络模型基础"><span class="header-section-number">24.3</span> 神经网络模型基础</h2>
+<p>在开始代码实现之前，我们先介绍一些神经网络的基本概念和原理。</p>
+<iframe src="//player.bilibili.com/player.html?isOutside=true&amp;aid=113332711333508&amp;bvid=BV1atCRYsE7x&amp;cid=26360022345&amp;p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="100%" height="600px">
+</iframe>
+<section id="什么是神经网络" class="level3" data-number="24.3.1">
+<h3 data-number="24.3.1" class="anchored" data-anchor-id="什么是神经网络"><span class="header-section-number">24.3.1</span> 什么是神经网络？</h3>
+<p>神经网络是一种受人脑神经元连接方式启发而构造的数学模型。它由大量节点（神经元）构成，这些节点以不同的层级进行排列：</p>
+<ul>
+<li><strong>输入层</strong>：接收外界数据。<br>
+</li>
+<li><strong>隐藏层</strong>：对数据进行特征提取与变换。<br>
+</li>
+<li><strong>输出层</strong>：给出最终的预测结果。</li>
+</ul>
+<p>下面的 Mermaid 图展示了一个简单神经网络的基本结构<a href="#fig-nn-architecture" class="quarto-xref">Figure&nbsp;<span>24.1</span></a>：</p>
+<div id="fig-nn-architecture" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-nn-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  %% 输入层
+  subgraph 输入层
+    A1
+    A2
+    A3
+    A4
+    A5
+  end
+
+  %% 隐藏层 1
+  subgraph 隐藏层 1
+    H11
+    H12
+  end
+
+  %% 隐藏层 2
+  subgraph 隐藏层 2
+    H21
+    H22
+  end
+
+  %% 输出层
+  subgraph 输出层
+    O1((y))
+  end
+
+  %% 连接 输入层 → 隐藏层 1
+  A1 --&gt; H11
+  A1 --&gt; H12
+  A2 --&gt; H11
+  A2 --&gt; H12
+  A3 --&gt; H11
+  A3 --&gt; H12
+  A4 --&gt; H11
+  A4 --&gt; H12
+  A5 --&gt; H11
+  A5 --&gt; H12
+
+  %% 连接 隐藏层 1 → 隐藏层 2
+  H11 --&gt; H21
+  H11 --&gt; H22
+  H12 --&gt; H21
+  H12 --&gt; H22
+
+  %% 连接 隐藏层 2 → 输出层
+  H21 --&gt; O1
+  H22 --&gt; O1
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nn-architecture-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.1: : 神经网络的基本结构。
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="神经网络训练的本质" class="level3" data-number="24.3.2">
+<h3 data-number="24.3.2" class="anchored" data-anchor-id="神经网络训练的本质"><span class="header-section-number">24.3.2</span> 神经网络训练的本质</h3>
+<p>神经网络的训练主要分为以下几个步骤：</p>
+<ol type="1">
+<li><strong>前向传播</strong>：将输入数据通过网络，得到预测输出。<br>
+</li>
+<li><strong>计算损失</strong>：比较预测输出和真实标签之间的误差。<br>
+</li>
+<li><strong>反向传播</strong>：根据损失计算梯度，确定每个参数应如何调整。<br>
+</li>
+<li><strong>梯度下降</strong>：利用梯度更新网络参数，逐步减小预测误差。</li>
+</ol>
+<p>这种不断迭代的过程使得模型能够从数据中学习并不断改进。</p>
+</section>
+<section id="卷积操作为什么有用" class="level3" data-number="24.3.3">
+<h3 data-number="24.3.3" class="anchored" data-anchor-id="卷积操作为什么有用"><span class="header-section-number">24.3.3</span> 卷积操作为什么有用？</h3>
+<p>卷积操作是卷积神经网络（CNN）的核心，主要有以下优点：</p>
+<ul>
+<li><strong>局部特征提取</strong>：卷积核能捕捉局部区域内的边缘、纹理等特征。<br>
+</li>
+<li><strong>参数共享</strong>：同一卷积核在整个图像上滑动，显著减少模型参数数量。<br>
+</li>
+<li><strong>平移不变性</strong>：卷积操作能保证特征检测不受物体在图像中位置变化的影响。</li>
+</ul>
+<p>下面的图示意了卷积操作的基本原理：</p>
+<div id="fig-conv-operation" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-conv-operation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {'theme': 'default'}}%%
+flowchart LR
+    subgraph Input_Image[输入图像]
+        A[像素矩阵]
+    end
+    subgraph Convolution[卷积操作]
+        B[滤波器]
+        C[特征提取]
+    end
+    A --&gt; B
+    B --&gt; C
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-conv-operation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.2: 卷积操作示意图。
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="手写字母识别的历史" class="level2" data-number="24.4">
+<h2 data-number="24.4" class="anchored" data-anchor-id="手写字母识别的历史"><span class="header-section-number">24.4</span> 手写字母识别的历史</h2>
+<p>手写字母或数字识别一直是人工智能领域的经典问题。早期研究中，专家需要手工设计特征提取方法来识别图像中的字母或数字。<br>
+随着神经网络，尤其是卷积神经网络（CNN）的出现，系统能够自动学习并提取图像特征，大幅提升了识别准确率。<br>
+MNIST 数据集便是一个经典的例子，它包含了 60000 张训练图像和 10000 张测试图像，每张图像为 28x28 像素的灰度图，广泛用于手写数字识别的教学和研究中。</p>
+</section>
+<section id="配置环境和下载数据集" class="level2" data-number="24.5">
+<h2 data-number="24.5" class="anchored" data-anchor-id="配置环境和下载数据集"><span class="header-section-number">24.5</span> 配置环境和下载数据集</h2>
+<p>在动手构建神经网络之前，请确保你已配置好 Conda 环境并安装所需的软件包。</p>
+<section id="配置-conda-环境" class="level3" data-number="24.5.1">
+<h3 data-number="24.5.1" class="anchored" data-anchor-id="配置-conda-环境"><span class="header-section-number">24.5.1</span> 配置 Conda 环境</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建一个新的 Conda 环境，命名为 pytorch_env，使用 Python 3.10 版本</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> pytorch_env python=3.10</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 激活该环境</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate pytorch_env</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="安装-pytorch-和-torchvision" class="level3" data-number="24.5.2">
+<h3 data-number="24.5.2" class="anchored" data-anchor-id="安装-pytorch-和-torchvision"><span class="header-section-number">24.5.2</span> 安装 PyTorch 和 torchvision</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用 conda 安装 PyTorch 及其相关工具包</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pytorch torchvision torchaudio <span class="at">-c</span> pytorch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="下载-mnist-数据集" class="level3" data-number="24.5.3">
+<h3 data-number="24.5.3" class="anchored" data-anchor-id="下载-mnist-数据集"><span class="header-section-number">24.5.3</span> 下载 MNIST 数据集</h3>
+<p>在下面的代码中，我们将利用 torchvision 自动下载 MNIST 数据集。这个数据集包含手写数字图像，是机器学习领域的经典数据集。</p>
+<div id="e6eadff2" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 导入必要的库</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn <span class="im">as</span> nn</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.optim <span class="im">as</span> optim</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision <span class="im">import</span> datasets, transforms</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>定义图像预处理流程：</p>
+<ul>
+<li><code>transforms.ToTensor()</code> 将 PIL 图像或 numpy 数组转换为 tensor，并将像素值归一化到 [0, 1] 范围内</li>
+<li><code>transforms.Normalize()</code> 进一步将数据标准化，均值和标准差是针对 MNIST 数据集计算得到的</li>
+</ul>
+<div id="27424441" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义图像预处理流程</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> transforms.Compose([</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    transforms.ToTensor(),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    transforms.Normalize((<span class="fl">0.1307</span>,), (<span class="fl">0.3081</span>,))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 下载并加载数据集</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> datasets.MNIST(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    root<span class="op">=</span><span class="st">'./data'</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    train<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    download<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>transform</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>test_dataset <span class="op">=</span> datasets.MNIST(</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    root<span class="op">=</span><span class="st">'./data'</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    train<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    download<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    transform<span class="op">=</span>transform</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="绘制数据集" class="level3" data-number="24.5.4">
+<h3 data-number="24.5.4" class="anchored" data-anchor-id="绘制数据集"><span class="header-section-number">24.5.4</span> 绘制数据集</h3>
+<p>绘制 12 张训练集和 4 张测试集图像，并在图上右下角标出数据集图像的id。</p>
+<div id="cell-fig-example-of-numbers" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制训练集图像</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"MNIST Dataset Examples"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">21</span>): <span class="co"># 绘制 21 张训练集图像</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">4</span>, <span class="dv">7</span>, i<span class="op">+</span><span class="dv">1</span>) <span class="co"># 绘制第 i+1 张图像</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>) <span class="co"># 不显示坐标轴</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> train_dataset[i][<span class="dv">0</span>].squeeze() <span class="co"># 获取第 i 张图像</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> train_dataset[i][<span class="dv">1</span>] <span class="co"># 获取第 i 张图像的标签</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img, cmap<span class="op">=</span><span class="st">"gray"</span>) <span class="co"># 绘制第 i 张图像</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    plt.text(<span class="dv">18</span>, <span class="dv">26</span>, <span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"red"</span>) <span class="co"># 在图像右下角标出红色标签</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制测试集图像</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>): <span class="co"># 绘制 7 张测试集图像</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">4</span>, <span class="dv">7</span>, i<span class="op">+</span><span class="dv">22</span>) <span class="co"># 绘制第 i+22 张图像</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>) <span class="co"># 不显示坐标轴</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    img <span class="op">=</span> test_dataset[i][<span class="dv">0</span>].squeeze() <span class="co"># 获取第 i 张图像</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> test_dataset[i][<span class="dv">1</span>] <span class="co"># 获取第 i 张图像的标签</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    plt.imshow(img, cmap<span class="op">=</span><span class="st">"gray"</span>) <span class="co"># 绘制第 i 张图像</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    plt.text(<span class="dv">20</span>, <span class="dv">25</span>, <span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">10</span>, color<span class="op">=</span><span class="st">"green"</span>) <span class="co"># 在图像右下角标出绿色标签</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-example-of-numbers" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-example-of-numbers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="neural-network-from-scratch_files/figure-html/fig-example-of-numbers-output-1.png" width="950" height="571" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example-of-numbers-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.3: 手写数字示例（红色取自训练集，绿色取自测试集）
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="构建-lenet-神经网络模型" class="level2" data-number="24.6">
+<h2 data-number="24.6" class="anchored" data-anchor-id="构建-lenet-神经网络模型"><span class="header-section-number">24.6</span> 构建 LeNet 神经网络模型</h2>
+<p>LeNet 是最早用于手写数字识别的卷积神经网络之一，其结构包括卷积层、池化层和全连接层。下面我们将从零开始搭建 LeNet 模型。</p>
+<section id="构建-lenet-模型" class="level3" data-number="24.6.1">
+<h3 data-number="24.6.1" class="anchored" data-anchor-id="构建-lenet-模型"><span class="header-section-number">24.6.1</span> 构建 LeNet 模型</h3>
+<p>下面代码定义了 LeNet 模型，其中包含两个卷积层、两个池化层和三个全连接层。每一步均附有详细注释。</p>
+<div id="8e11a7f8" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义 LeNet 神经网络模型类，继承自 nn.Module</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LeNet(nn.Module):</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 初始化父类 nn.Module</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LeNet, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第一个卷积层：</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 输入通道：1（灰度图像），输出通道：6，卷积核大小：5x5</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.conv1 <span class="op">=</span> nn.Conv2d(in_channels<span class="op">=</span><span class="dv">1</span>, out_channels<span class="op">=</span><span class="dv">6</span>, kernel_size<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 定义池化层：</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 使用 2x2 的最大池化，能够减小特征图的尺寸</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.pool <span class="op">=</span> nn.MaxPool2d(kernel_size<span class="op">=</span><span class="dv">2</span>, stride<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第二个卷积层：</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 输入通道：6，输出通道：16，卷积核大小：5x5</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.conv2 <span class="op">=</span> nn.Conv2d(in_channels<span class="op">=</span><span class="dv">6</span>, out_channels<span class="op">=</span><span class="dv">16</span>, kernel_size<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第一个全连接层：</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 输入特征数为 16*4*4（经过两次卷积和池化后的特征图尺寸），输出特征数为 120</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc1 <span class="op">=</span> nn.Linear(in_features<span class="op">=</span><span class="dv">16</span><span class="op">*</span><span class="dv">4</span><span class="op">*</span><span class="dv">4</span>, out_features<span class="op">=</span><span class="dv">120</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第二个全连接层：将 120 个特征映射到 84 个特征</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc2 <span class="op">=</span> nn.Linear(in_features<span class="op">=</span><span class="dv">120</span>, out_features<span class="op">=</span><span class="dv">84</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第三个全连接层：输出 10 个类别，对应 MNIST 中 10 个数字</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.fc3 <span class="op">=</span> nn.Linear(in_features<span class="op">=</span><span class="dv">84</span>, out_features<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 将输入通过第一个卷积层，并使用 ReLU 激活函数增加非线性</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.relu(<span class="va">self</span>.conv1(x))</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 应用池化层，减小特征图尺寸</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.pool(x)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第二个卷积层 + ReLU 激活</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.relu(<span class="va">self</span>.conv2(x))</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 再次池化</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.pool(x)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 将多维特征图展平为一维向量，为全连接层做准备</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> x.view(<span class="op">-</span><span class="dv">1</span>, <span class="dv">16</span><span class="op">*</span><span class="dv">4</span><span class="op">*</span><span class="dv">4</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第一个全连接层 + ReLU 激活</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.relu(<span class="va">self</span>.fc1(x))</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第二个全连接层 + ReLU 激活</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> torch.relu(<span class="va">self</span>.fc2(x))</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 第三个全连接层得到最终输出（未经过激活，后续会结合损失函数使用）</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.fc3(x)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>代码说明：</strong></p>
+<p>本部分代码定义了 LeNet 模型。通过两个卷积层和池化层逐步提取图像特征，再通过全连接层进行分类。注意，由于 MNIST 图像尺寸为 28×28，经过两次卷积和池化后，特征图尺寸正好为 4×4（通道数为 16），因此全连接层的输入特征数为 <code>16*4*4</code>。</p>
+</section>
+<section id="lenet-模型结构图" class="level3" data-number="24.6.2">
+<h3 data-number="24.6.2" class="anchored" data-anchor-id="lenet-模型结构图"><span class="header-section-number">24.6.2</span> LeNet 模型结构图</h3>
+<p>初始化一个 LeNet 模型，并打印其结构。</p>
+<div id="a4d7449e" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 打印模型结构</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LeNet()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>LeNet(
+  (conv1): Conv2d(1, 6, kernel_size=(5, 5), stride=(1, 1))
+  (pool): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (conv2): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+  (fc1): Linear(in_features=256, out_features=120, bias=True)
+  (fc2): Linear(in_features=120, out_features=84, bias=True)
+  (fc3): Linear(in_features=84, out_features=10, bias=True)
+)</code></pre>
+</div>
+</div>
+<p>让我们详细解释一下模型的每一层结构：</p>
+<ol type="1">
+<li><strong>第一个卷积层 <code>(conv1)</code></strong>：
+<ul>
+<li>输入：1 个通道（灰度图像）</li>
+<li>输出：6 个特征图</li>
+<li>卷积核：5×5</li>
+<li>步长：1</li>
+<li>输入尺寸：28×28 → 输出尺寸：24×24</li>
+</ul></li>
+<li><strong>第一个池化层 <code>(pool)</code></strong>：
+<ul>
+<li>池化窗口：2×2</li>
+<li>步长：2</li>
+<li>输入尺寸：24×24 → 输出尺寸：12×12</li>
+</ul></li>
+<li><strong>第二个卷积层 <code>(conv2)</code></strong>：
+<ul>
+<li>输入：6 个通道</li>
+<li>输出：16 个特征图</li>
+<li>卷积核：5×5</li>
+<li>步长：1</li>
+<li>输入尺寸：12×12 → 输出尺寸：8×8</li>
+</ul></li>
+<li><strong>第二个池化层 <code>(pool)</code></strong>：
+<ul>
+<li>池化窗口：2×2</li>
+<li>步长：2</li>
+<li>输入尺寸：8×8 → 输出尺寸：4×4</li>
+</ul></li>
+<li><strong>第一个全连接层 <code>(fc1)</code></strong>：
+<ul>
+<li>输入：256 个特征（16×4×4）</li>
+<li>输出：120 个神经元</li>
+</ul></li>
+<li><strong>第二个全连接层 <code>(fc2)</code></strong>：
+<ul>
+<li>输入：120 个特征</li>
+<li>输出：84 个神经元</li>
+</ul></li>
+<li><strong>第三个全连接层 <code>(fc3)</code></strong>：
+<ul>
+<li>输入：84 个特征</li>
+<li>输出：10 个神经元（对应 10 个数字类别）</li>
+</ul></li>
+</ol>
+<p><strong>数据流向说明</strong>：</p>
+<ol type="1">
+<li>输入的 28×28 图像首先经过第一个卷积层，生成 6 个 24×24 的特征图</li>
+<li>经过池化层后，特征图变为 6 个 12×12</li>
+<li>第二个卷积层将特征图转换为 16 个 8×8 的特征图</li>
+<li>再次池化后，得到 16 个 4×4 的特征图</li>
+<li>将特征图展平为一维向量（16×4×4 = 256）</li>
+<li>通过三个全连接层逐步将特征降维，最终输出 10 个类别的概率分布</li>
+</ol>
+<p>这种结构设计使得网络能够逐层提取图像的特征，从低级的边缘特征到高级的抽象特征，最终实现手写数字的分类。</p>
+</section>
+</section>
+<section id="模型训练和评估" class="level2" data-number="24.7">
+<h2 data-number="24.7" class="anchored" data-anchor-id="模型训练和评估"><span class="header-section-number">24.7</span> 模型训练和评估</h2>
+<p>接下来，我们将编写训练和测试的代码，并整合到主函数中，实现对模型的训练和评估。</p>
+<section id="创建数据加载器" class="level3" data-number="24.7.1">
+<h3 data-number="24.7.1" class="anchored" data-anchor-id="创建数据加载器"><span class="header-section-number">24.7.1</span> 创建数据加载器</h3>
+<p>在训练深度学习模型时，我们通常需要 <strong>创建数据加载器（<code>DataLoader</code>）</strong>，其主要作用如下：</p>
+<p><strong>1. 方便批量处理（Mini-Batch）</strong></p>
+<p>训练时，我们不会一次性输入所有数据，而是 <strong>按批次（Batch）输入</strong>，这样可以：</p>
+<ul>
+<li><strong>提高计算效率</strong>：GPU 并行处理多个样本，比逐个样本计算更快。</li>
+<li><strong>稳定梯度下降</strong>：批量计算梯度，减少随机性，提高模型收敛速度。</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> DataLoader(train_dataset, batch_size<span class="op">=</span><span class="dv">64</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>上面代码表示 <strong>每次取 64 个样本进行训练</strong>。</p>
+<p><strong>2. 随机打乱数据（Shuffle）</strong></p>
+<p>如果不打乱数据，模型可能会 <strong>学习到数据的顺序，而不是特征模式</strong>。</p>
+<p><code>shuffle=True</code> 确保每个 epoch 训练时，样本顺序是随机的，防止模型过拟合于数据的排列方式。</p>
+<p><strong>3. 自动并行加载数据</strong></p>
+<p><code>DataLoader</code> 允许使用 <strong>多线程并行加载数据</strong>，这样可以加快训练：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> DataLoader(train_dataset, batch_size<span class="op">=</span><span class="dv">64</span>, shuffle<span class="op">=</span><span class="va">True</span>, num_workers<span class="op">=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li><code>num_workers=4</code> 表示使用 4 个进程同时加载数据，提高效率。</li>
+</ul>
+<p><strong>4. 方便数据预处理</strong></p>
+<p>在 <code>DataLoader</code> 中，我们可以添加 <strong><code>transforms</code>（数据增强）</strong>，比如：</p>
+<ul>
+<li><strong>标准化</strong>（Normalization）</li>
+<li><strong>数据扩增</strong>（Random Flip, Crop, Rotate）</li>
+</ul>
+<p>例如，对 <code>MNIST</code> 进行标准化：</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>transform <span class="op">=</span> transforms.Compose([</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    transforms.ToTensor(),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    transforms.Normalize((<span class="fl">0.1307</span>,), (<span class="fl">0.3081</span>,))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>train_dataset <span class="op">=</span> datasets.MNIST(root<span class="op">=</span><span class="st">'./data'</span>, train<span class="op">=</span><span class="va">True</span>, transform<span class="op">=</span>transform, download<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> DataLoader(train_dataset, batch_size<span class="op">=</span><span class="dv">64</span>, shuffle<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>这样，我们就能高效地进行深度学习训练！🚀</p>
+<div id="270c6de9" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建数据加载器</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>train_loader <span class="op">=</span> torch.utils.data.DataLoader(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    dataset<span class="op">=</span>train_dataset,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">64</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    shuffle<span class="op">=</span><span class="va">True</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>test_loader <span class="op">=</span> torch.utils.data.DataLoader(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    dataset<span class="op">=</span>test_dataset,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">1000</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    shuffle<span class="op">=</span><span class="va">False</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="定义训练函数" class="level3" data-number="24.7.2">
+<h3 data-number="24.7.2" class="anchored" data-anchor-id="定义训练函数"><span class="header-section-number">24.7.2</span> 定义训练函数</h3>
+<p>训练函数中，模型对每个批次数据进行前向传播，计算损失后进行反向传播，并使用优化器更新权重。每隔一定批次输出当前损失，方便观察训练进度。</p>
+<div id="80ad3562" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义训练函数，用于在训练集上训练模型</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> train(model, device, train_loader, optimizer, criterion, epoch):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    model.train()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    train_loss <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    correct <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> batch_idx, (data, target) <span class="kw">in</span> <span class="bu">enumerate</span>(train_loader):</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>        data, target <span class="op">=</span> data.to(device), target.to(device)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        optimizer.zero_grad()</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>        output <span class="op">=</span> model(data)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> criterion(output, target)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        loss.backward()</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        optimizer.step()</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 累计损失和正确预测数</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>        train_loss <span class="op">+=</span> loss.item() <span class="op">*</span> data.size(<span class="dv">0</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> output.argmax(dim<span class="op">=</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        correct <span class="op">+=</span> pred.eq(target.view_as(pred)).<span class="bu">sum</span>().item()</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> batch_idx <span class="op">%</span> <span class="dv">5000</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f"Train Epoch: </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss"> [</span><span class="sc">{</span>batch_idx <span class="op">*</span> <span class="bu">len</span>(data)<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span><span class="bu">len</span>(train_loader.dataset)<span class="sc">}</span><span class="ss">]</span><span class="ch">\t</span><span class="ss">Loss: </span><span class="sc">{</span>loss<span class="sc">.</span>item()<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 计算平均损失和准确率</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    train_loss <span class="op">/=</span> <span class="bu">len</span>(train_loader.dataset)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    accuracy <span class="op">=</span> <span class="fl">100.</span> <span class="op">*</span> correct <span class="op">/</span> <span class="bu">len</span>(train_loader.dataset)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> train_loss, accuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>函数原理分析</strong></p>
+<p>LeNet训练函数的核心流程可分为前向传播、损失计算、反向传播、参数更新四个阶段。以下是代码各环节与CNN训练原理的对应关系：</p>
+<ul>
+<li><p>前向传播阶段</p>
+<ul>
+<li><code>model(data)</code> 执行卷积神经网络的前向计算</li>
+<li>LeNet结构依次执行：卷积→池化→卷积→池化→全连接→全连接</li>
+<li>卷积层通过滤波器提取空间特征，池化层降低特征图维度，全连接层完成分类</li>
+</ul></li>
+<li><p>损失计算阶段</p>
+<ul>
+<li><code>criterion(output, target)</code> 使用交叉熵损失函数</li>
+<li>该损失函数适用于多分类任务，衡量预测概率分布与真实标签的差异</li>
+<li>损失值反映当前参数下模型的预测误差程度</li>
+</ul></li>
+<li><p>反向传播阶段</p>
+<ul>
+<li><code>loss.backward()</code> 自动计算梯度</li>
+<li>通过链式法则逐层计算卷积核参数和全连接层权重的梯度</li>
+<li>梯度值表征各参数对最终损失的贡献程度</li>
+</ul></li>
+<li><p>参数优化阶段</p>
+<ul>
+<li><code>optimizer.step()</code> 根据梯度更新参数</li>
+<li>典型优化器如SGD的更新公式：<span class="math inline">\(w_{t+1} = w_t - \eta \nabla L(w_t)\)</span></li>
+<li>学习率<span class="math inline">\(\eta\)</span>控制参数更新步长，需合理设置避免震荡或收敛过慢</li>
+</ul></li>
+</ul>
+<p><strong>关键实现细节</strong></p>
+<p>-梯度管理</p>
+<ul>
+<li><p><code>optimizer.zero_grad()</code> 在每次迭代前清零梯度，防止梯度累积</p></li>
+<li><p>PyTorch默认会累加梯度，手动清零确保每次更新基于当前批次数据</p></li>
+<li><p>设备迁移</p>
+<ul>
+<li><code>data.to(device)</code> 将数据转移到GPU/CPU</li>
+<li>利用GPU并行计算加速卷积运算，这对大规模数据训练至关重要</li>
+</ul></li>
+<li><p>训练监控</p>
+<ul>
+<li>每5000批次输出进度信息，帮助监控训练过程</li>
+<li>累计损失计算需乘以<code>data.size(0)</code>，因PyTorch损失默认返回批次平均值</li>
+<li>准确率计算通过比较预测最大值索引与真实标签实现</li>
+</ul></li>
+</ul>
+<p><strong>LeNet训练特点</strong></p>
+<ul>
+<li><p>特征学习机制</p>
+<ul>
+<li>通过交替的卷积和池化操作，网络自动学习层次化特征</li>
+<li>浅层卷积捕捉边缘等低级特征，深层卷积提取复杂模式</li>
+</ul></li>
+<li><p>参数优化策略</p>
+<ul>
+<li>卷积核参数通过梯度下降自动优化</li>
+<li>权重初始化通常采用Xavier或He方法，保证训练稳定性</li>
+</ul></li>
+<li><p>泛化能力提升</p>
+<ul>
+<li>池化操作增强平移不变性</li>
+<li>后续改进版本可加入Dropout层防止过拟合</li>
+</ul></li>
+<li><p>训练效果评估</p>
+<ul>
+<li>最终返回epoch平均损失和准确率</li>
+<li>这些指标用于跟踪模型在训练集上的学习进度</li>
+<li>需配合验证集评估真实泛化能力</li>
+</ul></li>
+</ul>
+<p>该训练函数实现了标准监督学习流程，通过多次epoch迭代不断优化网络参数，使模型逐步提升特征提取和分类能力。实际应用中还需配合验证集监控、学习率调整等策略以获得最佳效果。</p>
+</section>
+<section id="定义测试函数" class="level3" data-number="24.7.3">
+<h3 data-number="24.7.3" class="anchored" data-anchor-id="定义测试函数"><span class="header-section-number">24.7.3</span> 定义测试函数</h3>
+<div id="d28836d1" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义测试函数，用于评估模型在测试集上的表现</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> test(model, device, test_loader, criterion):</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">eval</span>()  <span class="co"># 将模型设置为评估模式，关闭 dropout 等训练特性</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    test_loss <span class="op">=</span> <span class="dv">0</span>  <span class="co"># 初始化测试损失</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    correct <span class="op">=</span> <span class="dv">0</span>    <span class="co"># 初始化预测正确的样本计数</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    all_preds <span class="op">=</span> []  <span class="co"># 用于存储所有预测结果</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    all_targets <span class="op">=</span> []  <span class="co"># 用于存储所有真实标签</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 在测试阶段不计算梯度，节省内存和加快计算速度</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> data, target <span class="kw">in</span> test_loader:</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>            data, target <span class="op">=</span> data.to(device), target.to(device)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>            output <span class="op">=</span> model(data)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            test_loss <span class="op">+=</span> criterion(output, target).item() <span class="op">*</span> data.size(<span class="dv">0</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>            pred <span class="op">=</span> output.argmax(dim<span class="op">=</span><span class="dv">1</span>, keepdim<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>            correct <span class="op">+=</span> pred.eq(target.view_as(pred)).<span class="bu">sum</span>().item()</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 收集预测结果和真实标签</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>            all_preds.extend(pred.cpu().numpy().flatten())</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>            all_targets.extend(target.cpu().numpy())</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    test_loss <span class="op">/=</span> <span class="bu">len</span>(test_loader.dataset)  <span class="co"># 计算平均损失</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    accuracy <span class="op">=</span> <span class="fl">100.</span> <span class="op">*</span> correct <span class="op">/</span> <span class="bu">len</span>(test_loader.dataset)  <span class="co"># 计算准确率</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 计算混淆矩阵</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    cm <span class="op">=</span> confusion_matrix(all_targets, all_preds)</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> test_loss, accuracy, cm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>代码说明：</strong></p>
+<p>测试函数中，模型在测试集上进行前向传播，并累计计算总体损失与正确预测数量，最终输出平均损失及准确率，以评估模型的泛化能力。</p>
+</section>
+<section id="训练过程中的损失指标" class="level3" data-number="24.7.4">
+<h3 data-number="24.7.4" class="anchored" data-anchor-id="训练过程中的损失指标"><span class="header-section-number">24.7.4</span> 训练过程中的损失指标</h3>
+<p>在训练神经网络时，我们主要关注两个重要的损失指标：</p>
+<ol type="1">
+<li><strong>训练损失（Training Loss）</strong>：
+<ul>
+<li>表示模型在训练数据集上的预测误差</li>
+<li>反映了模型对训练数据的拟合程度</li>
+<li>训练损失持续下降表明模型正在学习数据中的模式</li>
+<li>但过低的训练损失可能意味着过拟合</li>
+</ul></li>
+<li><strong>测试损失（Test Loss）</strong>：
+<ul>
+<li>表示模型在从未见过的测试数据上的预测误差</li>
+<li>反映了模型的泛化能力</li>
+<li>测试损失应该与训练损失保持相近</li>
+<li>如果测试损失明显高于训练损失，说明模型可能过拟合</li>
+</ul></li>
+</ol>
+<p><strong>理想的训练过程</strong>应该表现为： - 训练损失和测试损失同时下降 - 两者之间保持较小的差距 - 最终都收敛到一个较低的水平</p>
+<p>如果观察到以下情况，则需要调整模型或训练策略： - 训练损失持续下降但测试损失上升：过拟合的典型特征 - 两种损失都居高不下：欠拟合，可能需要增加模型复杂度 - 损失剧烈波动：学习率可能过大</p>
+</section>
+<section id="主函数训练与评估模型" class="level3" data-number="24.7.5">
+<h3 data-number="24.7.5" class="anchored" data-anchor-id="主函数训练与评估模型"><span class="header-section-number">24.7.5</span> 主函数：训练与评估模型</h3>
+<p>模型训练推荐使用 CUDA 或 MPS 进行训练（GPU），如果 CUDA 或 MPS 不可用，则使用 CPU 进行训练。</p>
+<div id="ebdf1f6f" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 主函数：训练与评估模型</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查是否有 GPU 可用，否则使用 CPU</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">"cuda"</span> <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> <span class="st">"mps"</span> <span class="cf">if</span> torch.mps.is_available() <span class="cf">else</span> <span class="st">"cpu"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 实例化 LeNet 模型，并移动到指定设备上</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LeNet().to(device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="优化器与损失函数" class="level3" data-number="24.7.6">
+<h3 data-number="24.7.6" class="anchored" data-anchor-id="优化器与损失函数"><span class="header-section-number">24.7.6</span> 优化器与损失函数</h3>
+<p>在神经网络训练中，优化器和损失函数是两个核心组件：</p>
+<ol type="1">
+<li><strong>随机梯度下降优化器（SGD）</strong>：
+<ul>
+<li><strong>原理</strong>：通过计算损失函数对模型参数的梯度，沿着梯度的反方向更新参数</li>
+<li><strong>学习率</strong>：控制每次参数更新的步长（这里设为 0.01）</li>
+<li><strong>动量</strong>：
+<ul>
+<li>作用：累积之前的梯度方向，帮助模型跳出局部最小值</li>
+<li>数值：这里设为 0.9，表示保留 90% 的历史梯度信息</li>
+<li>优势：加速收敛，减少震荡</li>
+</ul></li>
+</ul></li>
+<li><strong>交叉熵损失函数（CrossEntropyLoss）</strong>：
+<ul>
+<li><strong>适用场景</strong>：多分类问题（如本例中的 10 个数字分类）</li>
+<li><strong>计算过程</strong>：
+<ul>
+<li>首先对模型输出进行 softmax 归一化，得到每个类别的概率</li>
+<li>然后计算预测概率分布与真实标签分布的交叉熵</li>
+</ul></li>
+<li><strong>特点</strong>：
+<ul>
+<li>能有效处理多分类问题</li>
+<li>对错误预测施加更大的惩罚</li>
+<li>输出值在 [0, ∞) 范围内，0 表示完美预测</li>
+</ul></li>
+</ul></li>
+</ol>
+<div id="39b014c8" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义优化器：使用随机梯度下降（SGD），学习率为 0.01，动量为 0.9</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> optim.SGD(model.parameters(), lr<span class="op">=</span><span class="fl">0.01</span>, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 定义损失函数：交叉熵损失函数常用于分类问题</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>criterion <span class="op">=</span> nn.CrossEntropyLoss()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="开始训练" class="level3" data-number="24.7.7">
+<h3 data-number="24.7.7" class="anchored" data-anchor-id="开始训练"><span class="header-section-number">24.7.7</span> 开始训练</h3>
+<p>训练过程中，我们记录了训练损失、训练准确率、测试损失和测试准确率。</p>
+<div id="d26b515a" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 用于记录训练过程的指标</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>train_losses <span class="op">=</span> []</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>train_accs <span class="op">=</span> []</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>test_losses <span class="op">=</span> []</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>test_accs <span class="op">=</span> []</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">20</span>  <span class="co"># 设定训练轮数为 20</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 循环训练和测试模型</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> epoch <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, epochs <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 训练并记录指标</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    train_loss, train_acc <span class="op">=</span> train(model, device, train_loader, optimizer, criterion, epoch)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    test_loss, test_acc, cm <span class="op">=</span> test(model, device, test_loader, criterion)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 保存指标</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    train_losses.append(train_loss)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    train_accs.append(train_acc)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    test_losses.append(test_loss)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    test_accs.append(test_acc)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Epoch </span><span class="sc">{</span>epoch<span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Train - Loss: </span><span class="sc">{</span>train_loss<span class="sc">:.4f}</span><span class="ss">, Accuracy: </span><span class="sc">{</span>train_acc<span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Test  - Loss: </span><span class="sc">{</span>test_loss<span class="sc">:.4f}</span><span class="ss">, Accuracy: </span><span class="sc">{</span>test_acc<span class="sc">:.2f}</span><span class="ss">%</span><span class="ch">\n</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Train Epoch: 1 [0/60000]    Loss: 2.306535
+
+Epoch 1:
+Train - Loss: 0.3002, Accuracy: 90.35%
+Test  - Loss: 0.0735, Accuracy: 97.63%
+
+Train Epoch: 2 [0/60000]    Loss: 0.223964
+
+Epoch 2:
+Train - Loss: 0.0708, Accuracy: 97.79%
+Test  - Loss: 0.0457, Accuracy: 98.47%
+
+Train Epoch: 3 [0/60000]    Loss: 0.006665
+
+Epoch 3:
+Train - Loss: 0.0508, Accuracy: 98.40%
+Test  - Loss: 0.0489, Accuracy: 98.50%
+
+Train Epoch: 4 [0/60000]    Loss: 0.102840
+
+Epoch 4:
+Train - Loss: 0.0406, Accuracy: 98.71%
+Test  - Loss: 0.0472, Accuracy: 98.54%
+
+Train Epoch: 5 [0/60000]    Loss: 0.002894
+
+Epoch 5:
+Train - Loss: 0.0327, Accuracy: 98.95%
+Test  - Loss: 0.0351, Accuracy: 98.87%
+
+Train Epoch: 6 [0/60000]    Loss: 0.009791
+
+Epoch 6:
+Train - Loss: 0.0275, Accuracy: 99.13%
+Test  - Loss: 0.0443, Accuracy: 98.58%
+
+Train Epoch: 7 [0/60000]    Loss: 0.009185
+
+Epoch 7:
+Train - Loss: 0.0232, Accuracy: 99.25%
+Test  - Loss: 0.0365, Accuracy: 99.00%
+
+Train Epoch: 8 [0/60000]    Loss: 0.008247
+
+Epoch 8:
+Train - Loss: 0.0198, Accuracy: 99.35%
+Test  - Loss: 0.0496, Accuracy: 98.57%
+
+Train Epoch: 9 [0/60000]    Loss: 0.008157
+
+Epoch 9:
+Train - Loss: 0.0178, Accuracy: 99.41%
+Test  - Loss: 0.0368, Accuracy: 98.98%
+
+Train Epoch: 10 [0/60000]   Loss: 0.054361
+
+Epoch 10:
+Train - Loss: 0.0145, Accuracy: 99.53%
+Test  - Loss: 0.0412, Accuracy: 98.79%
+
+Train Epoch: 11 [0/60000]   Loss: 0.017152
+
+Epoch 11:
+Train - Loss: 0.0136, Accuracy: 99.58%
+Test  - Loss: 0.0449, Accuracy: 98.86%
+
+Train Epoch: 12 [0/60000]   Loss: 0.005217
+
+Epoch 12:
+Train - Loss: 0.0110, Accuracy: 99.64%
+Test  - Loss: 0.0382, Accuracy: 98.86%
+
+Train Epoch: 13 [0/60000]   Loss: 0.000699
+
+Epoch 13:
+Train - Loss: 0.0093, Accuracy: 99.71%
+Test  - Loss: 0.0449, Accuracy: 98.83%
+
+Train Epoch: 14 [0/60000]   Loss: 0.006726
+
+Epoch 14:
+Train - Loss: 0.0101, Accuracy: 99.65%
+Test  - Loss: 0.0451, Accuracy: 98.89%
+
+Train Epoch: 15 [0/60000]   Loss: 0.000309
+
+Epoch 15:
+Train - Loss: 0.0092, Accuracy: 99.67%
+Test  - Loss: 0.0382, Accuracy: 99.09%
+
+Train Epoch: 16 [0/60000]   Loss: 0.003918
+
+Epoch 16:
+Train - Loss: 0.0073, Accuracy: 99.76%
+Test  - Loss: 0.0443, Accuracy: 98.92%
+
+Train Epoch: 17 [0/60000]   Loss: 0.004718
+
+Epoch 17:
+Train - Loss: 0.0051, Accuracy: 99.83%
+Test  - Loss: 0.0406, Accuracy: 99.02%
+
+Train Epoch: 18 [0/60000]   Loss: 0.002047
+
+Epoch 18:
+Train - Loss: 0.0062, Accuracy: 99.78%
+Test  - Loss: 0.0438, Accuracy: 98.97%
+
+Train Epoch: 19 [0/60000]   Loss: 0.000157
+
+Epoch 19:
+Train - Loss: 0.0066, Accuracy: 99.80%
+Test  - Loss: 0.0535, Accuracy: 98.92%
+
+Train Epoch: 20 [0/60000]   Loss: 0.001711
+
+Epoch 20:
+Train - Loss: 0.0061, Accuracy: 99.77%
+Test  - Loss: 0.0449, Accuracy: 98.87%
+</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+训练一轮都发生了哪些计算？
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>训练一轮（<strong>epoch</strong>）可以想象成小朋友学一道数学题的完整过程，分成以下几个步骤：</p>
+<ol type="1">
+<li><strong>尝试解题（前向传播）</strong>
+<ul>
+<li>你看到了一道数学题，比如 <strong>“5 + 3 = ?”</strong>。</li>
+<li>你心里想一下，觉得答案应该是 <strong>“8”</strong>。</li>
+</ul></li>
+<li><strong>检查答案（计算损失）</strong>
+<ul>
+<li>你把答案写在作业本上，然后老师告诉你对不对。</li>
+<li>如果你写错了，比如写成 <strong>“7”</strong>，老师就会告诉你错了 <strong>“1”</strong>。</li>
+</ul></li>
+<li><strong>找出错在哪里（反向传播）</strong>
+<ul>
+<li>你想一想，为什么错了？<br>
+</li>
+<li>可能是你心算的时候少加了 <strong>1</strong>。</li>
+</ul></li>
+<li><strong>改正错误（参数更新）</strong>
+<ul>
+<li>你下次遇到类似的题目，会更加小心，比如数手指来确认。</li>
+<li>这样，你学得越来越好，错误越来越少。</li>
+</ul></li>
+<li><strong>重复练习</strong>
+<ul>
+<li>你做完这道题，老师再给你新的题目。</li>
+<li>你继续练习，直到你能快速又准确地做出答案。</li>
+</ul></li>
+</ol>
+<p>训练一轮就像这样，<strong>让神经网络做题（预测）、检查答案（计算损失）、找错误（反向传播）、改正（更新参数）</strong>，然后继续学习，直到变得很聪明！📚😊</p>
+</div>
+</div>
+</section>
+<section id="绘制训练过程图表" class="level3" data-number="24.7.8">
+<h3 data-number="24.7.8" class="anchored" data-anchor-id="绘制训练过程图表"><span class="header-section-number">24.7.8</span> 绘制训练过程图表</h3>
+<p>训练结束后，我们可以绘制训练过程的损失曲线和准确率曲线。</p>
+<div id="cell-fig-traning-process" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制训练过程图表</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>epochs_range <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, epochs <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制损失曲线</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs_range, train_losses, <span class="st">'bo-'</span>, label<span class="op">=</span><span class="st">'Training Loss'</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs_range, test_losses, <span class="st">'ro-'</span>, label<span class="op">=</span><span class="st">'Test Loss'</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Model Loss'</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Epoch'</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Loss'</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 绘制准确率曲线</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>plt.subplot(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs_range, train_accs, <span class="st">'bo-'</span>, label<span class="op">=</span><span class="st">'Training Accuracy'</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs_range, test_accs, <span class="st">'ro-'</span>, label<span class="op">=</span><span class="st">'Test Accuracy'</span>)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Model Accuracy'</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Epoch'</span>)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Accuracy (%)'</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-traning-process" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-traning-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="neural-network-from-scratch_files/figure-html/fig-traning-process-output-1.png" width="1141" height="468" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-traning-process-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.4: 训练损失曲线和准确率变化
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>代码说明：</strong></p>
+<p>在主函数中，我们首先检测计算设备，然后实例化模型、定义优化器和损失函数，并依次调用训练和测试函数。每个 epoch 结束后，终端会输出当前的训练状态和测试结果。</p>
+</section>
+</section>
+<section id="详解神经元的训练过程" class="level2" data-number="24.8">
+<h2 data-number="24.8" class="anchored" data-anchor-id="详解神经元的训练过程"><span class="header-section-number">24.8</span> 详解神经元的训练过程</h2>
+<p>下面以一个最简单的神经网络——只有一个神经元的单层模型——为例，展示训练过程中神经元参数（权重和偏置）是如何一步步确定下来的。这个例子帮助理解神经网络的基本训练流程，包括<strong>前向传播</strong>、<strong>损失计算</strong>、<strong>反向传播</strong>（梯度计算）和<strong>参数更新</strong>。</p>
+<section id="网络结构与设定" class="level3" data-number="24.8.1">
+<h3 data-number="24.8.1" class="anchored" data-anchor-id="网络结构与设定"><span class="header-section-number">24.8.1</span> 网络结构与设定</h3>
+<p>假设我们的神经网络只有一个神经元，该神经元接收一个输入 <span class="math inline">\(x\)</span> 并输出 <span class="math inline">\(y\)</span>。神经元具有两个可训练参数：</p>
+<ul>
+<li><strong>权重 <span class="math inline">\(w\)</span></strong></li>
+<li><strong>偏置 <span class="math inline">\(b\)</span></strong></li>
+</ul>
+<p>采用<strong>线性激活函数</strong>（即不做非线性变换），则神经元的输出为： <span class="math display">\[
+y = w \cdot x + b.
+\]</span></p>
+<p>同时，设定一个<strong>平方误差损失函数</strong>（Mean Squared Error, MSE）来衡量输出与目标之间的差距： <span class="math display">\[
+L = \frac{1}{2}(y - y_{\text{target}})^2,
+\]</span> 其中 <span class="math inline">\(y_{\text{target}}\)</span> 为给定的目标输出。</p>
+</section>
+<section id="训练流程概述" class="level3" data-number="24.8.2">
+<h3 data-number="24.8.2" class="anchored" data-anchor-id="训练流程概述"><span class="header-section-number">24.8.2</span> 训练流程概述</h3>
+<p>整个训练过程可以分为以下几个步骤：</p>
+<ol type="1">
+<li><p><strong>初始化参数</strong><br>
+随机或按照某种策略给定初始的 <span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span>。</p></li>
+<li><p><strong>前向传播</strong><br>
+给定输入 <span class="math inline">\(x\)</span>，计算神经元输出： <span class="math display">\[
+y = w \cdot x + b.
+\]</span></p></li>
+<li><p><strong>损失计算</strong><br>
+根据神经元输出和目标输出 <span class="math inline">\(y_{\text{target}}\)</span> 计算损失： <span class="math display">\[
+L = \frac{1}{2}(y - y_{\text{target}})^2.
+\]</span></p></li>
+<li><p><strong>反向传播（梯度计算）</strong><br>
+利用链式法则计算损失关于参数 <span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span> 的梯度，具体如下：</p>
+<ul>
+<li>对 <span class="math inline">\(y\)</span> 求导： <span class="math display">\[
+\frac{\partial L}{\partial y} = y - y_{\text{target}}.
+\]</span></li>
+<li>由于 <span class="math inline">\(y = w \cdot x + b\)</span>，有： <span class="math display">\[
+\frac{\partial y}{\partial w} = x,\quad \frac{\partial y}{\partial b} = 1.
+\]</span></li>
+<li>所以利用链式法则： <span class="math display">\[
+\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial w} = (y - y_{\text{target}}) \cdot x,
+\]</span> <span class="math display">\[
+\frac{\partial L}{\partial b} = \frac{\partial L}{\partial y} \cdot \frac{\partial y}{\partial b} = y - y_{\text{target}}.
+\]</span></li>
+</ul></li>
+<li><p><strong>参数更新</strong><br>
+利用梯度下降法调整参数： <span class="math display">\[
+w_{\text{new}} = w - \eta \cdot \frac{\partial L}{\partial w},\quad b_{\text{new}} = b - \eta \cdot \frac{\partial L}{\partial b},
+\]</span> 其中 <span class="math inline">\(\eta\)</span> 为学习率，控制每次更新的步长。</p></li>
+<li><p><strong>重复迭代</strong><br>
+重复步骤2～5，直至损失足够小或达到预定的迭代次数。</p></li>
+</ol>
+</section>
+<section id="数值示例" class="level3" data-number="24.8.3">
+<h3 data-number="24.8.3" class="anchored" data-anchor-id="数值示例"><span class="header-section-number">24.8.3</span> 数值示例</h3>
+<p>假设我们有以下设定：</p>
+<ul>
+<li><strong>输入</strong>：<span class="math inline">\(x = 1.0\)</span></li>
+<li><strong>目标输出</strong>：<span class="math inline">\(y_{\text{target}} = 2.0\)</span></li>
+<li><strong>初始参数</strong>：<span class="math inline">\(w = 0.5\)</span>，<span class="math inline">\(b = 0.1\)</span></li>
+<li><strong>学习率</strong>：<span class="math inline">\(\eta = 0.1\)</span></li>
+</ul>
+<p>我们来看几次迭代的具体计算过程。</p>
+</section>
+<section id="迭代-1" class="level3" data-number="24.8.4">
+<h3 data-number="24.8.4" class="anchored" data-anchor-id="迭代-1"><span class="header-section-number">24.8.4</span> 迭代 1</h3>
+<ol type="1">
+<li><p><strong>前向传播</strong><br>
+计算输出： <span class="math display">\[
+y = 0.5 \times 1.0 + 0.1 = 0.6.
+\]</span></p></li>
+<li><p><strong>损失计算</strong><br>
+<span class="math display">\[
+L = \frac{1}{2}(0.6 - 2.0)^2 = \frac{1}{2} \times (-1.4)^2 = \frac{1}{2} \times 1.96 = 0.98.
+\]</span></p></li>
+<li><p><strong>反向传播（梯度计算）</strong></p>
+<ul>
+<li>首先计算： <span class="math display">\[
+\frac{\partial L}{\partial y} = 0.6 - 2.0 = -1.4.
+\]</span></li>
+<li>然后： <span class="math display">\[
+\frac{\partial L}{\partial w} = -1.4 \times 1.0 = -1.4,
+\]</span> <span class="math display">\[
+\frac{\partial L}{\partial b} = -1.4.
+\]</span></li>
+</ul></li>
+<li><p><strong>参数更新</strong><br>
+<span class="math display">\[
+w_{\text{new}} = 0.5 - 0.1 \times (-1.4) = 0.5 + 0.14 = 0.64,
+\]</span> <span class="math display">\[
+b_{\text{new}} = 0.1 - 0.1 \times (-1.4) = 0.1 + 0.14 = 0.24.
+\]</span></p></li>
+</ol>
+</section>
+<section id="迭代-2" class="level3" data-number="24.8.5">
+<h3 data-number="24.8.5" class="anchored" data-anchor-id="迭代-2"><span class="header-section-number">24.8.5</span> 迭代 2</h3>
+<p>使用更新后的参数 <span class="math inline">\(w = 0.64\)</span> 和 <span class="math inline">\(b = 0.24\)</span>。</p>
+<ol type="1">
+<li><p><strong>前向传播</strong><br>
+<span class="math display">\[
+y = 0.64 \times 1.0 + 0.24 = 0.88.
+\]</span></p></li>
+<li><p><strong>损失计算</strong><br>
+<span class="math display">\[
+L = \frac{1}{2}(0.88 - 2.0)^2 = \frac{1}{2} \times (-1.12)^2 = \frac{1}{2} \times 1.2544 \approx 0.6272.
+\]</span></p></li>
+<li><p><strong>反向传播</strong><br>
+<span class="math display">\[
+\frac{\partial L}{\partial y} = 0.88 - 2.0 = -1.12,
+\]</span> <span class="math display">\[
+\frac{\partial L}{\partial w} = -1.12 \times 1.0 = -1.12,
+\]</span> <span class="math display">\[
+\frac{\partial L}{\partial b} = -1.12.
+\]</span></p></li>
+<li><p><strong>参数更新</strong><br>
+<span class="math display">\[
+w_{\text{new}} = 0.64 - 0.1 \times (-1.12) = 0.64 + 0.112 = 0.752,
+\]</span> <span class="math display">\[
+b_{\text{new}} = 0.24 - 0.1 \times (-1.12) = 0.24 + 0.112 = 0.352.
+\]</span></p></li>
+</ol>
+</section>
+<section id="迭代-3" class="level3" data-number="24.8.6">
+<h3 data-number="24.8.6" class="anchored" data-anchor-id="迭代-3"><span class="header-section-number">24.8.6</span> 迭代 3</h3>
+<p>使用更新后的参数 <span class="math inline">\(w = 0.752\)</span> 和 <span class="math inline">\(b = 0.352\)</span>。</p>
+<ol type="1">
+<li><p><strong>前向传播</strong><br>
+<span class="math display">\[
+y = 0.752 \times 1.0 + 0.352 = 1.104.
+\]</span></p></li>
+<li><p><strong>损失计算</strong><br>
+<span class="math display">\[
+L = \frac{1}{2}(1.104 - 2.0)^2 = \frac{1}{2} \times (-0.896)^2 \approx \frac{1}{2} \times 0.802 = 0.401.
+\]</span></p></li>
+<li><p><strong>反向传播</strong><br>
+<span class="math display">\[
+\frac{\partial L}{\partial y} = 1.104 - 2.0 = -0.896,
+\]</span> <span class="math display">\[
+\frac{\partial L}{\partial w} = -0.896 \times 1.0 = -0.896,
+\]</span> <span class="math display">\[
+\frac{\partial L}{\partial b} = -0.896.
+\]</span></p></li>
+<li><p><strong>参数更新</strong><br>
+<span class="math display">\[
+w_{\text{new}} = 0.752 - 0.1 \times (-0.896) = 0.752 + 0.0896 \approx 0.8416,
+\]</span> <span class="math display">\[
+b_{\text{new}} = 0.352 - 0.1 \times (-0.896) = 0.352 + 0.0896 \approx 0.4416.
+\]</span></p></li>
+</ol>
+</section>
+<section id="训练过程总结" class="level3" data-number="24.8.7">
+<h3 data-number="24.8.7" class="anchored" data-anchor-id="训练过程总结"><span class="header-section-number">24.8.7</span> 训练过程总结</h3>
+<p>在这个简单例子中，神经网络的参数更新过程可以总结为：</p>
+<ol type="1">
+<li><strong>初始化</strong>：随机或预设初始值（本例中 <span class="math inline">\(w = 0.5, \, b = 0.1\)</span>）。</li>
+<li><strong>前向传播</strong>：利用当前参数计算输出 <span class="math inline">\(y = w \cdot x + b\)</span>。</li>
+<li><strong>计算损失</strong>：用损失函数衡量输出与目标的差异。</li>
+<li><strong>反向传播</strong>：计算损失对各参数的梯度，得到更新方向。</li>
+<li><strong>参数更新</strong>：利用梯度下降公式更新 <span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span>。</li>
+<li><strong>迭代训练</strong>：重复上述步骤，直至损失减小到可以接受的程度或达到预定的迭代次数。</li>
+</ol>
+<p>经过多次迭代后，神经元的参数会逐渐调整，使得神经元的输出越来越接近目标输出，从而达到训练的目的。</p>
+</section>
+<section id="拓展多层神经网络" class="level3" data-number="24.8.8">
+<h3 data-number="24.8.8" class="anchored" data-anchor-id="拓展多层神经网络"><span class="header-section-number">24.8.8</span> 拓展：多层神经网络</h3>
+<p>在实际应用中，我们通常使用多层神经网络（即深度神经网络）。其基本原理与上述单神经元相同，只不过：</p>
+<ul>
+<li><strong>每一层都有多个神经元</strong>，每个神经元都有各自的参数；</li>
+<li><strong>激活函数</strong>可能为非线性函数（如ReLU、Sigmoid、Tanh等）；</li>
+<li><strong>反向传播</strong>时需要利用链式法则将梯度从输出层依次传递到各个隐藏层，计算每个参数对最终损失的贡献。</li>
+</ul>
+<p>无论网络有多复杂，核心思想都是：<strong>通过不断前向计算输出、衡量输出与目标之间的误差，再通过反向传播调整参数，从而使得网络能够更好地拟合数据。</strong></p>
+<p>通过上述极简示例，我们可以直观地看到神经网络训练过程中参数是如何一步步从初始值调整到能够较好地“解释”训练数据的。这就是神经网络训练中参数确定的基本机制。</p>
+</section>
+</section>
+<section id="详解卷积滤波器的训练过程" class="level2" data-number="24.9">
+<h2 data-number="24.9" class="anchored" data-anchor-id="详解卷积滤波器的训练过程"><span class="header-section-number">24.9</span> 详解卷积滤波器的训练过程</h2>
+<p>神经网络中的滤波器（Filter）本质上是一个可学习的参数矩阵，其作用类似于图像处理中的特征检测器。下面通过具体示例说明其工作原理：</p>
+<section id="滤波器基本结构" class="level3" data-number="24.9.1">
+<h3 data-number="24.9.1" class="anchored" data-anchor-id="滤波器基本结构"><span class="header-section-number">24.9.1</span> 滤波器基本结构</h3>
+<p>典型尺寸为3x3或5x5的二维矩阵，例如：</p>
+<pre><code>水平边缘检测滤波器：
+[[-1, -1, -1],
+ [ 0,  0,  0],
+ [ 1,  1,  1]]</code></pre>
+<p>该滤波器会对水平方向灰度变化剧烈的区域产生强响应</p>
+</section>
+<section id="工作原理示例" class="level3" data-number="24.9.2">
+<h3 data-number="24.9.2" class="anchored" data-anchor-id="工作原理示例"><span class="header-section-number">24.9.2</span> 工作原理示例</h3>
+<p>假设输入为7x7的字母”X”图像：</p>
+<pre><code>0 0 0 1 0 0 0
+0 0 1 0 1 0 0
+0 1 0 0 0 1 0
+1 0 0 0 0 0 1
+0 1 0 0 0 1 0
+0 0 1 0 1 0 0
+0 0 0 1 0 0 0</code></pre>
+<p>应用3x3滤波器进行卷积运算：</p>
+<ol type="1">
+<li>在图像左上角3x3区域：</li>
+</ol>
+<pre><code>0 0 0
+0 0 1
+0 1 0</code></pre>
+<p>与滤波器逐元素相乘后求和：</p>
+<p><code>(0*-1)+(0*-1)+(0*-1) + (0*0)+(0*0)+(1*0) + (0*1)+(1*1)+(0*1) = 1</code></p>
+<ol type="1">
+<li>滑动到中心区域：</li>
+</ol>
+<pre><code>0 0 0
+0 0 0
+0 0 0</code></pre>
+<p>计算结果为<code>0</code>（无特征响应）</p>
+<p>最终输出特征图将突出显示原始图像中的水平边缘。</p>
+<div id="cell-fig-cnn-mechanism" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.signal <span class="im">import</span> convolve2d</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 原始矩阵</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>matrix <span class="op">=</span> test_dataset[<span class="dv">0</span>][<span class="dv">0</span>].squeeze()</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3x3 卷积核</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>],</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>                    [ <span class="dv">0</span>,  <span class="dv">0</span>,  <span class="dv">0</span>],</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                    [ <span class="dv">1</span>,  <span class="dv">1</span>,  <span class="dv">1</span>]])</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 进行卷积运算</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>convolved <span class="op">=</span> convolve2d(matrix, kernel, mode<span class="op">=</span><span class="st">'valid'</span>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算子图尺寸比例</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>original_shape <span class="op">=</span> matrix.shape</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>convolved_shape <span class="op">=</span> convolved.shape</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算比例因子，使卷积后的小图与原图比例协调</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>scale_factor <span class="op">=</span> original_shape[<span class="dv">0</span>] <span class="op">/</span> convolved_shape[<span class="dv">0</span>]</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 调整原始矩阵子图</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].imshow(matrix, cmap<span class="op">=</span><span class="st">'gray'</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>, aspect<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Original Matrix"</span>)</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 调整卷积后矩阵子图，缩放至与原图比例协调</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].imshow(convolved, cmap<span class="op">=</span><span class="st">'gray'</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>, aspect<span class="op">=</span><span class="dv">1</span><span class="op">/</span>scale_factor)</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Convolved Matrix"</span>)</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].axis(<span class="st">"off"</span>)</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-cnn-mechanism" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cnn-mechanism-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="neural-network-from-scratch_files/figure-html/fig-cnn-mechanism-output-1.png" width="763" height="377" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cnn-mechanism-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.5: 图像的卷积操作
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="可视化理解" class="level3" data-number="24.9.3">
+<h3 data-number="24.9.3" class="anchored" data-anchor-id="可视化理解"><span class="header-section-number">24.9.3</span> 可视化理解</h3>
+<p>实际训练后的滤波器示例（MNIST数据集）：</p>
+<pre><code>层1滤波器1：  
+[[ 0.21,  0.34, -0.12],  
+ [ 0.18,  0.29, -0.25],  
+ [-0.15, -0.22,  0.31]]  
+
+层1滤波器2：  
+[[-0.33,  0.19,  0.27],  
+ [ 0.12, -0.28,  0.14],  
+ [ 0.25,  0.17, -0.31]]</code></pre>
+<p>输出训练好的模型中卷积核的参数：</p>
+<div id="db0dbb32" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>conv1_weights <span class="op">=</span> model.conv1.weight.data</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(conv1_weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tensor([[[[-0.2862, -0.2714, -0.0202,  0.0121,  0.2606],
+          [-0.2330, -0.1649, -0.2910, -0.0974,  0.1791],
+          [-0.3375, -0.4384, -0.2836, -0.5063, -0.0670],
+          [ 0.0305, -0.0903, -0.3911, -0.4203, -0.4393],
+          [ 0.3566,  0.5742,  0.4731,  0.2600, -0.0035]]],
+
+
+        [[[-0.2562, -0.2298, -0.4222, -0.1500, -0.2568],
+          [-0.0588, -0.2610, -0.3885,  0.1570,  0.3472],
+          [-0.3499, -0.3574,  0.0215,  0.3550,  0.5202],
+          [-0.2974, -0.1342,  0.3797,  0.2000,  0.3957],
+          [-0.4021, -0.1812,  0.1188,  0.3245,  0.0657]]],
+
+
+        [[[ 0.0383,  0.2836, -0.3539, -0.3121,  0.2258],
+          [-0.2820,  0.3018,  0.1426, -0.6084, -0.4635],
+          [ 0.0188,  0.3616,  0.8045, -0.1679, -0.4205],
+          [-0.2679, -0.1830,  0.3859,  0.4186, -0.1750],
+          [-0.2080, -0.3310,  0.2105,  0.1897,  0.2551]]],
+
+
+        [[[ 0.3116,  0.1698,  0.1162,  0.1794,  0.2427],
+          [-0.0572,  0.1172,  0.1429,  0.1862, -0.1293],
+          [-0.0015,  0.5427,  0.1986,  0.1011, -0.0635],
+          [-0.2152,  0.3393,  0.1213, -0.0805, -0.0809],
+          [-0.2297,  0.2513,  0.0882,  0.1965, -0.3434]]],
+
+
+        [[[-0.0340,  0.4167,  0.4751,  0.5151,  0.1854],
+          [-0.0901, -0.1426,  0.1468,  0.4350,  0.4560],
+          [-0.4289, -0.5748, -0.3122, -0.1644,  0.3342],
+          [-0.1264, -0.2701, -0.6072, -0.5185, -0.2900],
+          [ 0.0737, -0.0180, -0.0334, -0.0972,  0.0261]]],
+
+
+        [[[-0.1710, -0.3395, -0.0872,  0.1323,  0.0337],
+          [ 0.2576,  0.5838,  0.5268,  0.4954,  0.1005],
+          [ 0.5495,  0.5014,  0.2115,  0.0869,  0.2370],
+          [-0.1793, -0.1770, -0.3996, -0.4568, -0.0992],
+          [-0.5901, -0.5833, -0.5026, -0.3451, -0.0137]]]], device='mps:0')</code></pre>
+</div>
+</div>
+<p>这些数值组合在实际运算中会产生类似边缘检测、角点检测的效果。</p>
+<div id="cell-fig-cnn-and-pooling" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.signal <span class="im">import</span> convolve2d</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.nn <span class="im">import</span> MaxPool2d</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 最大池化层</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>maxpool <span class="op">=</span> MaxPool2d(kernel_size<span class="op">=</span><span class="dv">2</span>, stride<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>num_kernels <span class="op">=</span> <span class="bu">len</span>(conv1_weights)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>num_rows <span class="op">=</span> math.ceil(num_kernels <span class="op">*</span> <span class="dv">3</span> <span class="op">/</span> num_cols)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(num_cols <span class="op">*</span> <span class="dv">2</span>, num_rows <span class="op">*</span> <span class="dv">2</span>))</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> kernel_idx, kernel <span class="kw">in</span> <span class="bu">enumerate</span>(conv1_weights):</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    convolved_image <span class="op">=</span> convolve2d(matrix, kernel.squeeze().cpu().detach().numpy(), mode<span class="op">=</span><span class="st">'valid'</span>)</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    pooled_image <span class="op">=</span> maxpool(torch.tensor(convolved_image).unsqueeze(<span class="dv">0</span>)).squeeze(<span class="dv">0</span>).cpu().detach().numpy()</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    plt.subplot(num_rows, num_cols, kernel_idx <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    plt.imshow(matrix, cmap<span class="op">=</span><span class="st">'gray'</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>)</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">"Original"</span>)</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    plt.subplot(num_rows, num_cols, kernel_idx <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> <span class="dv">2</span>)</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    plt.imshow(convolved_image, cmap<span class="op">=</span><span class="st">'gray'</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>)</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"Convolved (</span><span class="sc">{</span>kernel_idx <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>    plt.subplot(num_rows, num_cols, kernel_idx <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> <span class="dv">3</span>)</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>    plt.imshow(pooled_image, cmap<span class="op">=</span><span class="st">'gray'</span>, interpolation<span class="op">=</span><span class="st">'nearest'</span>)</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"Pooled (</span><span class="sc">{</span>kernel_idx <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">"off"</span>)</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-cnn-and-pooling" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cnn-and-pooling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="neural-network-from-scratch_files/figure-html/fig-cnn-and-pooling-output-1.png" width="1122" height="568" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cnn-and-pooling-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.6: 图像的卷积和池化
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>通过这种局部感受野的滑动计算，CNN能够逐层提取从简单到复杂的空间特征，最终形成对输入数据的层次化理解。</p>
+</section>
+</section>
+<section id="总结" class="level2" data-number="24.10">
+<h2 data-number="24.10" class="anchored" data-anchor-id="总结"><span class="header-section-number">24.10</span> 总结</h2>
+<p>本项目详细介绍了：</p>
+<ul>
+<li><strong>神经网络基础知识</strong>：从基本结构、训练过程到卷积操作的优势，帮助你了解神经网络的工作原理。<br>
+</li>
+<li><strong>数据集</strong>：通过 MNIST 数据集的介绍，了解了手写数字识别问题的背景。<br>
+</li>
+<li><strong>环境配置</strong>：如何利用 Conda 创建环境，并安装 PyTorch、torchvision 等必备工具。<br>
+</li>
+<li><strong>完整代码实现</strong>：从数据加载、模型构建到训练和评估，每一步均有详细注释，确保即使是初学者也能理解和上手。</li>
+</ul>
+<p>通过本项目的学习，你不仅能掌握如何用 PyTorch 实现一个简单的 LeNet 神经网络，还能理解神经网络训练的基本原理及卷积操作在图像处理中的优势。希望本章内容能激发你对人工智能和深度学习的兴趣，并为进一步探索打下坚实基础！</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Doc2X.html" class="pagination-link" aria-label="Doc2X">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Doc2X</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./two-dimensional-classification.html" class="pagination-link" aria-label="二维平面拟合">
+        <span class="nav-page-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/neural-network-from-scratch.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/neural-network-from-scratch.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>
