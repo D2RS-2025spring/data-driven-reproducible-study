@@ -51,17 +51,17 @@ ggsave("plot.png", width = 5, height = 5)
 
 常用美学属性值：
 
--   `color`和`fill`: 字符串（`"red"`, `"#RRGGBB"`）
+- `color`和`fill`: 字符串（`"red"`, `"#RRGGBB"`）
 
--   `linetype`: 整数或字符串（0=`"blank"`,1=`"solid"`,2=`"dashed"`,3=`"dotted"`,4=`"dotdash"`,5=`"longdash"`,6=`"twodash"`）
+- `linetype`: 整数或字符串（0 = `"blank"`，1 = `"solid"`，2 = `"dashed"`，3 = `"dotted"`，4 = `"dotdash"`， 5 = `"longdash"`，6 = `"twodash"`）
 
--   `size`: 整数（点的大小和文本尺寸，单位为毫米）
+- `size`: 整数（点的大小和文本尺寸，单位为毫米）
 
--   `linewidth`: 整数（线的宽度，单位为毫米）
+- `linewidth`: 整数（线的宽度，单位为毫米）
 
--   `shape`: 整数/形状名称或单个字符（`"a"`）
+- `shape`: 整数/形状名称或单个字符（`"a"`）
 
-    -   形状整数/名称对应关系：0=`"square open"`,1=`"circle open"`,2=`"triangle open"`,3=`"plus"`,4=`"cross"`,5=`"diamond open"`,6=`"triangle down open"`,7=`"square cross"`,8=`"asterisk"`,9=`"diamond plus"`,10=`"circle plus"`,11=`"star"`,12=`"square plus"`,13=`"circle cross"`,14=`"square triangle"`,15=`"square"`,16=`"circle"`,17=`"triangle"`,18=`"diamond"`,19=`"circle small"`,20=`"bullet"`,21=`"circle filled"`,22=`"square filled"`,23=`"diamond filled"`,24=`"triangle filled"`,25=`"triangle down filled"`
+  形状整数/名称对应关系：0 = `"square open"`, 1 = `"circle open"`, 2 = `"triangle open"`, 3 = `"plus"`, 4 = `"cross"`, 5 = `"diamond open"`, 6 = `"triangle down open"`, 7 = `"square cross"`, 8 = `"asterisk"`, 9 = `"diamond plus"`, 10 = `"circle plus"`, 11 = `"star"`, 12 = `"square plus"`, 13 = `"circle cross"`, 14 = `"square triangle"`, 15 = `"square"`, 16 = `"circle"`, 17 = `"triangle"`, 18 = `"diamond"`, 19 = `"circle small"`, 20 = `"bullet"`, 21 = `"circle filled"`, 22 = `"square filled"`, 23 = `"diamond filled"`, 24 = `"triangle filled"`, 25 = `"triangle down filled"`
 
 ## 几何对象
 

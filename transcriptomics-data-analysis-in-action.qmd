@@ -2,7 +2,7 @@
 
 本章介绍如何使用 R 进行 RNA-seq 数据分析，包括从原始计数数据开始的差异表达基因（DEGs）识别过程。本实例采用的 RNA-seq 数据来自 2021 年发表在 ISME Communications 上的论文[@gao2021a]，用于复现文章分析结果的代码托管在 [GitHub](https://github.com/gaospecial/deg)。
 
-## 识别差异表达基因 (Differentially Expressed Genes, DEGs)
+## 识别差异表达基因
 
 ### 读取 HT-seq 计数数据
 

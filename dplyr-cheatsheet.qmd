@@ -27,43 +27,43 @@ mtcars = as_tibble(mtcars)
 
 - `summarize(.data, ...)`：创建汇总统计表
 
-    ```{r}
-    mtcars |> summarize(avg = mean(mpg))
-    ```
+  ```{r}
+  mtcars |> summarize(avg = mean(mpg))
+  ```
 
 - `count(.data, ..., wt = NULL, sort = FLASE, name = NULL)`：按 `...` 变量分组的行数统计。类似函数还有 `tally()`, `add_count()`, `add_tally()`。
 
-    ```{r}
-    mtcars |> count(cyl)
-    ```
+  ```{r}
+  mtcars |> count(cyl)
+  ```
 
 
 ## 分组观测
 
 - `group_by(.data, ..., .add = FALSE, .drop = TRUE)` 创建分组副本，dplyr 函数会对每个分组单独操作后合并结果
 
-    ```{r}
-    mtcars |>
-      group_by(cyl) |>
-      summarize(avg = mean(mpg))
-    ```
+  ```{r}
+  mtcars |>
+  group_by(cyl) |>
+  summarize(avg = mean(mpg))
+  ```
 
 - `rowwise(.data, ...)` 将数据转换为逐行分组模式，便于按行运算（适合处理列表类列数据），详见 tidyr 速查表中的列表列工作流
 
-    ```{r}
-    starwars |>
-      rowwise() |>
-      mutate(film_count = length(films))
-    ```
+  ```{r}
+  starwars |>
+  rowwise() |>
+  mutate(film_count = length(films))
+  ```
 
 - `ungroup(x, ...)` 返回非分组数据副本
 
-    ```{r}
-    #| include: false
+  ```{r}
+  #| include: false
 
-    g_mtcars <- mtcars |> group_by(cyl)
-    ungroup(g_mtcars)
-    ```
+  g_mtcars <- mtcars |> group_by(cyl)
+  ungroup(g_mtcars)
+  ```
 
 
 ## 操作观测
@@ -74,39 +74,39 @@ mtcars = as_tibble(mtcars)
 
 - `filter(.data, ..., .preserve = FALSE)` 筛选符合逻辑条件的行
 
-    ```{r}
-    mtcars |> filter(mpg > 20)
-    ```
+  ```{r}
+  mtcars |> filter(mpg > 20)
+  ```
 
 - `distinct(.data, ..., .keep_all = FALSE)` 删除重复行
 
-    ```{r}
-    mtcars |> distinct(gear)
-    ```
+  ```{r}
+  mtcars |> distinct(gear)
+  ```
 
 - `slice(.data, ...,, .preserve = FALSE)` 按位置选择行
 
-    ```{r}
-    mtcars |> slice(10:15)
-    ```
+  ```{r}
+  mtcars |> slice(10:15)
+  ```
 
 - `slice_sample(.data, ..., n, prop, weight_by = NULL, replace = FALSE)` 随机抽样行，支持数量抽样（n）和比例抽样（prop）
 
-    ```{r}
-    mtcars |> slice_sample(n = 5, replace = TRUE)
-    ```
+  ```{r}
+  mtcars |> slice_sample(n = 5, replace = TRUE)
+  ```
 
 - `slice_min(.data, order_by, ..., n, prop, with_ties = TRUE)` 与 `slice_max()` 选择极值行
 
-    ```{r}
-    mtcars |> slice_min(mpg, prop = 0.25)
-    ```
+  ```{r}
+  mtcars |> slice_min(mpg, prop = 0.25)
+  ```
 
 - `slice_head(.data, ..., n, prop)` 与 `slice_tail()` 选择首尾行
 
-    ```{r}
-    mtcars |> slice_head(n = 5)
-    ```
+  ```{r}
+  mtcars |> slice_head(n = 5)
+  ```
 
 #### 适用于 `filter()` 的逻辑运算符
 
@@ -130,18 +130,18 @@ mtcars = as_tibble(mtcars)
 
 - `arrange(.data, ..., .by_group = FALSE)` 按列值升序排列，配合 `desc()` 实现降序
 
-    ```{r}
-    mtcars |> arrange(mpg)
-    mtcars |> arrange(desc(mpg))
-    ```
+  ```{r}
+  mtcars |> arrange(mpg)
+  mtcars |> arrange(desc(mpg))
+  ```
 
 ### 添加观测
 
 - `add_row(.data, ..., .before = NULL, .after = NULL)` 添加一行或多行数据
 
-    ```{r}
-    cars |> add_row(speed = 1, dist = 1)
-    ```
+  ```{r}
+  cars |> add_row(speed = 1, dist = 1)
+  ```
 
 
 ## 操作变量
@@ -152,21 +152,21 @@ mtcars = as_tibble(mtcars)
 
 - `pull(.data, var = -1, name = NULL, ...)` 按名称或位置提取列向量
 
-    ```{r}
-    mtcars |> pull(wt)
-    ```
+  ```{r}
+  mtcars |> pull(wt)
+  ```
 
 - `select(.data, ...)` 提取列生成新表
 
-    ```{r}
-    mtcars |> select(mpg, wt)
-    ```
+  ```{r}
+  mtcars |> select(mpg, wt)
+  ```
 
 - `relocate(.data, ..., .before = NULL, .after = NULL)` 调整列位置
 
-    ```{r}
-    mtcars |> relocate(mpg, cyl, after = last_col())
-    ```
+  ```{r}
+  mtcars |> relocate(mpg, cyl, .after = last_col())
+  ```
 
 #### `select()` 和 `across()` 辅助函数
 
@@ -187,23 +187,23 @@ mtcars |> select(mpg:cyl)
 
 ### 批量操作多列
 
-```{r}
-df <- tibble(x_1 = c(1, 2), x_2 = c(3, 4), y = c(4, 5))
-```
+  ```{r}
+  df <- tibble(x_1 = c(1, 2), x_2 = c(3, 4), y = c(4, 5))
+  ```
 
 - `across(.cols, .fun, ..., .name = NULL)` 对多列进行统一汇总或转换操作
 
-    ```{r}
-    df |> summarize(across(everything(), mean))
-    ```
+  ```{r}
+  df |> summarize(across(everything(), mean))
+  ```
 
 - `c_across(.cols)` 在行式数据中跨列运算
 
-    ```{r}
-    df |> 
-      rowwise() |>
-      mutate(x_total = sum(c_across(1:2)))
-    ```
+  ```{r}
+  df |> 
+    rowwise() |>
+    mutate(x_total = sum(c_across(1:2)))
+  ```
 
 
 ### 创建新变量
@@ -212,16 +212,16 @@ df <- tibble(x_1 = c(1, 2), x_2 = c(3, 4), y = c(4, 5))
 
 - `mutate(.data, ..., .keep = "all", .before = NULL, .after = NULL)` 创建新列，类似函数 `add_column()`
 
-    ```{r}
-    mtcars |> mutate(gpm = 1 / mpg)
-    mtcars |> mutate(mtcars, gpm = 1 / mpg, .keep = "none")
-    ```
+  ```{r}
+  mtcars |> mutate(gpm = 1 / mpg)
+  mtcars |> mutate(mtcars, gpm = 1 / mpg, .keep = "none")
+  ```
 
 - `rename(.data, ...)` 重命名列，`rename_with()` 可通过函数批量重命名
 
-    ```{r}
-    mtcars |> rename(miles_per_gallon = mpg)
-    ```
+  ```{r}
+  mtcars |> rename(miles_per_gallon = mpg)
+  ```
 
 
 ## 向量化函数
@@ -264,14 +264,14 @@ df <- tibble(x_1 = c(1, 2), x_2 = c(3, 4), y = c(4, 5))
 
 - `dplyr::case_when()` 多条件判断
 
-    ```{r}
-    starwars |>
-      mutate(type = case_when(
-        height > 200 | mass > 200 ~ "large",
-        species == "Droid" ~ "robot",
-        TRUE ~ "other"
-      ))
-    ```
+  ```{r}
+  starwars |>
+    mutate(type = case_when(
+      height > 200 | mass > 200 ~ "large",
+      species == "Droid" ~ "robot",
+      TRUE ~ "other"
+    ))
+  ```
 
 - `dplyr::coalesce()` 首有效值选取
 - `dplyr::if_else()` 元素级条件判断
@@ -326,15 +326,15 @@ df <- tibble(x_1 = c(1, 2), x_2 = c(3, 4), y = c(4, 5))
 
 - `tibble::rownames_to_column()` 行名转列
 
-    ```{r}
-    a <- rownames_to_column(mtcars, var = "C")
-    ```
+  ```{r}
+  a <- rownames_to_column(mtcars, var = "C")
+  ```
 
 - `tibble::columns_to_rownames()` 列转行名
 
-    ```{r}
-    column_to_rownames(a, var = "C")
-    ```
+  ```{r}
+  column_to_rownames(a, var = "C")
+  ```
 
 - 配套函数 `tibble::has_rownames()` 和 `tibble::remove_rownames()`
 
@@ -387,22 +387,22 @@ y <- tribble(
 
 - 多列匹配：`by = join_by(col1, col2)`
 
-    ```{r}
-    left_join(x, y, by = join_by(A))
-    left_join(x, y, by = join_by(A, B))
-    ```
+  ```{r}
+  left_join(x, y, by = join_by(A))
+  left_join(x, y, by = join_by(A, B))
+  ```
 
 - 跨名匹配：`by = join_by(col1 == col2)`
 
-    ```{r}
-    left_join(x, y, by = join_by(C == D))
-    ```
+  ```{r}
+  left_join(x, y, by = join_by(C == D))
+  ```
 
 - 同名后缀参数：`suffix`
 
-    ```{r}
-    left_join(x, y, by = join_by(C == D), suffix = c("1", "2"))
-    ```
+  ```{r}
+  left_join(x, y, by = join_by(C == D), suffix = c("1", "2"))
+  ```
 
 ### 集合运算
 

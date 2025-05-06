@@ -10,18 +10,18 @@ DeepSeek 全系列模型均已在百炼平台上线，您可以前往百炼平�
 
 根据 **DeepSeek-R1** 论文，DeepSeek-R1 进行了多个基准测试，主要涵盖 **数学、编程、常识问答、推理能力** 等方面。以下是具体的基准测试类别和对应的数据集：  
 
-### **1. 数学（Math）**
+### 数学（Math）
 - **AIME 2024**（American Invitational Mathematics Examination）  
 - **MATH-500**（数学解题能力测试）  
 - **CNMO 2024**（中国数学奥林匹克）  
 
-### **2. 编程（Coding）**
+### 编程（Coding）
 - **LiveCodeBench**（编程任务，通过 Chain-of-Thought 方式进行评估）  
 - **Codeforces**（代码竞赛平台，评估模型在算法竞赛中的 Elo rating 和百分位排名）  
 - **SWE-bench Verified**（软件工程任务，评估问题解决能力）  
 - **Aider-Polyglot**（多语言代码生成）  
 
-### **3. 知识与常识问答（General Knowledge & Reasoning）**
+### 知识与常识问答（General Knowledge & Reasoning）
 - **MMLU**（Massive Multitask Language Understanding，多学科知识测评）  
 - **MMLU-Redux**（MMLU 的加强版，使用 ZeroEval 框架评估）  
 - **MMLU-Pro**（MMLU 进阶版，考察更复杂的推理能力）  
@@ -29,14 +29,14 @@ DeepSeek 全系列模型均已在百炼平台上线，您可以前往百炼平�
 - **SimpleQA**（基础事实问答）  
 - **C-SimpleQA**（中文事实问答）  
 
-### **4. 自然语言处理与生成任务（NLP & Generation Tasks）**
+### 自然语言处理与生成任务（NLP & Generation Tasks）
 - **DROP**（Discrepancy-based Reading Comprehension，阅读理解）  
 - **FRAMES**（长文本依赖的问答）  
 - **IF-Eval**（Instruction Following Evaluation，测试指令跟随能力）  
 - **AlpacaEval 2.0**（长度受控的评估，用 GPT-4-Turbo 作为评判）  
 - **ArenaHard**（基于 GPT-4-Turbo 1106 的对比评测）  
 
-### **5. 中文任务（Chinese NLP Tasks）**
+### 中文任务（Chinese NLP Tasks）
 - **CLUEWSC**（中文 Winograd Schema Challenge）  
 - **C-Eval**（中文大规模学科知识评测）  
 

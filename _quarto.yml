@@ -111,8 +111,10 @@ format:
               <script async src="https://hypothes.is/embed.js"></script>
   pdf:
     documentclass: ctexbook
+    classoption: oneside
     papersize: a4
-    margin: 1.5cm
+    fontsize: 10pt
+    margin: 1cm
     mermaid-format: png
     extract-media: images
     fig-width: 7
