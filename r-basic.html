@@ -590,9 +590,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#dplyr包" id="toc-dplyr包" class="nav-link" data-scroll-target="#dplyr包"><span class="header-section-number">7.4.1</span> dplyr包</a></li>
   <li><a href="#ggplot2包" id="toc-ggplot2包" class="nav-link" data-scroll-target="#ggplot2包"><span class="header-section-number">7.4.2</span> ggplot2包</a></li>
   <li><a href="#stringr包" id="toc-stringr包" class="nav-link" data-scroll-target="#stringr包"><span class="header-section-number">7.4.3</span> stringr包</a></li>
-  <li><a href="#代码逻辑解释" id="toc-代码逻辑解释" class="nav-link" data-scroll-target="#代码逻辑解释"><span class="header-section-number">7.4.4</span> 代码逻辑解释</a></li>
-  <li><a href="#tidyr包" id="toc-tidyr包" class="nav-link" data-scroll-target="#tidyr包"><span class="header-section-number">7.4.5</span> tidyr包</a></li>
-  <li><a href="#数据检查和清洗" id="toc-数据检查和清洗" class="nav-link" data-scroll-target="#数据检查和清洗"><span class="header-section-number">7.4.6</span> 数据检查和清洗</a></li>
+  <li><a href="#tidyr包" id="toc-tidyr包" class="nav-link" data-scroll-target="#tidyr包"><span class="header-section-number">7.4.4</span> tidyr包</a></li>
+  <li><a href="#数据检查和清洗" id="toc-数据检查和清洗" class="nav-link" data-scroll-target="#数据检查和清洗"><span class="header-section-number">7.4.5</span> 数据检查和清洗</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/r-basic.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/r-basic.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -1489,10 +1488,7 @@ Levels: Female Male</code></pre>
 <pre><code>[1] "hello world"     "r is awesome"    "data science ai"</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="代码逻辑解释" class="level3" data-number="7.4.4">
-<h3 data-number="7.4.4" class="anchored" data-anchor-id="代码逻辑解释"><span class="header-section-number">7.4.4</span> 代码逻辑解释</h3>
+<p><strong>代码逻辑解释</strong></p>
 <ol type="1">
 <li><strong>加载<code>stringr</code>包</strong>：提供字符串处理函数。</li>
 <li><strong>定义文本数据</strong>：包含前后空格、大小写混用、多余空格和标点符号。</li>
@@ -1503,10 +1499,11 @@ Levels: Female Male</code></pre>
 <li><strong>输出结果</strong>：清洗后的文本更规范，适用于进一步分析。</li>
 </ol>
 </section>
-<section id="tidyr包" class="level3" data-number="7.4.5">
-<h3 data-number="7.4.5" class="anchored" data-anchor-id="tidyr包"><span class="header-section-number">7.4.5</span> tidyr包</h3>
-<section id="数据整形与转换" class="level4" data-number="7.4.5.1">
-<h4 data-number="7.4.5.1" class="anchored" data-anchor-id="数据整形与转换"><span class="header-section-number">7.4.5.1</span> 数据整形与转换</h4>
+</section>
+<section id="tidyr包" class="level3" data-number="7.4.4">
+<h3 data-number="7.4.4" class="anchored" data-anchor-id="tidyr包"><span class="header-section-number">7.4.4</span> tidyr包</h3>
+<section id="数据整形与转换" class="level4" data-number="7.4.4.1">
+<h4 data-number="7.4.4.1" class="anchored" data-anchor-id="数据整形与转换"><span class="header-section-number">7.4.4.1</span> 数据整形与转换</h4>
 <p>tidyr包提供了方便的数据整形与转换工具，帮助用户将数据从一个格式转换为另一个格式，通常用于将“宽格式数据”转换为“长格式数据”，或者反之。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载tidyr和dplyr包</span></span>
@@ -1600,8 +1597,8 @@ Levels: Female Male</code></pre>
 </div>
 <p>tidyr中的<code>pivot_longer()</code>和<code>pivot_wider()</code>函数分别用于实现宽表和长表之间的转换，帮助数据分析师根据不同分析需求选择合适的数据格式。</p>
 </section>
-<section id="数据变换与重组" class="level4" data-number="7.4.5.2">
-<h4 data-number="7.4.5.2" class="anchored" data-anchor-id="数据变换与重组"><span class="header-section-number">7.4.5.2</span> 数据变换与重组</h4>
+<section id="数据变换与重组" class="level4" data-number="7.4.4.2">
+<h4 data-number="7.4.4.2" class="anchored" data-anchor-id="数据变换与重组"><span class="header-section-number">7.4.4.2</span> 数据变换与重组</h4>
 <p>tidyr 还提供了<code>spread()</code>和<code>gather()</code>等函数，可以帮助用户进行数据的转置和重组。例如，<code>gather()</code>函数可以将宽格式数据转换为长格式数据，而<code>spread()</code>则可以将长格式数据转换为宽格式。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
@@ -1622,10 +1619,10 @@ Levels: Female Male</code></pre>
 </div>
 </section>
 </section>
-<section id="数据检查和清洗" class="level3" data-number="7.4.6">
-<h3 data-number="7.4.6" class="anchored" data-anchor-id="数据检查和清洗"><span class="header-section-number">7.4.6</span> 数据检查和清洗</h3>
-<section id="缺失值检查" class="level4" data-number="7.4.6.1">
-<h4 data-number="7.4.6.1" class="anchored" data-anchor-id="缺失值检查"><span class="header-section-number">7.4.6.1</span> 缺失值检查</h4>
+<section id="数据检查和清洗" class="level3" data-number="7.4.5">
+<h3 data-number="7.4.5" class="anchored" data-anchor-id="数据检查和清洗"><span class="header-section-number">7.4.5</span> 数据检查和清洗</h3>
+<section id="缺失值检查" class="level4" data-number="7.4.5.1">
+<h4 data-number="7.4.5.1" class="anchored" data-anchor-id="缺失值检查"><span class="header-section-number">7.4.5.1</span> 缺失值检查</h4>
 <p>tidyr包提供了<code>complete()</code>函数，可以检查数据中是否存在缺失值，并返回一个包含缺失值的布尔矩阵。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建一个包含缺失值的数据框</span></span>

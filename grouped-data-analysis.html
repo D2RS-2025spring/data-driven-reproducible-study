@@ -855,7 +855,10 @@ window.Quarto = {
 <li>样本之间相互独立</li>
 <li>样本量足够大（通常n&gt;30）或数据近似正态分布</li>
 </ol>
-<p>原假设H0：样本均值等于总体均值 备择假设H1：样本均值不等于总体均值</p>
+<ul>
+<li>原假设 H0：样本均值等于总体均值</li>
+<li>备择假设 H1：样本均值不等于总体均值</li>
+</ul>
 <p>我们使用 <code>ToothGrowth</code> 数据集来演示单样本t检验。这个数据集记录了豚鼠在不同维生素C补充条件下牙齿的生长情况。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
@@ -943,7 +946,11 @@ window.Quarto = {
 <section id="单样本正态性检验与参数选择" class="level3" data-number="11.2.2">
 <h3 data-number="11.2.2" class="anchored" data-anchor-id="单样本正态性检验与参数选择"><span class="header-section-number">11.2.2</span> 单样本正态性检验与参数选择</h3>
 <p>在进行单样本t检验之前，我们需要先检验数据是否满足正态分布假设。这里使用Shapiro-Wilk检验，这是一种广泛使用的正态性检验方法。</p>
-<p>检验的假设为： H0：数据服从正态分布 H1：数据不服从正态分布</p>
+<p>检验的假设为：</p>
+<ul>
+<li>H0：数据服从正态分布</li>
+<li>H1：数据不服从正态分布</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 整体数据正态性检验</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>shapiro_total <span class="ot">=</span> <span class="fu">shapiro.test</span>(ToothGrowth<span class="sc">$</span>len)</span>
@@ -1081,7 +1088,11 @@ window.Quarto = {
 <li>适用于定序数据</li>
 <li>样本量可以较小</li>
 </ol>
-<p>检验的假设为： H0：总体中位数等于假设值 H1：总体中位数不等于假设值</p>
+<p>检验的假设为：</p>
+<ul>
+<li>H0：总体中位数等于假设值</li>
+<li>H1：总体中位数不等于假设值</li>
+</ul>
 <section id="代码示例" class="level3" data-number="11.3.1">
 <h3 data-number="11.3.1" class="anchored" data-anchor-id="代码示例"><span class="header-section-number">11.3.1</span> 代码示例</h3>
 <div class="cell">
@@ -1142,7 +1153,7 @@ alternative hypothesis: true location is not equal to 18</code></pre>
 <li>每组样本都来自正态分布总体</li>
 <li>两组样本具有相同的总体方差（方差齐性）</li>
 </ol>
-<p>我们使用ToothGrowth数据集比较两种补充剂（OJ和VC）对牙齿生长的影响。首先进行数据可视化：</p>
+<p>我们使用 <code>ToothGrowth</code> 数据集比较两种补充剂（<code>OJ</code>和<code>VC</code>）对牙齿生长的影响。首先进行数据可视化：</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1167,7 +1178,13 @@ alternative hypothesis: true location is not equal to 18</code></pre>
 </div>
 </div>
 </div>
-<p>从箱线图可以观察到： 1. OJ组的中位数略高于VC组 2. 两组的数据分布都相对对称 3. 存在一些离群值 4. 两组的方差看起来相近</p>
+<p>从箱线图可以观察到：</p>
+<ol type="1">
+<li>OJ组的中位数略高于VC组</li>
+<li>两组的数据分布都相对对称</li>
+<li>存在一些离群值</li>
+<li>两组的方差看起来相近</li>
+</ol>
 <p>在进行t检验之前，我们需要检验数据是否满足假设条件：</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 正态性检验</span></span>
@@ -1225,7 +1242,12 @@ ratio of variances
 <li>F检验的p值为 0.233 &gt; 0.05，说明两组方差没有显著差异，满足方差齐性假设</li>
 </ul></li>
 </ol>
-<p>虽然OJ组不完全满足正态分布假设，但由于： 1. 样本量相对较大（每组30个样本） 2. t检验对正态性假设的轻微违反具有一定的稳健性 3. 箱线图显示数据分布相对对称</p>
+<p>虽然OJ组不完全满足正态分布假设，但由于：</p>
+<ol type="1">
+<li>样本量相对较大（每组30个样本）</li>
+<li>t检验对正态性假设的轻微违反具有一定的稳健性</li>
+<li>箱线图显示数据分布相对对称</li>
+</ol>
 <p>我们仍可以谨慎地使用t检验，同时建议后续使用非参数方法（Wilcoxon秩和检验）进行验证。</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 进行 t 检验</span></span>
@@ -1247,8 +1269,19 @@ mean in group OJ mean in group VC
         20.66333         16.96333 </code></pre>
 </div>
 </div>
-<p>t检验结果显示： 1. t统计量 = 1.915，自由度 = 55.309 2. p值 = 0.061 &gt; 0.05，未达到显著性水平 3. 95%置信区间为[-0.171, 7.571]，包含0 4. 结论：虽然OJ组的平均牙齿生长长度（20.66）高于VC组（16.96），但这种差异在统计学上并不显著</p>
-<p>这个结果提示我们： 1. 两种补充剂对牙齿生长的效果可能没有实质性差异 2. 需要考虑其他因素（如剂量）的影响 3. 建议增加样本量以提高检验的统计效力</p>
+<p>t检验结果显示：</p>
+<ol type="1">
+<li>t统计量 = 1.915，自由度 = 55.309</li>
+<li>p值 = 0.061 &gt; 0.05，未达到显著性水平</li>
+<li>95%置信区间为[-0.171, 7.571]，包含0</li>
+<li>结论：虽然OJ组的平均牙齿生长长度（20.66）高于VC组（16.96），但这种差异在统计学上并不显著</li>
+</ol>
+<p>这个结果提示我们：</p>
+<ol type="1">
+<li>两种补充剂对牙齿生长的效果可能没有实质性差异</li>
+<li>需要考虑其他因素（如剂量）的影响</li>
+<li>建议增加样本量以提高检验的统计效力</li>
+</ol>
 </section>
 <section id="wilcoxon-秩和检验" class="level2" data-number="11.5">
 <h2 data-number="11.5" class="anchored" data-anchor-id="wilcoxon-秩和检验"><span class="header-section-number">11.5</span> Wilcoxon 秩和检验</h2>
@@ -1406,7 +1439,11 @@ mean difference
 <li>存在异常值或极端值</li>
 <li>数据为等级或顺序变量</li>
 </ol>
-<p>检验的假设为： H0：两组配对数据的差值的中位数为0 H1：两组配对数据的差值的中位数不为0</p>
+<p>检验的假设为：</p>
+<ul>
+<li>H0：两组配对数据的差值的中位数为0</li>
+<li>H1：两组配对数据的差值的中位数不为0</li>
+</ul>
 <section id="进行-wilcoxon-符号秩检验" class="level3" data-number="11.7.1">
 <h3 data-number="11.7.1" class="anchored" data-anchor-id="进行-wilcoxon-符号秩检验"><span class="header-section-number">11.7.1</span> 进行 Wilcoxon 符号秩检验</h3>
 <div class="cell">
@@ -1460,7 +1497,17 @@ alternative hypothesis: true location shift is not equal to 0</code></pre>
 </div>
 </div>
 </div>
-<p>可视化结果分析： 1. 箱线图显示了两组数据的分布特征： - 中位数 - 四分位数范围 - 可能的异常值 2. 灰色连线展示了配对样本的个体变化趋势 3. p值标注在图上，直观显示统计检验结果</p>
+<p>可视化结果分析：</p>
+<ol type="1">
+<li>箱线图显示了两组数据的分布特征：
+<ul>
+<li>中位数</li>
+<li>四分位数范围</li>
+<li>可能的异常值</li>
+</ul></li>
+<li>灰色连线展示了配对样本的个体变化趋势</li>
+<li>p值标注在图上，直观显示统计检验结果</li>
+</ol>
 </section>
 <section id="方法选择建议" class="level3" data-number="11.7.3">
 <h3 data-number="11.7.3" class="anchored" data-anchor-id="方法选择建议"><span class="header-section-number">11.7.3</span> 方法选择建议</h3>
@@ -1561,7 +1608,18 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </div>
-<p>从ANOVA结果可以看出： 1. F值 = 67.42，表示组间变异与组内变异的比值 2. p值 &lt; 0.001，说明不同剂量组之间存在显著差异 3. 自由度：组间为2，组内为27 4. 可视化结果显示： - 随着剂量增加，牙齿生长长度呈现上升趋势 - 各组内部的变异程度相近 - 箱线图的重叠程度较小，支持显著性差异的结论</p>
+<p>从ANOVA结果可以看出：</p>
+<ol type="1">
+<li>F值 = 67.42，表示组间变异与组内变异的比值</li>
+<li>p值 &lt; 0.001，说明不同剂量组之间存在显著差异</li>
+<li>自由度：组间为2，组内为27</li>
+<li>可视化结果显示：
+<ul>
+<li>随着剂量增加，牙齿生长长度呈现上升趋势</li>
+<li>各组内部的变异程度相近</li>
+<li>箱线图的重叠程度较小，支持显著性差异的结论</li>
+</ul></li>
+</ol>
 <section id="假设检验" class="level3" data-number="11.8.1">
 <h3 data-number="11.8.1" class="anchored" data-anchor-id="假设检验"><span class="header-section-number">11.8.1</span> 假设检验</h3>
 <p>在进行方差分析之前，我们需要检验数据是否满足基本假设：</p>
@@ -1608,7 +1666,19 @@ data:  len by factor(dose)
 Bartlett's K-squared = 4.5119, df = 2, p-value = 0.1048</code></pre>
 </div>
 </div>
-<p>检验结果分析： 1. 正态性检验： - 0.5mg组：p = 0.17 &gt; 0.05，满足正态性 - 1.0mg组：p = 0.27 &gt; 0.05，满足正态性 - 2.0mg组：p = 0.92 &gt; 0.05，满足正态性 2. Bartlett方差齐性检验： - p = 0.1048 &gt; 0.05，满足方差齐性假设</p>
+<p>检验结果分析：</p>
+<ol type="1">
+<li>正态性检验：
+<ul>
+<li>0.5mg组：p = 0.17 &gt; 0.05，满足正态性</li>
+<li>1.0mg组：p = 0.27 &gt; 0.05，满足正态性</li>
+<li>2.0mg组：p = 0.92 &gt; 0.05，满足正态性</li>
+</ul></li>
+<li>Bartlett方差齐性检验：
+<ul>
+<li>p = 0.1048 &gt; 0.05，满足方差齐性假设</li>
+</ul></li>
+</ol>
 <p>由于数据满足ANOVA的基本假设，我们可以相信方差分析的结果是可靠的。</p>
 </section>
 <section id="多重比较" class="level3" data-number="11.8.2">
@@ -1642,7 +1712,22 @@ $`factor(dose)`
 </div>
 </div>
 </div>
-<p>多重比较结果解释： 1. 所有成对比较的p值都小于0.05，表明： - 1.0mg剂量组显著高于0.5mg组 - 2.0mg剂量组显著高于1.0mg组 - 2.0mg剂量组显著高于0.5mg组 2. 差异的大小： - 2.0mg vs 0.5mg：差异最大，约18.16 - 2.0mg vs 1.0mg：差异次之，约9.37 - 1.0mg vs 0.5mg：差异最小，约8.79 3. 置信区间都不包含0，进一步支持差异的显著性</p>
+<p>多重比较结果解释：</p>
+<ol type="1">
+<li>所有成对比较的p值都小于0.05，表明：
+<ul>
+<li>1.0mg剂量组显著高于0.5mg组</li>
+<li>2.0mg剂量组显著高于1.0mg组</li>
+<li>2.0mg剂量组显著高于0.5mg组</li>
+</ul></li>
+<li>差异的大小：
+<ul>
+<li>2.0mg vs 0.5mg：差异最大，约18.16</li>
+<li>2.0mg vs 1.0mg：差异次之，约9.37</li>
+<li>1.0mg vs 0.5mg：差异最小，约8.79</li>
+</ul></li>
+<li>置信区间都不包含0，进一步支持差异的显著性</li>
+</ol>
 <p>这些结果表明维生素C对牙齿生长的促进作用具有明显的剂量依赖性，剂量越高，效果越显著。</p>
 </section>
 </section>
@@ -2233,7 +2318,7 @@ Number of permutations: 999
 
 Model: rda(formula = spe_hel ~ N + P + K + Ca + Mg + S + Al + Fe + Mn + Zn + Mo + Baresoil + Humdepth + pH, data = varechem)
          Df Variance      F Pr(&gt;F)  
-Model    14  0.25511 1.4968  0.062 .
+Model    14  0.25511 1.4968  0.048 *
 Residual  9  0.10957                
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
@@ -2312,9 +2397,9 @@ Permutation: free
 Number of permutations: 999
 
 Model: cca(formula = dune ~ A1 + Moisture, data = dune.env)
-         Df ChiSquare      F Pr(&gt;F)   
-Model     4   0.74374 2.0335  0.005 **
-Residual 15   1.37153                 
+         Df ChiSquare      F Pr(&gt;F)    
+Model     4   0.74374 2.0335  0.001 ***
+Residual 15   1.37153                  
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -2362,7 +2447,7 @@ Number of permutations: 999
 
 adonis2(formula = dist_dune ~ Management, data = dune.env, permutations = 999)
          Df SumOfSqs      R2      F Pr(&gt;F)   
-Model     3   1.4686 0.34161 2.7672  0.002 **
+Model     3   1.4686 0.34161 2.7672  0.005 **
 Residual 16   2.8304 0.65839                 
 Total    19   4.2990 1.00000                 
 ---
@@ -2449,7 +2534,7 @@ Mantel statistic r: 0.4634
 
 Upper quantiles of permutations (null model):
   90%   95% 97.5%   99% 
-0.139 0.190 0.221 0.262 
+0.146 0.194 0.243 0.277 
 Permutation: free
 Number of permutations: 999</code></pre>
 </div>
