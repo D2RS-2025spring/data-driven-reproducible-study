@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>8&nbsp; R 语言数据分析 – 数据驱动的可重复性研究</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./python-basic.html" rel="next">
+<link href="./r-basic.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-M8996LBB6D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-M8996LBB6D');
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./literate-programming.html">基础知识</a></li><li class="breadcrumb-item"><a href="./datasets-in-r.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">R 语言数据分析</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">数据驱动的可重复性研究</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">前言</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">课程简介</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./what-is-reproducible-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">什么是可重复性研究</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./project-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">课程项目简介</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">环境搭建</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reproducible-data-analysis-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">可重复性数据分析环境</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup-a-reproducible-environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">环境配置</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">基础知识</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./literate-programming.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">文学化编程</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cli.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">命令行程序</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./datasets-in-r.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">R 语言数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./python-vs-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Python 还是 R？</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./git-basic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Git 与 GitHub 入门</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">分组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">分组数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./grouped-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">分组数据分析实战</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./score-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">测试成绩分析</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">转录组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">转录组学数据分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./transcriptomics-data-analysis-in-action.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">转录组数据分析实战</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">微生物组数据分析</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./microbiome-data-analysis-and-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">微生物组数据分析及可视化</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">大模型API调用</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./how-to-get-api-key.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">获取 API KEY</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./reading-paper.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">AI 批量读文献</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bailian.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">阿里云百炼</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./huggingface.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Hugging Face</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chatanywhere.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ChatAnyWhere 服务</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./deepseek.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">DeepSeek R1 模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Doc2X.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Doc2X</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">从零开始神经网络</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./neural-network-from-scratch.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">手搓神经网络模型</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./two-dimensional-classification.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">二维平面拟合</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">机器学习</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./machine-learning-algorithms-and-implementation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">机器学习算法及实现</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">拉曼光谱识别病原菌</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pathogen-identification-with-raman-spectroscopy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">利用拉曼光谱识别病原菌</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bacteria-id-annotation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">开源代码释读</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrained-model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">使用模型进行病原菌检测</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">计算机视觉分析实验图片</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./computer-vision-image-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">计算机视觉分析实验图片</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-data-preparation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">数据预处理</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./segveg-model-training.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">训练 SegVeg 模型</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true">
+ <span class="menu-text">开发协作</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-12" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-12" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./collaboration-with-global-developers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">与全世界开发者协作</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./r-package-development.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">开发 R 包</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true">
+ <span class="menu-text">问题解答</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-13" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-13" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./FAQ.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">FAQ</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-14" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-14" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./markdown.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Markdown 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./write-math-equation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">书写数学公式</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quarto-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Quarto 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ggplot2-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">ggplot2 速查表</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dplyr-cheatsheet.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">dplyr 速查表</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#认识数据集" id="toc-认识数据集" class="nav-link active" data-scroll-target="#认识数据集"><span class="header-section-number">8.1</span> 认识数据集</a>
+  <ul class="collapse">
+  <li><a href="#npk" id="toc-npk" class="nav-link" data-scroll-target="#npk"><span class="header-section-number">8.1.1</span> npk</a></li>
+  <li><a href="#chickweight" id="toc-chickweight" class="nav-link" data-scroll-target="#chickweight"><span class="header-section-number">8.1.2</span> ChickWeight</a></li>
+  <li><a href="#plantgrowth" id="toc-plantgrowth" class="nav-link" data-scroll-target="#plantgrowth"><span class="header-section-number">8.1.3</span> PlantGrowth</a></li>
+  </ul></li>
+  <li><a href="#数据分析实战" id="toc-数据分析实战" class="nav-link" data-scroll-target="#数据分析实战"><span class="header-section-number">8.2</span> 数据分析实战</a>
+  <ul class="collapse">
+  <li><a href="#npk因子设计anova-与交互作用" id="toc-npk因子设计anova-与交互作用" class="nav-link" data-scroll-target="#npk因子设计anova-与交互作用"><span class="header-section-number">8.2.1</span> npk：因子设计、ANOVA 与交互作用</a></li>
+  <li><a href="#chickweight生长曲线纵向数据与混合效应模型" id="toc-chickweight生长曲线纵向数据与混合效应模型" class="nav-link" data-scroll-target="#chickweight生长曲线纵向数据与混合效应模型"><span class="header-section-number">8.2.2</span> ChickWeight：生长曲线、纵向数据与混合效应模型</a></li>
+  <li><a href="#plantgrowth单因素-anova组间均值比较与-tukey-检验" id="toc-plantgrowth单因素-anova组间均值比较与-tukey-检验" class="nav-link" data-scroll-target="#plantgrowth单因素-anova组间均值比较与-tukey-检验"><span class="header-section-number">8.2.3</span> PlantGrowth：单因素 ANOVA、组间均值比较与 Tukey 检验</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/datasets-in-r.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/datasets-in-r.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./literate-programming.html">基础知识</a></li><li class="breadcrumb-item"><a href="./datasets-in-r.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">R 语言数据分析</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">R 语言数据分析</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>R 是一种专门为统计分析和数据可视化设计的编程语言和软件环境。它就像 Excel 的公式、SPSS 的统计模块和 Origin 的绘图工具的结合体，但更强大、更灵活。与点点鼠标不同，R 主要通过“写代码”来操作数据和做分析，这样不仅能处理更大规模的数据，还能把整个分析过程保存下来、重复运行、自动化。R 自带了很多统计方法（回归、方差分析、时间序列等），还能画出质量出版级的图形，并且有一个庞大的用户社区不断开发扩展包。如果 Excel/SPSS/Origin 是工具箱里的单个工具，那么 R 更像是一个开放的实验室，你可以自由搭建属于自己的工具组合。</p>
+<p>因此，在使用 R 语言的时候，不仅需要安装 R 语言本体，还需要根据需要安装相应的软件包。安装他们的过程这里不再赘述，这里我们使用的主要是下面一些软件包，使用时首先通过 <code>library()</code> 函数导入，然后就可以调用相应软件包里面的功能。在下面的代码中，他们各自的功能以代码注释的形式写在 <code>library()</code> 之上。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># datasets 包含了我们下面要使用的数据集</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(datasets)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dplyr 和 tidyr 用于对数据进行清洗和格式化</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot2 用于数据可视化</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>本节，我们将以 4 个 R 语言安装后默认自带的数据集为例，展示使用 R 语言进行数据分析、假设检验、模型构建以及数据可视化方面的知识。</p>
+<section id="认识数据集" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="认识数据集"><span class="header-section-number">8.1</span> 认识数据集</h2>
+<p>本节一共使用了 3 个数据集，分别是 <code>npk</code>、<code>ChickWeight</code>和<code>PlantGrowth</code>，他们是 R 中最经典、最常用于农业科学研究的经典数据。</p>
+<section id="npk" class="level3" data-number="8.1.1">
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="npk"><span class="header-section-number">8.1.1</span> npk</h3>
+<p><code>npk</code> 数据集来源于经典的田间施肥试验，它以数据框（<code>data.frame</code>）的形式存储，共有 24 行、5 列，记录了 6 个区组(block)下不同氮肥(N)、磷肥(P)、钾肥(K)处理组合对作物产量(yield, 单位为英担/英亩)的影响，其中 N、P、K 均以 0/1 表示未施或施用。该试验采用 2³ 因子设计并结合区组设计，属于典型的裂区田间试验，常用于方差分析（ANOVA）、因子设计与交互作用分析的教学示例。对于农业研究而言，它的意义在于揭示氮、磷、钾三种肥料对作物产量的主效应及交互作用效应，从而为科学施肥和提高产量提供统计依据。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 载入数据集</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(npk)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看数据库的行数和列数</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(npk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24  5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 统计不同处理下的观测数量</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>npk <span class="sc">|&gt;</span> <span class="fu">count</span>(N, P, K)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  N P K n
+1 0 0 0 3
+2 0 0 1 3
+3 0 1 0 3
+4 0 1 1 3
+5 1 0 0 3
+6 1 0 1 3
+7 1 1 0 3
+8 1 1 1 3</code></pre>
+</div>
+</div>
+<p>上面使用 <code>count()</code> 对 <code>npk</code> 数据中氮 (N)、磷 (P)、钾 (K) 三个因子的处理组合计数。其结果表明 <code>npk</code> 数据集中氮 (N)、磷 (P)、钾 (K) 三个因子的所有 8 种组合（2³ 设计）都出现过，每种组合各有 3 次观测，因此整体上是一个平衡的因子设计。</p>
+</section>
+<section id="chickweight" class="level3" data-number="8.1.2">
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="chickweight"><span class="header-section-number">8.1.2</span> ChickWeight</h3>
+<p><code>ChickWeight</code> 数据集记录了 50 只小鸡在 0–21 天日龄阶段的体重变化，共 578 条观测，包含小鸡编号、日龄、体重和饲料类型四个变量。实验设计为将小鸡分配到 4 种饲料处理中，并进行纵向重复测量，因此非常适合用于生长曲线拟合、纵向数据与重复测量分析及混合效应模型的教学示例。在农业与畜牧领域，它的意义在于研究不同饲料配方对家禽生长性能的影响。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 载入数据集</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(ChickWeight)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看数据库的行数和列数</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(ChickWeight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 578   4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看数据概要</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ChickWeight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     weight           Time           Chick     Diet   
+ Min.   : 35.0   Min.   : 0.00   13     : 12   1:220  
+ 1st Qu.: 63.0   1st Qu.: 4.00   9      : 12   2:120  
+ Median :103.0   Median :10.00   20     : 12   3:120  
+ Mean   :121.8   Mean   :10.72   10     : 12   4:118  
+ 3rd Qu.:163.8   3rd Qu.:16.00   17     : 12          
+ Max.   :373.0   Max.   :21.00   19     : 12          
+                                 (Other):506          </code></pre>
+</div>
+</div>
+<p>这里使用 <code>summary(ChickWeight)</code> 来查看数据的概要。其结果展示了数据的基本分布情况：</p>
+<ul>
+<li><strong>体重（weight）</strong>：从最小 35 克到最大 373 克，平均值约 122 克，中位数 103 克，说明小鸡体重差异较大，存在显著增长趋势。</li>
+<li><strong>日龄（Time）</strong>：记录从 0 天到 21 天，平均约 10.7 天，四分位数显示数据大致均匀分布在整个生长期。</li>
+<li><strong>小鸡编号（Chick）</strong>：共有 50 只小鸡，大多数编号各自有 12 条观测，说明基本上每只小鸡都被连续跟踪测量。</li>
+<li><strong>饲料类型（Diet）</strong>：分为 4 种，其中饲料 1 有 220 条观测，饲料 2 和 3 各 120 条，饲料 4 有 118 条，分配大致均衡但不完全相等。</li>
+</ul>
+<p>总体上，该数据集清晰反映了不同饲料处理下小鸡在 0–21 天日龄期间的体重变化，为分析生长曲线和饲料效果提供了基础。</p>
+</section>
+<section id="plantgrowth" class="level3" data-number="8.1.3">
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="plantgrowth"><span class="header-section-number">8.1.3</span> PlantGrowth</h3>
+<p><code>PlantGrowth</code> 数据集记录了 30 株植物的干重及其所属实验组别，共 2 列变量：植物干重（<code>weight</code>）和实验组（<code>group</code>，包括对照组 <code>ctrl</code> 以及处理组 <code>trt1</code>、<code>trt2</code>）。实验采用完全随机设计，每组 10 株植物，用于比较两种处理对植物生长的影响。该数据集常用于 ANOVA 教学、组间均值比较和 Tukey 检验，是农业实验设计的典型入门案例。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 载入数据集</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(PlantGrowth)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看数据库的行数和列数</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(PlantGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 30  2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 计算不同处理下的平均值和标准差</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>PlantGrowth <span class="sc">|&gt;</span> <span class="fu">group_by</span>(group) <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(weight),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">std =</span> <span class="fu">sd</span>(weight))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  group  mean   std
+  &lt;fct&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 ctrl   5.03 0.583
+2 trt1   4.66 0.794
+3 trt2   5.53 0.443</code></pre>
+</div>
+</div>
+<p>上面使用了 <code>dplyr</code> 包提供的两个函数，计算了 <code>PlantGrowth</code> 数据集中三组处理下植物干重的均值和标准差。结果显示，对照组（<code>ctrl</code>）平均干重约 5.03 克，标准差 0.58；处理组 1（<code>trt1</code>）平均 4.66 克，标准差 0.79；处理组 2（<code>trt2</code>）平均 5.53 克，标准差 0.44。可以看出，不同处理对植物干重有一定影响，其中 <code>trt2</code> 的平均干重最高且波动最小，<code>trt1</code> 平均干重最低且变异较大，为后续 ANOVA 和组间比较分析提供了基础。</p>
+</section>
+</section>
+<section id="数据分析实战" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="数据分析实战"><span class="header-section-number">8.2</span> 数据分析实战</h2>
+<p>下面，我们将基于上述 3 个数据集，展示如何使用 R 语言及相关软件包进行数据分析和可视化。</p>
+<section id="npk因子设计anova-与交互作用" class="level3" data-number="8.2.1">
+<h3 data-number="8.2.1" class="anchored" data-anchor-id="npk因子设计anova-与交互作用"><span class="header-section-number">8.2.1</span> npk：因子设计、ANOVA 与交互作用</h3>
+<section id="了解数据集" class="level4" data-number="8.2.1.1">
+<h4 data-number="8.2.1.1" class="anchored" data-anchor-id="了解数据集"><span class="header-section-number">8.2.1.1</span> 了解数据集</h4>
+<p><code>npk</code> 数据集是 R 自带的一个作物实验数据集，结构如下：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(npk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  block N P K yield
+1     1 0 1 1  49.5
+2     1 1 1 0  62.8
+3     1 0 0 0  46.8
+4     1 1 0 1  57.0
+5     2 1 0 0  59.8
+6     2 1 1 1  58.5</code></pre>
+</div>
+</div>
+<ul>
+<li><code>block</code>：区组（随机区组设计的块）</li>
+<li><code>N</code>、<code>P</code>、<code>K</code>：氮、磷、钾三种肥料水平（0=不施，1=施）</li>
+<li><code>yield</code>：作物产量</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(npk)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   24 obs. of  5 variables:
+ $ block: Factor w/ 6 levels "1","2","3","4",..: 1 1 1 1 2 2 2 2 3 3 ...
+ $ N    : Factor w/ 2 levels "0","1": 1 2 1 2 2 2 1 1 1 2 ...
+ $ P    : Factor w/ 2 levels "0","1": 2 2 1 1 1 2 1 2 2 2 ...
+ $ K    : Factor w/ 2 levels "0","1": 2 1 1 2 1 2 2 1 1 2 ...
+ $ yield: num  49.5 62.8 46.8 57 59.8 58.5 55.5 56 62.8 55.8 ...</code></pre>
+</div>
+</div>
+<p>还可以用 <code>str(npk)</code> 查看数据结构。可以看出：</p>
+<ul>
+<li><p><code>'data.frame': 24 obs. of 5 variables</code> 说明 <code>npk</code> 是一个 <strong>数据框（data.frame）</strong>，总共有 <strong>24 个观测值</strong>（行），每个观测值记录一个实验处理下的结果，有 <strong>5 个变量</strong>（列）。</p></li>
+<li><p><code>$ block: Factor w/ 6 levels "1","2","3","4",..: 1 1 1 1 2 2 2 2 3 3 ...</code></p>
+<ul>
+<li><code>block</code> 是 <strong>因子（factor）</strong>，共有 <strong>6 个水平</strong>（1 到 6），表示实验的随机区组。</li>
+<li>数字序列 <code>1 1 1 1 2 2 2 2 ...</code> 表示前 4 个观测值属于第 1 块，接下来 4 个属于第 2 块，以此类推。</li>
+</ul></li>
+<li><p><code>$ N: Factor w/ 2 levels "0","1": 1 2 1 2 2 2 1 1 1 2 ...</code></p>
+<ul>
+<li><code>N</code> 是 <strong>氮肥水平因子</strong>，有两个水平：0（不施氮）和 1（施氮）。</li>
+<li>序列 <code>1 2 1 2 ...</code> 表示第一个观测值是水平 0（因为 factor 编码中 1 对应第一个水平 “0”），第二个是水平 1，即施氮。</li>
+</ul></li>
+<li><p><code>$ P: Factor w/ 2 levels "0","1": 2 2 1 1 1 2 1 2 2 2 ...</code></p>
+<ul>
+<li><code>P</code> 是 <strong>磷肥水平因子</strong>，也有两个水平 0/1。</li>
+<li>序列表示每个观测值对应的磷肥处理水平。</li>
+</ul></li>
+<li><p><code>$ K: Factor w/ 2 levels "0","1": 2 1 1 2 1 2 2 1 1 2 ...</code></p>
+<ul>
+<li><code>K</code> 是 <strong>钾肥水平因子</strong>，同样有两个水平。</li>
+<li>序列显示每个观测值的钾肥处理。</li>
+</ul></li>
+<li><p><code>$ yield: num 49.5 62.8 46.8 57 59.8 58.5 55.5 56 62.8 55.8 ...</code></p>
+<ul>
+<li><code>yield</code> 是 <strong>作物产量</strong>，数值型（numeric），记录每个实验处理的结果。</li>
+<li>这些数值可以用于后续的 <strong>ANOVA 分析</strong>，来研究 N、P、K 以及它们交互作用对产量的影响。</li>
+</ul></li>
+</ul>
+<p>综上，<code>npk</code> 是一个典型的 <strong>2×2×2 因子实验数据集</strong>，在 6 个区组中，每个因子（N、P、K）有 2 个水平，共 24 条观测。<code>yield</code> 是因变量，可以用它来做单因素或多因素 ANOVA，并分析主效应和交互作用。</p>
+</section>
+<section id="因子设计" class="level4" data-number="8.2.1.2">
+<h4 data-number="8.2.1.2" class="anchored" data-anchor-id="因子设计"><span class="header-section-number">8.2.1.2</span> 因子设计</h4>
+<p><code>N</code>、<code>P</code>、<code>K</code> 是因子（factor），每个有 2 个水平（0 或 1），所以这是一个 2×2×2 的全因子设计。</p>
+<p>可以用 R 查看各组组合的样本数：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>npk <span class="sc">|&gt;</span> <span class="fu">count</span>(N, P, K)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  N P K n
+1 0 0 0 3
+2 0 0 1 3
+3 0 1 0 3
+4 0 1 1 3
+5 1 0 0 3
+6 1 0 1 3
+7 1 1 0 3
+8 1 1 1 3</code></pre>
+</div>
+</div>
+<p>可以计算平均产量来理解因子的效应：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>npk <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(N, P, K) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_yield =</span> <span class="fu">mean</span>(yield))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 4
+# Groups:   N, P [4]
+  N     P     K     mean_yield
+  &lt;fct&gt; &lt;fct&gt; &lt;fct&gt;      &lt;dbl&gt;
+1 0     0     0           51.4
+2 0     0     1           52  
+3 0     1     0           54.3
+4 0     1     1           50.5
+5 1     0     0           63.8
+6 1     0     1           54.7
+7 1     1     0           57.9
+8 1     1     1           54.4</code></pre>
+</div>
+</div>
+</section>
+<section id="单因素-anova" class="level4" data-number="8.2.1.3">
+<h4 data-number="8.2.1.3" class="anchored" data-anchor-id="单因素-anova"><span class="header-section-number">8.2.1.3</span> 单因素 ANOVA</h4>
+<p>先看单因素 N 的效应：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>aov_N <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> N, <span class="at">data =</span> npk)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
+N            1  189.3  189.28   6.061 0.0221 *
+Residuals   22  687.1   31.23                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ul>
+<li><code>yield ~ N</code> 表示分析的是产量受氮肥水平的影响</li>
+<li><code>summary()</code> 会输出 F 值和 p 值，用于判断氮肥是否显著影响产量</li>
+</ul>
+<p>单因素 ANOVA 的结果中：</p>
+<ul>
+<li><p><code>Df</code>：自由度（Degrees of Freedom）</p>
+<ul>
+<li><code>N</code> 的自由度 = 1（因为 <code>N</code> 有 2 个水平，自由度 = 水平数 - 1）</li>
+<li><code>Residuals</code>（残差）的自由度 = 22（总观测数 24 - 因子自由度 1 = 23？这里减去 1 是因为没有截距吗？实际上 R 默认还减去因子 1 个自由度，残差 = 24-2=22）</li>
+</ul></li>
+<li><p><code>Sum Sq</code>：平方和（Sum of Squares）</p>
+<ul>
+<li><code>N</code> 的平方和 = 189.3，表示因子 N 对产量的变异贡献</li>
+<li><code>Residuals</code> 的平方和 = 687.1，表示未被 N 解释的变异</li>
+</ul></li>
+<li><p><code>Mean Sq</code>：均方（Mean Square） = Sum Sq / Df</p>
+<ul>
+<li><code>N</code> = 189.28</li>
+<li><code>Residuals</code> = 31.23</li>
+</ul></li>
+<li><p><code>F value</code> = 189.28 / 31.23 ≈ 6.061</p>
+<ul>
+<li>F 值越大，说明因子对产量的影响越显著</li>
+</ul></li>
+<li><p><code>Pr(&gt;F)</code> = 0.0221</p>
+<ul>
+<li>这是 p 值，表示在零假设（N 对产量没有影响）下观察到 F ≥ 6.061 的概率</li>
+<li>0.0221 &lt; 0.05，说明 N 对产量的影响 <strong>显著</strong></li>
+</ul></li>
+<li><p><code>Signif. codes: *</code> 表示显著性水平</p>
+<ul>
+<li><code>*</code> → p &lt; 0.05</li>
+</ul></li>
+</ul>
+<p>这个结果说明，氮肥 N 对作物产量有显著正向或负向影响（具体正负可以看平均产量差异）。</p>
+<p>同理可对 <code>P</code>、<code>K</code> 做单因素 ANOVA。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对施用 P 肥做单因素 ANOVA</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>aov_P <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> P, <span class="at">data =</span> npk)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_P)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+P            1    8.4    8.40   0.213  0.649
+Residuals   22  868.0   39.45               </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 对使用 K 肥做单因素 ANOVA</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>aov_K <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> K, <span class="at">data =</span> npk)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_K)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)
+K            1   95.2   95.20   2.681  0.116
+Residuals   22  781.2   35.51               </code></pre>
+</div>
+</div>
+<p>单因素 ANOVA 也可以写成下面的形式，表示分别分析 N、P、K 对产量的影响，不考虑交互作用。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>aov_1way <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> N <span class="sc">+</span> P <span class="sc">+</span> K, <span class="at">data =</span> npk)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_1way)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
+N            1  189.3  189.28   6.488 0.0192 *
+P            1    8.4    8.40   0.288 0.5974  
+K            1   95.2   95.20   3.263 0.0859 .
+Residuals   20  583.5   29.17                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="多因素-anova主效应-交互作用" class="level4" data-number="8.2.1.4">
+<h4 data-number="8.2.1.4" class="anchored" data-anchor-id="多因素-anova主效应-交互作用"><span class="header-section-number">8.2.1.4</span> 多因素 ANOVA（主效应 + 交互作用）</h4>
+<p>单因素 ANOVA 可以帮助我们判断这个因子是否显著，但无法分析交互作用。为了考虑三个肥料之间的交互作用，需要做多因素方差分析。在做多因素 ANOVA 分析时，只需要将上面代码中的加号改成乘号即可。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>aov_full <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> N <span class="sc">*</span> P <span class="sc">*</span> K, <span class="at">data =</span> npk)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_full)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
+N            1  189.3  189.28   6.161 0.0245 *
+P            1    8.4    8.40   0.273 0.6082  
+K            1   95.2   95.20   3.099 0.0975 .
+N:P          1   21.3   21.28   0.693 0.4175  
+N:K          1   33.1   33.14   1.078 0.3145  
+P:K          1    0.5    0.48   0.016 0.9019  
+N:P:K        1   37.0   37.00   1.204 0.2887  
+Residuals   16  491.6   30.72                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<ul>
+<li><code>N * P * K</code> 表示 <strong>N、P、K 的主效应</strong> + <strong>两两交互作用</strong> + <strong>三重交互作用</strong></li>
+<li>输出中会看到每个效应的 F 值和显著性</li>
+</ul>
+<p>如果只关注两两交互作用，不考虑三重交互作用，则可以这样写：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>aov_2way <span class="ot">&lt;-</span> <span class="fu">aov</span>(yield <span class="sc">~</span> (N <span class="sc">+</span> P <span class="sc">+</span> K)<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> npk)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(aov_2way)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
+N            1  189.3  189.28   6.088 0.0245 *
+P            1    8.4    8.40   0.270 0.6099  
+K            1   95.2   95.20   3.062 0.0982 .
+N:P          1   21.3   21.28   0.684 0.4195  
+N:K          1   33.1   33.14   1.066 0.3164  
+P:K          1    0.5    0.48   0.015 0.9024  
+Residuals   17  528.6   31.09                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</section>
+<section id="交互作用可视化" class="level4" data-number="8.2.1.5">
+<h4 data-number="8.2.1.5" class="anchored" data-anchor-id="交互作用可视化"><span class="header-section-number">8.2.1.5</span> 交互作用可视化</h4>
+<p>交互作用图能帮助理解因子之间的相互影响：</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">interaction.plot</span>(npk<span class="sc">$</span>N, npk<span class="sc">$</span>P, npk<span class="sc">$</span>yield, <span class="at">fun =</span> mean,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"red"</span>,<span class="st">"blue"</span>), <span class="at">lty =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">trace.label =</span> <span class="st">"P level"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>在这幅图上，横轴是 N 的水平，不同颜色表示 P 的水平，纵轴是产量平均值。如果线基本平行，表示没有明显交互作用，即 N 的效应对产量变化不依赖于 P 的水平，这种情况下可以认为 N 和 P 的效应是独立的；如果线明显交叉或斜率不同，则表示存在交互作用，如 N 施肥时产量随 P 的水平变化很大，但不施用 N 时变化小，说明 N、P 有交互作用。</p>
+<p>可以分别画 N×P、N×K、P×K 的交互作用图，直观观察交互效应。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># N × K 交互作用</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">interaction.plot</span>(npk<span class="sc">$</span>N, npk<span class="sc">$</span>K, npk<span class="sc">$</span>yield, <span class="at">fun =</span> mean,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"green"</span>,<span class="st">"purple"</span>), <span class="at">lty =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">trace.label =</span> <span class="st">"K level"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlab =</span> <span class="st">"N level"</span>, <span class="at">ylab =</span> <span class="st">"Mean yield"</span>, <span class="at">main =</span> <span class="st">"N × K interaction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># P × K 交互作用</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">interaction.plot</span>(npk<span class="sc">$</span>P, npk<span class="sc">$</span>K, npk<span class="sc">$</span>yield, <span class="at">fun =</span> mean,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"brown"</span>), <span class="at">lty =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">trace.label =</span> <span class="st">"K level"</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlab =</span> <span class="st">"P level"</span>, <span class="at">ylab =</span> <span class="st">"Mean yield"</span>, <span class="at">main =</span> <span class="st">"P × K interaction"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>综上，通过 <code>npk</code> 数据，我们理解了因子设计的概念，并学习了单因素 ANOVA（分析单个因子对产量的影响）及多因素 ANOVA（考虑多个因子及交互作用）的分析方法，并使用 <code>interaction.plot()</code> 方法可视化了因子间的交互作用（理解因子如何互相影响）。所得结果表明，N 肥施用对作物产量的影响是最显著的，K 肥施用的影响次之。N、P 肥之间存在较强的交互作用，但是结果并不显著。总体上，N 肥发挥了主效作用。</p>
+</section>
+</section>
+<section id="chickweight生长曲线纵向数据与混合效应模型" class="level3" data-number="8.2.2">
+<h3 data-number="8.2.2" class="anchored" data-anchor-id="chickweight生长曲线纵向数据与混合效应模型"><span class="header-section-number">8.2.2</span> ChickWeight：生长曲线、纵向数据与混合效应模型</h3>
+<section id="了解数据集-1" class="level4" data-number="8.2.2.1">
+<h4 data-number="8.2.2.1" class="anchored" data-anchor-id="了解数据集-1"><span class="header-section-number">8.2.2.1</span> 了解数据集</h4>
+<p><code>ChickWeight</code> 是 R 自带的 <strong>纵向实验数据集</strong>，记录了小鸡在不同时间点的体重变化以及饲料类型（Diet）信息。它常用于学习 <strong>生长曲线分析、重复测量数据处理和混合效应模型</strong>。数据集特点包括：</p>
+<ul>
+<li><strong>重复测量</strong>：每只小鸡（Chick）在多个时间点测量体重</li>
+<li><strong>因子处理</strong>：不同的饲料类型（Diet）可能影响生长速率</li>
+<li><strong>纵向结构</strong>：时间（Time）是连续变量，可分析生长趋势</li>
+<li><strong>随机效应</strong>：不同个体可能有不同初始体重和生长速率</li>
+</ul>
+<p>通过该数据集，可以探索以下分析方法：</p>
+<ol type="1">
+<li><strong>生长曲线可视化</strong>：绘制每只小鸡的体重随时间变化的曲线，观察总体趋势和个体差异</li>
+<li><strong>纵向数据分析</strong>：处理重复测量数据，考虑时间依赖性和个体间差异</li>
+<li><strong>混合效应模型</strong>：使用线性混合效应模型（如 <code>lmer</code>）拟合固定效应（Time、Diet）和随机效应（Chick），分析饲料对生长速率的影响以及个体差异</li>
+<li><strong>交互作用分析</strong>：探索 Time × Diet 的交互作用，判断不同饲料是否改变小鸡的生长曲线形状</li>
+</ol>
+<p>这个数据集是学习生物学、生长动力学或纵向数据分析的经典示例。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ChickWeight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  weight Time Chick Diet
+1     42    0     1    1
+2     51    2     1    1
+3     59    4     1    1
+4     64    6     1    1
+5     76    8     1    1
+6     93   10     1    1</code></pre>
+</div>
+</div>
+<p>我们来看 <code>head(ChickWeight)</code> 的输出，逐项解释每一列的含义：</p>
+<ul>
+<li><code>weight</code>：小鸡体重（数值型，因变量），单位通常为克</li>
+<li><code>Time</code>：测量时间（天数），纵向变量，用于分析生长曲线</li>
+<li><code>Chick</code>：小鸡编号（因子/分组变量），每只小鸡在不同时间有重复测量</li>
+<li><code>Diet</code>：饲料类型（因子），实验处理组，用于分析不同饲料对生长的影响</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(ChickWeight)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classes 'nfnGroupedData', 'nfGroupedData', 'groupedData' and 'data.frame':  578 obs. of  4 variables:
+ $ weight: num  42 51 59 64 76 93 106 125 149 171 ...
+ $ Time  : num  0 2 4 6 8 10 12 14 16 18 ...
+ $ Chick : Ord.factor w/ 50 levels "18"&lt;"16"&lt;"15"&lt;..: 15 15 15 15 15 15 15 15 15 15 ...
+ $ Diet  : Factor w/ 4 levels "1","2","3","4": 1 1 1 1 1 1 1 1 1 1 ...
+ - attr(*, "formula")=Class 'formula'  language weight ~ Time | Chick
+  .. ..- attr(*, ".Environment")=&lt;environment: R_EmptyEnv&gt; 
+ - attr(*, "outer")=Class 'formula'  language ~Diet
+  .. ..- attr(*, ".Environment")=&lt;environment: R_EmptyEnv&gt; 
+ - attr(*, "labels")=List of 2
+  ..$ x: chr "Time"
+  ..$ y: chr "Body weight"
+ - attr(*, "units")=List of 2
+  ..$ x: chr "(days)"
+  ..$ y: chr "(gm)"</code></pre>
+</div>
+</div>
+<p>使用 <code>str()</code> 分析 <code>ChickWeight</code> 的数据定义。可以得出，<code>ChickWeight</code> 是一个带有分组信息的纵向数据框，共 578 条观测、4 个变量。此外，它同时还属于 <code>groupedData</code> 类。该类是一种用于纵向数据分析的格式，公式 <code>weight ~ Time | Chick</code> 表示以每只小鸡为分组，观察体重随时间变化，<code>~Diet</code> 表示外部因子分组。数据还包含标签和单位信息，便于绘图和解释。</p>
+</section>
+<section id="生长曲线可视化" class="level4" data-number="8.2.2.2">
+<h4 data-number="8.2.2.2" class="anchored" data-anchor-id="生长曲线可视化"><span class="header-section-number">8.2.2.2</span> 生长曲线可视化</h4>
+<p>在分析 <code>ChickWeight</code> 数据时，我们既关心每只小鸡随时间的体重变化曲线，也关心不同饲料类型下的整体生长趋势。下面这段代码使用 <code>ggplot2</code> 绘制出生长曲线图，将个体曲线与各饲料组的平均轨迹叠加，方便比较个体差异与处理效应。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 各饲料的平均增长轨迹</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> weight, <span class="at">group =</span> Chick, <span class="at">color =</span> Diet)) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="fu">aes</span>(<span class="at">group =</span> Diet), <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"line"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet) <span class="sc">+</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ChickWeight: 生长轨迹（个体 + 饮食均值）"</span>, <span class="at">x =</span> <span class="st">"日龄"</span>, <span class="at">y =</span> <span class="st">"体重(g)"</span>) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>这段画图代码的思路是：先画出所有个体的曲线来体现小鸡之间的差异，再叠加各饲料组的均值曲线作为整体趋势，最后用分面把不同饲料条件下的生长模式清楚地区分开。这样，个体差异与组间差异在同一张图中都能直观呈现。</p>
+<p>对代码里主要函数的作用说明一下：</p>
+<ul>
+<li><strong><code>ggplot()</code></strong>：建立绘图框架，指定数据集和映射关系 (<code>aes</code>)。这里把 <code>Time</code> 映射到 x 轴，<code>weight</code> 映射到 y 轴，<code>Chick</code> 表示分组曲线，<code>Diet</code> 用来区分颜色。</li>
+<li><strong><code>geom_line()</code></strong>：画出每只小鸡的生长曲线。<code>alpha = 0.4</code> 让线条半透明，避免个体曲线遮挡过多。</li>
+<li><strong><code>stat_summary()</code></strong>：对每个 <code>Diet</code> 组计算均值，并画出一条更粗的平均生长曲线，用于突出整体趋势。</li>
+<li><strong><code>facet_wrap(~Diet)</code></strong>：按饲料分面绘图，把不同饮食条件分到不同小图里，更方便比较。</li>
+<li><strong><code>labs()</code></strong>：给图加标题和坐标轴标签，解释图形内容。</li>
+<li><strong><code>theme_bw()</code></strong>：采用黑白主题，使图形更简洁清晰。</li>
+</ul>
+<p>从图中我们可以直观地看到：每只小鸡的生长曲线都呈现随时间上升的趋势，但不同小鸡之间存在明显差异，同时，不同饲料组的平均轨迹也表现出一定差别。</p>
+</section>
+<section id="生长曲线模型" class="level4" data-number="8.2.2.3">
+<h4 data-number="8.2.2.3" class="anchored" data-anchor-id="生长曲线模型"><span class="header-section-number">8.2.2.3</span> 生长曲线模型</h4>
+<p>仅靠画图能帮我们直观认识趋势，但如果想定量分析——比如比较饲料组的效果、估计生长速度，或者控制个体差异——就需要用到<strong>混合效应模型</strong>。</p>
+<p>因为本数据中小鸡既存在饮食差异（一共 4 种喂养模式），又存在个体差异（小鸡生长曲线不一样），所以推荐选择非线性混合效应模型。因此，下面使用 <code>nlme</code> 软件包来完成模型拟合和预测。</p>
+<p><code>nlme</code> 是 <strong>R 语言</strong>中一个功能强大的软件包，它主要用于拟合和分析 <strong>非线性混合效应模型（Nonlinear Mixed-Effects Models）</strong>。<code>nlme</code> 软件包的核心功能是处理那些同时包含<strong>固定效应（fixed effects）</strong>（这里是喂养模式）和<strong>随机效应（random effects）</strong>（这里是小鸡个体差异）的复杂数据集。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 加载软件包</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>在生物学研究中，逻辑斯蒂函数常用来描述生长曲线，因此这里需要先定义一个逻辑斯蒂生长模型：</p>
+<p><span class="math display">\[
+weight = \frac{Asym}{1 + \exp(-(Time - xmid)/scal)}
+\]</span></p>
+<ul>
+<li><code>Asym</code>：最大体重</li>
+<li><code>xmid</code>：拐点时间</li>
+<li><code>scal</code>：曲线陡峭度</li>
+</ul>
+</section>
+<section id="先用-nlslist-为每只小鸡拟合" class="level4" data-number="8.2.2.4">
+<h4 data-number="8.2.2.4" class="anchored" data-anchor-id="先用-nlslist-为每只小鸡拟合"><span class="header-section-number">8.2.2.4</span> 先用 <code>nlsList()</code> 为每只小鸡拟合</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 按小鸡个体分别拟合逻辑斯蒂曲线</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">&lt;-</span> <span class="fu">nlsList</span>(weight <span class="sc">~</span> <span class="fu">SSlogis</span>(Time, Asym, xmid, scal) <span class="sc">|</span> Chick,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> ChickWeight)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+  Model: weight ~ SSlogis(Time, Asym, xmid, scal) | Chick 
+   Data: ChickWeight 
+
+Coefficients:
+   Asym 
+     Estimate   Std. Error    t value     Pr(&gt;|t|)
+18         NA           NA         NA           NA
+16   54.69829     5.290905 10.3381736 3.647390e-05
+15   69.43472     3.958350 17.5413296 6.156577e-08
+13 1182.09208 18279.651180  0.0646671 9.431953e-01
+9   100.05400     3.147814 31.7852282 4.440715e-11
+20  245.73628   143.324551  1.7145442 4.968573e-04
+10  158.89170    23.596933  6.7335742 1.367084e-07
+8   145.11987     8.695426 16.6892195 5.124818e-08
+17  193.66184    34.709980  5.5794281 1.597163e-05
+19         NA           NA         NA           NA
+4   265.78099    51.133277  5.1978087 1.507385e-03
+6   168.00722     4.139145 40.5898371 1.113504e-10
+11  189.54941     3.495938 54.2199017 2.051045e-10
+3   297.09367    30.057094  9.8843111 4.026260e-06
+1   937.03020   777.631806  1.2049793 7.516238e-02
+12  338.46718    47.155653  7.1776587 4.481032e-04
+2   385.76885    64.478009  5.9829522 1.469177e-07
+5   265.01074    11.069744 23.9400954 2.505172e-07
+14  320.15720    11.952160 26.7865564 2.087418e-09
+7   561.86815    66.205044  8.4867876 4.666041e-06
+24   72.66406     2.144161 33.8892754 3.820054e-12
+30  181.14074    10.907530 16.6069438 1.374039e-08
+22  316.31606    93.276213  3.3911760 6.176029e-03
+23  212.04214    14.601829 14.5216157 2.773553e-09
+27  341.19393    69.121040  4.9361805 6.658799e-05
+ [ reached 'max' / getOption("max.print") -- omitted 25 rows ]
+   xmid 
+     Estimate  Std. Error    t value     Pr(&gt;|t|)
+18         NA          NA         NA           NA
+16 -3.5897381   3.9799561 -0.9019542 1.550498e-01
+15 -0.9561391   0.9895737 -0.9662131 4.058495e-02
+13 90.7358050 540.5817432  0.1678484 8.533937e-01
+9   1.8417545   0.5174225  3.5594788 2.784501e-03
+20 21.9203776  15.2515555  1.4372552 1.625834e-03
+10  9.9835719   3.0512509  3.2719603 5.489488e-05
+8   5.8904819   0.8983804  6.5567794 6.123277e-05
+17 11.9207815   3.9711609  3.0018380 1.526269e-03
+19         NA          NA         NA           NA
+4  16.3938347   3.7810771  4.3357579 4.579035e-03
+6   6.1507790   0.3505903 17.5440671 1.829390e-07
+11  6.1558869   0.2575715 23.8997179 2.787868e-07
+3  14.9024083   1.6510878  9.0258121 8.516255e-06
+1  35.2229642  13.8745243  2.5386790 2.182032e-03
+12 17.2339305   2.3049489  7.4769253 3.351764e-04
+2  18.7592296   2.8816161  6.5099683 7.053447e-08
+5  11.6670457   0.5754740 20.2738033 1.039110e-06
+14 11.7990198   0.5243007 22.5042969 9.744242e-09
+7  19.6420227   1.6727894 11.7420778 2.991518e-07
+24 -0.8836338   0.9024171 -0.9791856 2.002545e-01
+30  8.5991278   0.9874876  8.7080871 3.561671e-06
+22 19.6241673   6.5439869  2.9988091 1.187269e-02
+23 10.0733479   1.1701968  8.6082510 2.705767e-07
+27 18.6835470   3.8095714  4.9043698 6.998944e-05
+ [ reached 'max' / getOption("max.print") -- omitted 25 rows ]
+   scal 
+    Estimate Std. Error    t value     Pr(&gt;|t|)
+18        NA         NA         NA           NA
+16  3.416060  3.6915024  0.9253848 1.470455e-01
+15  3.111387  1.3421561  2.3182007 1.213418e-03
+13 28.264875 27.3322912  1.0341202 2.714148e-01
+9   4.203362  0.7177723  5.8561224 8.833591e-05
+20 13.722943  4.1355081  3.3183210 2.915377e-06
+10  9.065047  1.7595462  5.1519231 1.356585e-06
+8   5.955824  0.8176362  7.2841980 2.869298e-05
+17 10.084052  1.9257746  5.2363616 2.654356e-05
+19        NA         NA         NA           NA
+4   9.396451  1.3134711  7.1539075 1.623953e-04
+6   4.230045  0.3369910 12.5523961 3.160838e-06
+11  3.703533  0.2429933 15.2412975 1.218072e-05
+3   7.333444  0.6460551 11.3511114 1.261508e-06
+1  11.405209  1.5110467  7.5478862 5.079519e-07
+12  7.924723  0.7430491 10.6651408 2.247199e-05
+2   8.604490  0.8315294 10.3477889 1.187411e-09
+5   5.238298  0.3284519 15.9484461 7.709893e-06
+14  5.429882  0.2917093 18.6140199 5.156180e-08
+7   7.206433  0.4399517 16.3800546 1.646215e-08
+24  2.992640  0.9764623  3.0647773 1.916036e-03
+30  6.520010  0.7042831  9.2576553 2.135171e-06
+22 11.309157  1.8935278  5.9725332 1.479499e-04
+23  6.984844  0.7083695  9.8604519 8.342604e-08
+27  9.397528  1.1222445  8.3738686 8.909070e-07
+ [ reached 'max' / getOption("max.print") -- omitted 25 rows ]
+
+Residual standard error: 4.871706 on 411 degrees of freedom</code></pre>
+</div>
+</div>
+<p>这里的 <code>SSlogis()</code> 是 R 内置的逻辑斯蒂自启动函数，能帮我们自动选初值。</p>
+</section>
+<section id="用-nlme-构建混合效应模型" class="level4" data-number="8.2.2.5">
+<h4 data-number="8.2.2.5" class="anchored" data-anchor-id="用-nlme-构建混合效应模型"><span class="header-section-number">8.2.2.5</span> 用 <code>nlme()</code> 构建混合效应模型</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 混合效应非线性模型：固定效应 + 随机效应</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>fm2 <span class="ot">&lt;-</span> <span class="fu">nlme</span>(weight <span class="sc">~</span> <span class="fu">SSlogis</span>(Time, Asym, xmid, scal),</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> ChickWeight,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">fixed =</span> Asym <span class="sc">+</span> xmid <span class="sc">+</span> scal <span class="sc">~</span> Diet,   <span class="co"># 饮食作为固定效应</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">random =</span> Asym <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> Chick)           <span class="co"># 小鸡的最大体重有个体差异</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Nonlinear mixed-effects model fit by maximum likelihood
+  Model: weight ~ SSlogis(Time, Asym, xmid, scal) 
+  Data: ChickWeight 
+       AIC      BIC    logLik
+  4979.698 5001.496 -2484.849
+
+Random effects:
+ Formula: Asym ~ 1 | Chick
+            Asym Residual
+StdDev: 79.43488 14.90059
+
+Fixed effects:  list(Asym ~ 1, xmid ~ 1, scal ~ 1) 
+         Value Std.Error  DF  t-value p-value
+Asym 297.94547 15.627598 526 19.06534       0
+xmid  14.20968  0.583618 526 24.34755       0
+scal   7.11553  0.242564 526 29.33461       0
+ Correlation: 
+     Asym  xmid 
+xmid 0.683      
+scal 0.639 0.934
+
+Standardized Within-Group Residuals:
+        Min          Q1         Med          Q3         Max 
+-3.00857103 -0.56383025  0.03704846  0.72162682  3.18303073 
+
+Number of Observations: 578
+Number of Groups: 50 </code></pre>
+</div>
+</div>
+<ul>
+<li><strong>固定效应</strong>：检查饮食对参数（最大体重、拐点、陡峭度）的影响</li>
+<li><strong>随机效应</strong>：允许不同小鸡的最大体重不同</li>
+</ul>
+</section>
+<section id="画拟合效果" class="level4" data-number="8.2.2.6">
+<h4 data-number="8.2.2.6" class="anchored" data-anchor-id="画拟合效果"><span class="header-section-number">8.2.2.6</span> 画拟合效果</h4>
+<p>将<code>nlme</code>模型的拟合结果与原始数据一起可视化，是评估模型效果和进行诊断的重要步骤。<code>nlme</code>软件包自带的 <code>plot()</code> 函数能快速生成图形，但如果你想获得更美观、更灵活的定制化图表，那么使用 <strong><code>ggplot2</code></strong> 是更好的选择。</p>
+<p>下面我将介绍使用 <code>ggplot2</code> 可视化 <code>nlme</code> 模型拟合效果的方法。这种方法的核心思想是利用 <code>predict()</code> 函数从 <code>nlme</code> 模型中提取拟合的预测值，然后将这些预测值添加到原始数据集中，最后用 <code>ggplot2</code> 绘制。</p>
+<p><code>predict()</code> 函数对于 <code>nlme</code> 对象非常有用，你可以指定预测的层级：</p>
+<ul>
+<li><strong><code>level = 0</code></strong>：预测<strong>固定效应</strong>的拟合值（即群体平均生长曲线）。</li>
+<li><strong><code>level = 1</code></strong>：预测<strong>随机效应</strong>和<strong>固定效应</strong>的拟合值（即每只小鸡的个体生长曲线）。</li>
+</ul>
+<p>首先，我们将 <code>fm2</code> 模型的两种拟合值都提取出来，并添加到 <code>ChickWeight</code> 数据框中。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 提取群体平均预测值（固定效应）</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>ChickWeight<span class="sc">$</span>fixed_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm2, <span class="at">level =</span> <span class="dv">0</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 提取个体预测值（固定效应 + 随机效应）</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>ChickWeight<span class="sc">$</span>indiv_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fm2, <span class="at">level =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>我们先绘制各饲料组的<strong>平均生长曲线</strong>。这能帮助我们评估模型对群体趋势的拟合效果。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> weight, <span class="at">color =</span> Diet)) <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 绘制原始数据点</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 绘制群体平均拟合曲线</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> fixed_pred), <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 按饲料分面</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet) <span class="sc">+</span></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"模型对群体平均生长曲线的拟合"</span>,</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"日龄"</span>,</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"体重(g)"</span></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>从这个图中，你可以清楚地看到模型拟合的逻辑斯蒂曲线（粗线）与实际数据点（半透明点）的匹配程度。</p>
+<p>接下来，我们绘制每只小鸡的<strong>个体拟合曲线</strong>，这能直观地显示模型对随机效应的捕捉能力。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ChickWeight, <span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> weight, <span class="at">group =</span> Chick, <span class="at">color =</span> Diet)) <span class="sc">+</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 绘制原始数据点和个体曲线</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> weight), <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 绘制个体拟合曲线</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> indiv_pred), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 按饲料分面</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Diet) <span class="sc">+</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"模型对个体生长曲线的拟合"</span>,</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"日龄"</span>,</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"体重(g)"</span></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>在这个图中，你可以看到每只小鸡各自的真实生长轨迹（细线）和模型为它们拟合的独特曲线（粗线）。这展示了模型如何利用随机效应来解释个体差异。</p>
+<p>综上所述，这个例子展示了如何用 <strong>非线性混合效应模型</strong>真实拟合 <code>ChickWeight</code> 数据。</p>
+</section>
+</section>
+<section id="plantgrowth单因素-anova组间均值比较与-tukey-检验" class="level3" data-number="8.2.3">
+<h3 data-number="8.2.3" class="anchored" data-anchor-id="plantgrowth单因素-anova组间均值比较与-tukey-检验"><span class="header-section-number">8.2.3</span> PlantGrowth：单因素 ANOVA、组间均值比较与 Tukey 检验</h3>
+<p><code>PlantGrowth</code> 数据集记录了两种处理（<code>trt1</code>, <code>trt2</code>）和一个对照组（<code>ctrl</code>）对植物干重的影响。研究采用的实验设计是一个典型的完全随机设计，共有三组，每组包含 10 株植物。这里我们将使用该数据集演示如何使用单因素方差分析（One-way ANOVA）来检验三个或更多组的均值是否存在显著差异，并使用事后多重比较（如 Tukey HSD）来确定具体是哪几组之间存在差异，最终绘制出发表级的图片。</p>
+<section id="快速认识与可视化" class="level4" data-number="8.2.3.1">
+<h4 data-number="8.2.3.1" class="anchored" data-anchor-id="快速认识与可视化"><span class="header-section-number">8.2.3.1</span> 快速认识与可视化</h4>
+<p>与前面两个例子类似，在进行统计分析之前，首先通过数据概要和可视化来快速了解数据的分布和特征，这是 R 数据分析的良好实践。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 载入数据集</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(PlantGrowth)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看数据结构</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(PlantGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   30 obs. of  2 variables:
+ $ weight: num  4.17 5.58 5.18 6.11 4.5 4.61 5.17 4.53 5.33 5.14 ...
+ $ group : Factor w/ 3 levels "ctrl","trt1",..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看数据概要</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(PlantGrowth)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     weight       group   
+ Min.   :3.590   ctrl:10  
+ 1st Qu.:4.550   trt1:10  
+ Median :5.155   trt2:10  
+ Mean   :5.073            
+ 3rd Qu.:5.530            
+ Max.   :6.310            </code></pre>
+</div>
+</div>
+<p>使用 <code>ggplot2</code> 绘制箱线图和数据点，可以直观比较各组数据的分布情况。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(PlantGrowth, <span class="fu">aes</span>(<span class="at">x =</span> group, <span class="at">y =</span> weight, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 添加箱线图，展示中位数、四分位数和异常值</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 添加原始数据点，jitter 避免重叠</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PlantGrowth: 不同组别植物干重分布"</span>,</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"组别"</span>,</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"植物干重 (g)"</span>) <span class="sc">+</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 移除图例</span></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>从箱线图中可以初步观察到：<code>trt1</code> 组的植物干重中位数最低，而 <code>trt2</code> 组的中位数最高。这暗示了三种处理可能对植物生长有不同影响，但要确认这种差异是否具有统计学意义，我们需要进行方差分析。</p>
+</section>
+<section id="单因素方差分析anova" class="level4" data-number="8.2.3.2">
+<h4 data-number="8.2.3.2" class="anchored" data-anchor-id="单因素方差分析anova"><span class="header-section-number">8.2.3.2</span> 单因素方差分析（ANOVA）</h4>
+<p>ANOVA 的核心思想是分解总变异。它将植物干重总体的变异分解为<strong>组间变异</strong>（由不同实验组引起的）和<strong>组内变异</strong>（各组内部的随机差异）。通过比较这两部分变异的相对大小（即 F 值），我们可以判断组均值是否真的存在显著差异。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 构建单因素方差分析模型</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>fit_pg <span class="ot">&lt;-</span> <span class="fu">aov</span>(weight <span class="sc">~</span> group, <span class="at">data =</span> PlantGrowth)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 输出 ANOVA 结果摘要</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_pg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value Pr(&gt;F)  
+group        2  3.766  1.8832   4.846 0.0159 *
+Residuals   27 10.492  0.3886                 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p><code>summary(fit_pg)</code> 的输出显示了方差分析表。 <code>group</code> 行的 <code>Pr(&gt;F)</code> 值（p 值）为 <strong>0.0159</strong>，它<strong>小于 0.05</strong>。这表明<strong>至少有一组的均值与其他组存在显著差异</strong>。然而，ANOVA 结果本身并不能告诉我们具体是哪两组之间有差异。</p>
+</section>
+<section id="模型诊断" class="level4" data-number="8.2.3.3">
+<h4 data-number="8.2.3.3" class="anchored" data-anchor-id="模型诊断"><span class="header-section-number">8.2.3.3</span> 模型诊断</h4>
+<p>在依赖 ANOVA 结果之前，我们需要检查其两个基本前提假设：<strong>残差的正态性</strong>和<strong>方差齐性</strong>（各组方差相等）。</p>
+<p><strong>1. 方差齐性检验（Levene’s test）</strong></p>
+<p>我们使用 <code>car</code> 包中的 <code>leveneTest()</code> 函数。</p>
+<ul>
+<li><strong>零假设 (<span class="math inline">\(H_0\)</span>)</strong>：各组的方差相等。</li>
+<li><strong>备择假设 (<span class="math inline">\(H_a\)</span>)</strong>：至少有一组的方差与其他组不等。</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(weight <span class="sc">~</span> group, <span class="at">data =</span> PlantGrowth)              </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(&gt;F)
+group  2  1.1192 0.3412
+      27               </code></pre>
+</div>
+</div>
+<p>结果中，<code>Pr(&gt;F)</code> 值为 <strong>0.5097</strong>，它<strong>远大于 0.05</strong>。这意味着我们<strong>没有足够的证据拒绝零假设</strong>，可以认为各组的方差是齐性的，满足 ANOVA 的前提。</p>
+<p><strong>2. 残差正态性检验（Shapiro-Wilk test）</strong></p>
+<p>我们使用 <code>shapiro.test()</code> 函数来检验模型的残差是否服从正态分布。</p>
+<ul>
+<li><strong>零假设 (<span class="math inline">\(H_0\)</span>)</strong>：残差服从正态分布。</li>
+<li><strong>备择假设 (<span class="math inline">\(H_a\)</span>)</strong>：残差不服从正态分布。</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(fit_pg))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  residuals(fit_pg)
+W = 0.96607, p-value = 0.4379</code></pre>
+</div>
+</div>
+<p>结果中，<code>p-value</code> 为 <strong>0.4497</strong>，它<strong>远大于 0.05</strong>。因此我们<strong>没有足够的证据拒绝零假设</strong>，可以认为残差服从正态分布，满足 ANOVA 的另一个前提。</p>
+</section>
+<section id="组间多重比较tukey-hsd" class="level4" data-number="8.2.3.4">
+<h4 data-number="8.2.3.4" class="anchored" data-anchor-id="组间多重比较tukey-hsd"><span class="header-section-number">8.2.3.4</span> 组间多重比较（Tukey HSD）</h4>
+<p>既然 ANOVA 结果是显著的，且前提假设均满足，我们可以进行<strong>事后检验（Post-hoc Test）</strong>来确定具体是哪几组之间有显著差异。Tukey HSD（Honestly Significant Difference）是一种常用的方法，它能在所有可能的两两比较中控制第一类错误（即错误地拒绝零假设的概率）。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用 TukeyHSD() 函数进行事后多重比较</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(fit_pg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = weight ~ group, data = PlantGrowth)
+
+$group
+            diff        lwr       upr     p adj
+trt1-ctrl -0.371 -1.0622161 0.3202161 0.3908711
+trt2-ctrl  0.494 -0.1972161 1.1852161 0.1979960
+trt2-trt1  0.865  0.1737839 1.5562161 0.0120064</code></pre>
+</div>
+</div>
+<p>Tukey HSD 的输出表格展示了每对组之间的均值差异、95%置信区间，以及调整后的 p 值（<code>p adj</code>）。</p>
+<ul>
+<li><strong><code>trt1-ctrl</code></strong>：p 值大于 0.05，表明 <strong><code>trt1</code> 组与对照组之间没有显著差异</strong>。</li>
+<li><strong><code>trt2-ctrl</code></strong>：p 值大于 0.05，表明 <strong><code>trt2</code> 组与对照组之间没有显著差异</strong>。</li>
+<li><strong><code>trt2-trt1</code></strong>：p 值小于 0.05，表明 <strong><code>trt2</code> 组与 <code>trt1</code> 组之间存在显著差异</strong>。</li>
+</ul>
+</section>
+<section id="输出发表级图片" class="level4" data-number="8.2.3.5">
+<h4 data-number="8.2.3.5" class="anchored" data-anchor-id="输出发表级图片"><span class="header-section-number">8.2.3.5</span> 输出发表级图片</h4>
+<p>最后，我们使用 <code>ggpubr</code> 软件包为箱线图添加显著性标记。</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(PlantGrowth, <span class="fu">aes</span>(<span class="at">x =</span> group, <span class="at">y =</span> weight, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_compare_means</span>(</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">"t.test"</span>,</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="st">"p.signif"</span>,</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">comparisons =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"trt2"</span>,<span class="st">"trt1"</span>))) <span class="sc">+</span></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PlantGrowth: 不同组别植物干重分布"</span>,</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"组别"</span>,</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"植物干重 (g)"</span>) <span class="sc">+</span></span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="datasets-in-r_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>通过对 <code>PlantGrowth</code> 数据集的统计分析，我们得出以下结论：</p>
+<ol type="1">
+<li>单因素方差分析（ANOVA）结果显示，<code>group</code> 因子对植物干重有显著影响 (<span class="math inline">\(p &lt; 0.05\)</span>)。</li>
+<li><strong>模型诊断</strong>表明，各组方差齐性良好，且残差服从正态分布，满足 ANOVA 的前提假设。</li>
+<li><strong>Tukey HSD 事后多重比较</strong>进一步揭示了差异的具体来源：<code>trt2</code> 处理组的植物干重显著高于 <code>trt1</code> 处理组。而 <code>trt1</code> 和 <code>trt2</code> 与对照组相比，均无显著差异。</li>
+</ol>
+<p>最终，我们可以得出结论：在这项研究中，<code>trt2</code> 这种处理方式能够显著提高植物干重，而 <code>trt1</code> 的效果与对照组基本相同。</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script src="https://giscus.app/client.js" data-repo="D2RS-2025spring/data-driven-reproducible-study" data-repo-id="R_kgDONqlH8A" data-category="General" data-category-id="DIC_kwDONqlH8M4CnKvW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme" data-lang="zh-CN" crossorigin="anonymous" async="">
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./r-basic.html" class="pagination-link" aria-label="R 语言入门">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">R 语言入门</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./python-basic.html" class="pagination-link" aria-label="Python 语言入门">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Python 语言入门</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/edit/main/datasets-in-r.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/blob/main/datasets-in-r.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/D2RS-2025spring/data-driven-reproducible-study/issues/" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script async="" src="https://hypothes.is/embed.js"></script>
+
+
+
+
+</body></html>
