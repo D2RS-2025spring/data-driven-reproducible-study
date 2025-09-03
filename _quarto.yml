@@ -30,6 +30,7 @@ book:
         - literate-programming.qmd
         - cli.qmd
         - r-basic.qmd
+        - datasets-in-r.qmd
         - python-basic.qmd
         - python-vs-r.qmd
         - git-basic.qmd
