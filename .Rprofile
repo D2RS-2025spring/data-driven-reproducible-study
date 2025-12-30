@@ -24,4 +24,4 @@ options(width = 80)      # 控制每行的宽度，避免过长输出
 if (!requireNamespace("reticulate", quietly = TRUE)) {
   install.packages("reticulate")
 }
-reticulate::use_condaenv("data-driven-reproducible-study")
+# reticulate::use_condaenv("data-driven-reproducible-study")
