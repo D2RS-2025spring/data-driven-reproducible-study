@@ -7,7 +7,8 @@ options(
     ),
     bioc.repos = c(
       BioC = "https://mirrors.ustc.edu.cn/bioc"
-    )
+    ),
+    renv.config.pak.enabled = TRUE
 )
 
 # 设置字体
